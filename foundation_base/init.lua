@@ -1,0 +1,110 @@
+--
+-- Base module for foundation
+--
+-- Provides mod registration, taken from the nokore base
+foundation = rawget(_G, "foundation") || {}
+
+local FoundationModule = {}
+
+local function string_trim_leading(str, expected)
+  if string.sub(str, 1, #expected) == expected then
+    return string.sub(str, 1 + #expected, -1)
+  else
+    return str
+  end
+end
+
+local function string_trim_trailing(str, expected)
+  if string.sub(str, -#expected) == expected then
+    return string.sub(str, 1, -(1 + #expected) )
+  else
+    return str
+  end
+end
+
+local function path_join(a, b)
+  local a = string_trim_trailing(a, "/")
+  local b = string_trim_leading(b, "/")
+
+  return a .. "/" .. b
+end
+
+
+-- Helper function for registering a node under the parent mod
+function FoundationModule:register_node(name, entry)
+  return minetest.register_node(self._name .. ":" .. name, entry)
+end
+
+-- Helper function for registering a craftitem under the parent mod
+function FoundationModule:register_craftitem(name, entry)
+  return minetest.register_craftitem(self._name .. ":" .. name, entry)
+end
+
+-- Helper function for registering a tool under the parent mod
+function FoundationModule:register_tool(name, entry)
+  return minetest.register_tool(self._name .. ":" .. name, entry)
+end
+
+function FoundationModule:require(basename)
+  local filename = path_join(self.modpath, filename)
+  if mod.loaded_files[filename] then
+    -- nothing to do
+  else
+    mod.loaded_files[filename] = dofile(filename)
+  end
+
+  return mod.loaded_files[filename]
+end
+
+--
+-- Creates or retrieves an existing mod's module
+-- The modpath is automatically set on call
+--
+-- @spec foundation.new_module(name: String, default: Table) :: Table
+function foundation.new_module(name, version, default)
+  local mod = rawget(_G, name) or default or {}
+  mod._name = name
+  mod._is_foundation_module = true
+  mod.VERSION = version
+  mod.S = minetest.get_translator(name)
+  mod.modpath = minetest.get_modpath(minetest.get_current_modname())
+  mod.loaded_files = {}
+  rawset(_G, name, mod)
+  setmetatable(mod, { __index = FoundationModule })
+  print("New NoKore Module: " .. mod._name .. " " .. mod.VERSION)
+  return mod
+end
+
+--
+-- Determines if specified module exists
+--
+-- @spec foundation.is_module_present(name: String, optional_version: String) :: Boolean
+function foundation.is_module_present(name, optional_version)
+  local value = rawget(_G, name)
+
+  if type(value) == "table" then
+    if optional_version then
+      return foundation.version:test(value.VERSION, optional_version)
+    else
+      return true
+    end
+  end
+  return false
+end
+
+-- Bootstrap itself
+foundation.new_module("foundation", "0.1.0", foundation)
+
+-- hardcoded for now, trigger the self tests
+foundation.self_test = true
+
+-- foundation common module, all exported modules end up here
+foundation.com = {}
+
+dofile(foundation.modpath .. "/version.lua")
+
+if foundation.self_test then
+  assert(foundation.is_module_present("foundation"), "expected foundation itself to be present")
+  assert(foundation.is_module_present("foundation", "0.1.0"), "expected it's match to match")
+end
+

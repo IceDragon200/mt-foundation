@@ -1,0 +1,10 @@
+-- Binary Serializer
+foundation.com.binary_types = {}
+dofile(foundation_binary.modpath .. "/util/bin_types/scalars.lua")
+dofile(foundation_binary.modpath .. "/util/bin_types/array.lua")
+dofile(foundation_binary.modpath .. "/util/bin_types/bytes.lua")
+dofile(foundation_binary.modpath .. "/util/bin_types/map.lua")
+dofile(foundation_binary.modpath .. "/util/bin_types/marshall_value.lua")
+dofile(foundation_binary.modpath .. "/util/bin_types/naive_datetime.lua")
+dofile(foundation_binary.modpath .. "/util/bin_types/enum.lua")
+dofile(foundation_binary.modpath .. "/util/bin_types/bit_flags.lua")
