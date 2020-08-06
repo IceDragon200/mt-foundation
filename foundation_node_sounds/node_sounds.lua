@@ -39,6 +39,15 @@ function ic:register(name, sound_set)
 end
 
 --
+-- Returns true if the specified node name set exists in the registry,
+-- false otherwise.
+--
+-- @spec :is_registered(name: String) :: boolean
+function ic:is_registered(name)
+  return self.registered[name] ~= nil
+end
+
+--
 -- Retrieve a soundset by name
 --
 -- @spec :get(name: String) :: SoundSet |nil

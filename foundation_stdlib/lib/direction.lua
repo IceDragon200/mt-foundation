@@ -1,7 +1,5 @@
 local Directions = {}
 
-Directions.SIXTEENTH = 1 / 16.0
-
 -- This uses a bit flag map, for quick use with binary-styled representations
 -- It does make face values a pain though
 -- UD WSEN

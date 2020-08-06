@@ -1,10 +1,12 @@
+local m = assert(foundation.com.TOML)
+
 local case = foundation.com.Luna:new("foundation_toml")
 
 case:describe("TOML", function (t2)
   t2:describe("encode/1", function (t3)
     t3:test("encodes a simple object", function (t4)
       local result =
-        m.TOML.encode({
+        m.encode({
           a = "hello",
           b = "world",
           c = true,
@@ -23,7 +25,7 @@ e = 12
 
     t3:test("encodes a nested object", function (t4)
       local result =
-        m.TOML.encode({
+        m.encode({
           root = {
             a = "hello",
             b = "world",
@@ -45,7 +47,7 @@ e = 12
 
     t3:test("encodes a object with a unsafe key", function (t4)
       local result =
-        m.TOML.encode({
+        m.encode({
           ["root:other_thing"] = {
             a = "hello",
             b = "world",

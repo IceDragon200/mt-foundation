@@ -15,14 +15,14 @@ function Class.instance_class:initialize()
 end
 
 function Class.instance_class:method(name)
-  local func = assert(self[name] ~= nil, "value not found")
+  local func = self[name]
   if type(func) == "function" then
     local target = self
     return function (...)
       func(target, ...)
     end
   else
-    error("expected a function")
+    error("expected a function named `" .. name .. "` (got a `" .. type(func) .. "` instead)")
   end
 end
 

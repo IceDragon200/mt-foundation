@@ -5,13 +5,13 @@ if not ffi then
   return
 end
 
-local foundation_com_utils
+local foundation_utils
 pcall(function ()
-  foundation_com_utils = ffi.load(foundation.com.modpath .. "/ext/foundation_utils.so")
+  foundation_utils = ffi.load(foundation_native.modpath .. "/ext/foundation_utils.so")
 end)
 
-if not foundation_com_utils then
-  minetest.log("warning", "foundation_com_utils shared object is not available, skipping implementation")
+if not foundation_utils then
+  minetest.log("warning", "foundation_utils shared object is not available, skipping implementation")
   minetest.log("warning", "WARN: Some functions will be slightly slower, should be fine for the most part.\n\n")
   return
 end
@@ -38,11 +38,11 @@ extern void foundation_string_hex_unescape(struct foundation_encode_cursor* curs
 extern void foundation_string_hex_escape(struct foundation_encode_cursor* cursor, char* input, char* buffer, int mode);
 ]])
 
-foundation.com.native_utils = foundation_com_utils
+foundation.com.native_utils = foundation_utils
 
 do
   local ffi = foundation.com.ffi
-  local cursor = ffi.new("struct foundation.com_encode_cursor")
+  local cursor = ffi.new("struct foundation_encode_cursor")
   cursor.buffer_size = 0x40000
 
   local input_buffer = ffi.new("char[" .. cursor.buffer_size .. "]")

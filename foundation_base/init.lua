@@ -2,7 +2,7 @@
 -- Base module for foundation
 --
 -- Provides mod registration, taken from the nokore base
-foundation = rawget(_G, "foundation") || {}
+foundation = rawget(_G, "foundation") or {}
 
 local FoundationModule = {}
 
@@ -46,14 +46,14 @@ function FoundationModule:register_tool(name, entry)
 end
 
 function FoundationModule:require(basename)
-  local filename = path_join(self.modpath, filename)
-  if mod.loaded_files[filename] then
+  local filename = path_join(self.modpath, basename)
+  if self.loaded_files[filename] then
     -- nothing to do
   else
-    mod.loaded_files[filename] = dofile(filename)
+    self.loaded_files[filename] = dofile(filename)
   end
 
-  return mod.loaded_files[filename]
+  return self.loaded_files[filename]
 end
 
 --
@@ -62,6 +62,8 @@ end
 --
 -- @spec foundation.new_module(name: String, default: Table) :: Table
 function foundation.new_module(name, version, default)
+  assert(name, "expected a name")
+  assert(version, "expected a version")
   local mod = rawget(_G, name) or default or {}
   mod._name = name
   mod._is_foundation_module = true
@@ -71,7 +73,7 @@ function foundation.new_module(name, version, default)
   mod.loaded_files = {}
   rawset(_G, name, mod)
   setmetatable(mod, { __index = FoundationModule })
-  print("New NoKore Module: " .. mod._name .. " " .. mod.VERSION)
+  print("New Foundation Module: " .. mod._name .. " " .. mod.VERSION)
   return mod
 end
 
@@ -84,7 +86,7 @@ function foundation.is_module_present(name, optional_version)
 
   if type(value) == "table" then
     if optional_version then
-      return foundation.version:test(value.VERSION, optional_version)
+      return foundation.com.Version:test(value.VERSION, optional_version)
     else
       return true
     end

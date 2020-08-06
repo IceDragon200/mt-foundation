@@ -70,4 +70,8 @@ function Cuboid.fast_node_box(cuboid, scale)
   return Cuboid.to_node_box(cuboid)
 end
 
+function Cuboid.new_fast_node_box(...)
+  return Cuboid.fast_node_box(Cuboid.new(...))
+end
+
 foundation.com.Cuboid = Cuboid

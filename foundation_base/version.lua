@@ -167,7 +167,7 @@ function version:test(ver, test_term)
   return result
 end
 
-if nokore.self_test then
+if foundation.self_test then
   local ver = version:parse("0.0.0")
 
   assert(ver.major == 0)

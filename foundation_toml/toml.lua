@@ -1,5 +1,20 @@
-local table_copy = assert(foundation.com.table_copy)
-local table_keys = assert(foundation.com.table_keys)
+local function table_merge(...)
+  local result = {}
+  for _,t in ipairs({...}) do
+    for key,value in pairs(t) do
+      result[key] = value
+    end
+  end
+  return result
+end
+
+local function table_keys(t)
+  local keys = {}
+  for key,_ in pairs(t) do
+    table.insert(keys, key)
+  end
+  return keys
+end
 
 local TOML = {}
 
@@ -47,7 +62,7 @@ function TOML.encode_iodata(object, prefix, result)
       prefix = {}
     end
 
-    local current_prefix = table_copy(prefix)
+    local current_prefix = table_merge(prefix)
     table.insert(current_prefix, key)
     table.insert(result, "[" .. format_prefix(current_prefix) .. "]")
     TOML.encode_iodata(value, current_prefix, result)

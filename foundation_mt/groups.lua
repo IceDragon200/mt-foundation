@@ -54,4 +54,4 @@ function Groups.item_has_group(name, group_name, optional_rank)
   return false
 end
 
-foundation.com.Groups = groups
+foundation.com.Groups = Groups
