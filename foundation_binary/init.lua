@@ -12,6 +12,9 @@ mod:require("bit.lua")
 mod:require("byte_encoder.lua")
 mod:require("byte_decoder.lua")
 mod:require("byte_buf.lua")
+mod:require("bin_schema.lua")
+mod:require("bin_types.lua")
+mod:require("binary_buffer.lua")
 
 mod:require("tests.lua")
 

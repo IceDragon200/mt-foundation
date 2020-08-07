@@ -15,6 +15,11 @@ function ic:size()
   return #self.m_data
 end
 
+function ic:blob(len)
+  len = len or self.size()
+  return string.sub(self.m_data, 1, len)
+end
+
 function ic:open(mode)
   self.m_cursor = 1
   self.m_mode = mode or "r"
