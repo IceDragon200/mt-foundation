@@ -19,7 +19,7 @@ function Class.instance_class:method(name)
   if type(func) == "function" then
     local target = self
     return function (...)
-      func(target, ...)
+      return func(target, ...)
     end
   else
     error("expected a function named `" .. name .. "` (got a `" .. type(func) .. "` instead)")
