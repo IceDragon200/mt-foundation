@@ -41,6 +41,8 @@ function foundation.com.list_reduce(list, acc, fun)
   return acc
 end
 
+-- Perform a reduce map on the specified list, this will return a new list
+-- where elements were transformed by 'fun'
 function foundation.com.list_map(list, fun)
   return foundation.com.list_reduce(list, {}, function (value, acc)
     table.insert(acc, fun(value))
@@ -48,11 +50,13 @@ function foundation.com.list_map(list, fun)
   end)
 end
 
+-- Selects and returns a random value in the specified list
 function foundation.com.list_sample(l)
   local c = #l
   return l[math.random(c)]
 end
 
+-- Retrieves the next value after the specified 'current'
 function foundation.com.list_get_next(list, current)
   -- returns the next element in a list given the current value,
   -- if the current is nil,
@@ -74,9 +78,11 @@ function foundation.com.list_get_next(list, current)
   end
 end
 
---[[
-Not to be confused with table.concat, which is actually a 'join' in other languages.
-]]
+--
+-- Combines multiple list-like tables into a single resultant list
+-- Not to be confused with table.concat,
+-- which is actually a 'join' in other languages.
+--
 function foundation.com.list_concat(...)
   local result = {}
   local i = 1
@@ -89,6 +95,9 @@ function foundation.com.list_concat(...)
   return result
 end
 
+--
+-- Returns a new list with only unique values
+--
 function foundation.com.list_uniq(l)
   local seen = {}
   local result = {}
