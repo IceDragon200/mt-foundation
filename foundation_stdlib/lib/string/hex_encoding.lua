@@ -44,6 +44,18 @@ local function byte_to_escaped_hex(byte)
   return "\\x" .. HEX_TABLE[hinibble] .. HEX_TABLE[lonibble]
 end
 
+function foundation.com.byte_to_hexpair(byte)
+  assert(byte >= 0 and byte <= 255, "expected byte to be between 0..255")
+  local hinibble = math.floor(byte / 16)
+  local lonibble = byte % 16
+  return HEX_TABLE[hinibble] .. HEX_TABLE[lonibble]
+end
+
+function foundation.com.nibble_to_hex(nibble)
+  assert(nibble >= 0 and nibble <= 15, "expected nibble to be between 0..15")
+  return HEX_TABLE[nibble]
+end
+
 --
 -- Removes any non-hex characters
 --

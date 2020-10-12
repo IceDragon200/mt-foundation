@@ -77,6 +77,7 @@ case:execute()
 case:display_stats()
 case:maybe_error()
 
+mod:require("/tests/color_test.lua")
 mod:require("/tests/direction_test.lua")
 mod:require("/tests/number_test.lua")
 mod:require("/tests/string_test.lua")

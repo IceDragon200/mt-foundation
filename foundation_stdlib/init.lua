@@ -1,5 +1,6 @@
 local mod = foundation.new_module("foundation_stdlib", "1.1.0")
 
+mod:require("lib/color.lua")
 mod:require("lib/cuboid.lua")
 mod:require("lib/direction.lua")
 mod:require("lib/inventory_list.lua")
@@ -19,6 +20,9 @@ mod:require("lib/type_conversion.lua")
 mod:require("lib/value.lua")
 mod:require("lib/vector.lua")
 mod:require("lib/symbols.lua")
+
+mod:require("lib/easers.lua")
+mod:require("lib/tweener.lua")
 
 if foundation.com.Luna then
   mod:require("tests.lua")
