@@ -798,6 +798,4 @@ function c:to_formspec(as_iodata)
   end
 end
 
-yatm_core.UI = {
-  Form = Form
-}
+foundation.com.Form = Form

@@ -3,8 +3,9 @@
 -- interpolating items into a formspec element and you start missing commas,
 -- semi-colons or even brackets in larger formspecs.
 --
-foundation_formspec.api = {}
-local api = foundation_formspec.api
+foundation.com.formspec = {}
+
+local api = {}
 
 local function to_bool(item)
   -- a hack to quickly get a boolean from a normal value
@@ -127,7 +128,7 @@ end
 api.listring = api.list_ring
 
 function api.list_colors(slot_bg_normal, slot_bg_hover, slot_border, tooltip_bgcolor, tooltip_fontcolor)
-  local args = ..to_color(slot_bg_normal)..";"..to_color(slot_bg_hover)
+  local args = to_color(slot_bg_normal)..";"..to_color(slot_bg_hover)
   if slot_border then
     args = args .. ";" .. to_color(slot_border)
 
@@ -564,3 +565,5 @@ end
 function api.set_focus(name, forced)
   return "set_focus["..name..";"..to_bool(forced).."]"
 end
+
+foundation.com.formspec.api = api
