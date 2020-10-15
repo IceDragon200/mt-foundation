@@ -10,7 +10,7 @@ local api = {}
 local function to_bool(item)
   -- a hack to quickly get a boolean from a normal value
   -- in languages that have ! for not, it looks like this !!item
-  return not not item
+  return tostring(not not item)
 end
 
 local function to_color(item)
@@ -194,7 +194,7 @@ function api.item_image(x, y, w, h, item_name)
 end
 
 function api.bg_color(bgcolor, fullscreen, fbgcolor)
-  args = to_color(bgcolor)
+  local args = to_color(bgcolor)
   if fullscreen == nil then
     args = args..";"
   else
@@ -211,7 +211,7 @@ end
 api.bgcolor = api.bg_color
 
 function api.background(x, y, w,  h, texture_name, auto_clip)
-  args = x..","..y..";"..w..","..h..";"..to_text(texture_name)
+  local args = x..","..y..";"..w..","..h..";"..to_text(texture_name)
 
   if auto_clip ~= nil then
     args = args..";"..to_bool(auto_clip)
@@ -220,7 +220,7 @@ function api.background(x, y, w,  h, texture_name, auto_clip)
 end
 
 function api.background9(x, y, w,  h, texture_name, auto_clip, middle)
-  args = x..","..y..";"..w..","..h..";"..to_text(texture_name)
+  local args = x..","..y..";"..w..","..h..";"..to_text(texture_name)
 
   if auto_clip == nil then
     args = args..";"
@@ -237,13 +237,13 @@ function api.background9(x, y, w,  h, texture_name, auto_clip, middle)
 end
 
 function api.pwdfield(x, y, w, h, name, label)
-  args = x..","..y..";"..w..","..h..";"..name..";"..to_text(label)
+  local args = x..","..y..";"..w..","..h..";"..name..";"..to_text(label)
 
   return "pwdfield["..args.."]"
 end
 
 function api.field_area(x, y, w, h, name, label, default)
-  args = x..","..y..
+  local args = x..","..y..
     ";"..w..","..h..
     ";"..name..
     ";"..to_text(label)..
@@ -253,7 +253,7 @@ function api.field_area(x, y, w, h, name, label, default)
 end
 
 function api.field_simple(name, label, default)
-  args = name..
+  local args = name..
     ";"..to_text(label)..
     ";"..to_text(default or "")
 
@@ -265,7 +265,7 @@ function api.field_close_on_enter(name, should_close_on_enter)
 end
 
 function api.textarea(x, y, w, h, name, label, default)
-  args = x..","..y..
+  local args = x..","..y..
     ";"..w..","..h..
     ";"..name..
     ";"..to_text(label)..
@@ -275,12 +275,12 @@ function api.textarea(x, y, w, h, name, label, default)
 end
 
 function api.label(x, y, label)
-  args = x..","..y..";"..to_text(label)
+  local args = x..","..y..";"..to_text(label)
   return "label["..args.."]"
 end
 
 function api.hypertext(x, y, w, h, name, text)
-  args = x..","..y..
+  local args = x..","..y..
     ";"..w..","..h..
     ";"..name..
     ";"..to_text(text)
@@ -289,12 +289,12 @@ function api.hypertext(x, y, w, h, name, text)
 end
 
 function api.vertlabel(x, y, label)
-  args = x..","..y..";"..to_text(label)
+  local args = x..","..y..";"..to_text(label)
   return "vertlabel["..args.."]"
 end
 
 function api.button(x, y, w, h, name, label)
-  args = x..","..y..
+  local args = x..","..y..
     ";"..w..","..h..
     ";"..name..
     ";"..to_text(label)
@@ -303,7 +303,7 @@ function api.button(x, y, w, h, name, label)
 end
 
 function api.image_button(x, y, w, h, texture_name, name, label, noclip, drawborder, pressed_texture_name)
-  args = x..","..y..
+  local args = x..","..y..
     ";"..w..","..h..
     ";"..to_text(texture_name)..
     ";"..name..
@@ -328,7 +328,7 @@ function api.image_button(x, y, w, h, texture_name, name, label, noclip, drawbor
 end
 
 function api.item_image_button(x, y, w, h, item_name, name, label)
-  args = x..","..y..
+  local args = x..","..y..
     ";"..w..","..h..
     ";"..to_text(item_name)..
     ";"..name..
@@ -338,7 +338,7 @@ function api.item_image_button(x, y, w, h, item_name, name, label)
 end
 
 function api.button_exit(x, y, w, h, name, label)
-  args = x..","..y..
+  local args = x..","..y..
     ";"..w..","..h..
     ";"..name..
     ";"..to_text(label)
@@ -347,7 +347,7 @@ function api.button_exit(x, y, w, h, name, label)
 end
 
 function api.image_button_exit(x, y, w, h, texture_name, name, label)
-  args = x..","..y..
+  local args = x..","..y..
     ";"..w..","..h..
     ";"..to_text(texture_name)..
     ";"..name..
@@ -357,7 +357,7 @@ function api.image_button_exit(x, y, w, h, texture_name, name, label)
 end
 
 function api.textlist(x, y, w, h, name, listitems, selected_index, is_transparent)
-  args = x..","..y..
+  local args = x..","..y..
     ";"..w..","..h..
     ";"..name..";"
 
@@ -380,7 +380,7 @@ function api.textlist(x, y, w, h, name, listitems, selected_index, is_transparen
 end
 
 function api.tabheader(x, y, w, h, name, captions, current_tab_index, is_transparent, draw_border)
-  args = x..","..y
+  local args = x..","..y
 
   if w and h then
     args = args..";"..w..","..h
@@ -410,7 +410,7 @@ function api.tabheader(x, y, w, h, name, captions, current_tab_index, is_transpa
 end
 
 function api.box(x, y, w, h, color)
-  args = x..","..y..
+  local args = x..","..y..
     ";"..w..","..h
 
   if color then
@@ -421,7 +421,7 @@ function api.box(x, y, w, h, color)
 end
 
 function api.dropdown(x, y, w, h, name, dropdown_items, selected_index, use_index_event)
-  args = x..","..y
+  local args = x..","..y
 
   if w and h then
     args = args..";"..w..","..h
@@ -446,7 +446,7 @@ function api.dropdown(x, y, w, h, name, dropdown_items, selected_index, use_inde
 end
 
 function api.checkbox(x, y, name, label, is_selected)
-  args = x..","..y..
+  local args = x..","..y..
     ";"..name..
     ";"..to_text(label)
 
@@ -482,7 +482,7 @@ end
 api.scrollbaroptions = api.scrollbar_options
 
 function api.table(x, y, w, h, name, cells, selected_index)
-  args = x..","..y..
+  local args = x..","..y..
     ";"..w..","..h..
     ";"..name
 
@@ -518,6 +518,8 @@ end
 api.tableoptions = api.table_options
 
 function api.tablecolumns(types_and_options)
+  local args = ""
+
   local items = {}
   for type_name,options in pairs(types_and_options) do
     local options_items = {type_name}
