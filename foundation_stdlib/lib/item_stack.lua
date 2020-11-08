@@ -19,6 +19,15 @@ function foundation.com.itemstack_get_itemdef(stack)
   return nil
 end
 
+function foundation.com.itemstack_has_group(stack, group_name, optional_value)
+  local itemdef = foundation.com.itemstack_get_itemdef(stack)
+  if itemdef then
+    return foundation.com.Groups.has_group(itemdef, group_name, optional_value)
+  else
+    return false
+  end
+end
+
 function foundation.com.itemstack_inspect(stack)
   if stack then
     return "stack[" .. stack:get_name() .. "/" .. stack:get_count() .. "]"

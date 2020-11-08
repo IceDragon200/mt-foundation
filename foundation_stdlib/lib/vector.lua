@@ -1,4 +1,5 @@
--- Minetest has pos_to_string, but I believe that floor rounds the vector and adds bracket around it
+-- Minetest has pos_to_string, but I believe that floors the vector coords and adds bracket around it
+-- this function is intended to keep the decimal places and only create a csv
 function foundation.com.vector_to_string(vec)
   return vec.x .. "," .. vec.y .. "," .. vec.z
 end

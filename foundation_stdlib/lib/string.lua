@@ -3,6 +3,28 @@ foundation_stdlib:require("lib/string/dec_encoding.lua")
 foundation_stdlib:require("lib/string/hex_encoding.lua")
 foundation_stdlib:require("lib/string/oct_encoding.lua")
 
+local ref_id = 0
+
+-- Helper function for generating a sequential reference value
+-- guaranteed to be unique for the current session, but not unique across
+-- instances.
+function foundation.com.make_string_ref(domain)
+  domain = domain or ""
+  ref_id = ref_id + 1
+  local current_ref_id = ref_id
+
+  local id = current_ref_id
+  local res = {}
+  for i = 1,16 do
+    res[i+1] = foundation.com.byte_to_hexpair(id % 256)
+    id = math.floor(id / 256)
+  end
+
+  res[1] = domain
+
+  return table.concat(res)
+end
+
 function foundation.com.string_empty(str)
   -- check if the first byte is nil, if it is, the string is empty
   -- not sure if this is cheaper than just checking the length though

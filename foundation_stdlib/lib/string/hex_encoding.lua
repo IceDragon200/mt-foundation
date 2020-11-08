@@ -44,6 +44,8 @@ local function byte_to_escaped_hex(byte)
   return "\\x" .. HEX_TABLE[hinibble] .. HEX_TABLE[lonibble]
 end
 
+foundation.com.HEX_TABLE = HEX_TABLE
+
 function foundation.com.byte_to_hexpair(byte)
   assert(byte >= 0 and byte <= 255, "expected byte to be between 0..255")
   local hinibble = math.floor(byte / 16)
