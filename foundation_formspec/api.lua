@@ -395,8 +395,9 @@ function api.tabheader(x, y, w, h, name, captions, current_tab_index, is_transpa
     table.insert(items, to_text(item))
   end
 
-  args = args..table.concat(items, ",")..";"..current_tab_index..";"
+  args = args..";"..table.concat(items, ",")..";"..current_tab_index
 
+  args = args..";"
   if is_transparent ~= nil then
     args = args..is_transparent
   end
@@ -436,7 +437,7 @@ function api.dropdown(x, y, w, h, name, dropdown_items, selected_index, use_inde
     table.insert(items, to_text(item))
   end
 
-  args = args..table.concat(items, ",")..";"..selected_index
+  args = args..";"..table.concat(items, ",")..";"..selected_index
 
   if use_index_event ~= nil then
     args = args..";"..to_bool(use_index_event)
@@ -462,7 +463,11 @@ function api.scrollbar(x, y, w, h, orientation, name, value)
     ";"..w..","..h..
     ";"..orientation..
     ";"..name..
-    ";"..value
+    ";"
+
+  if value then
+    args = args .. value
+  end
 
   return "scrollbar["..args.."]"
 end
