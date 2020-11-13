@@ -60,6 +60,22 @@ case:describe("WeightedList", function (t2)
       t3:assert(value == "Item" or value == "Item 2" or value == "Item 3")
     end
   end)
+
+  t2:describe("#random_list/1", function (t3)
+    local list = mod:new()
+
+    list:push("Item", 4)
+    list:push("Item 2", 8)
+    list:push("Item 3", 7)
+
+    local l = list:random_list(6)
+
+    for _, value in ipairs(l) do
+      t3:assert(value == "Item" or
+                value == "Item 2" or
+                value == "Item 3")
+    end
+  end)
 end)
 
 case:execute()
