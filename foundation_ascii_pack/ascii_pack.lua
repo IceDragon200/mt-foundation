@@ -15,8 +15,8 @@ local mod = foundation_ascii_pack
 -- I pint32
 -- L pint64
 --
--- f float32
--- F float64
+-- F float32
+-- D float64
 --
 -- A array
 --
@@ -376,7 +376,7 @@ function mod.unpack(term)
   elseif ty == "n" or ty == "b" or ty == "s" or ty == "i" or ty == "l" or
          ty == "N" or ty == "B" or ty == "S" or ty == "I" or ty == "L" then
     return mod.unpack_int(term)
-  elseif ty == "f" or ty == "F" then
+  elseif ty == "F" or ty == "D" then
     return mod.unpack_float(term)
   else
     error("cannot unpack type="..ty)
@@ -396,5 +396,98 @@ function foundation.com.ascii_file_pack(stream, term, options, depth)
   return stream:write(value)
 end
 
+local function read_number_from_file(stream)
+  local acc = {}
+  local i = 0
+  local b
+
+  while true do
+    b = stream:read(1)
+
+    if b == "" then
+      error("stream finished, but end marker not found")
+    elseif b == "#" then
+      break
+    elseif b then
+      i = i + 1
+      acc[i] = b
+    else
+      error("nothing read")
+    end
+  end
+
+  return tonumber(table.concat(acc))
+end
+
+function mod.ascii_file_unpack(stream)
+  local ty = stream:read(1)
+
+  if ty == "Y" then
+    assert("#" == stream:read(1))
+    return true
+  elseif ty == "Z" then
+    assert("#" == stream:read(1))
+    return false
+  elseif ty == "0" then
+    assert("#" == stream:read(1))
+    return nil
+  elseif ty == "M" then
+    local len = mod.ascii_file_unpack(stream)
+    local map = {}
+    if len > 0 then
+      local key, value
+      for _ = 1,len do
+        key = mod.ascii_file_unpack(stream)
+        value = mod.ascii_file_unpack(stream)
+        map[key] = value
+      end
+    end
+    assert("#" == stream:read(1))
+    return map
+  elseif ty == "A" then
+    local len = mod.ascii_file_unpack(stream)
+    local array = {}
+    if len > 0 then
+      local elem
+      for i = 1,len do
+        elem = mod.ascii_file_unpack(stream)
+        array[i] = elem
+      end
+    end
+    assert("#" == stream:read(1))
+    return array
+  elseif ty == "G" then
+    local len = mod.ascii_file_unpack(stream)
+    local body = stream:read(len)
+    assert("#" == stream:read(1))
+    return body
+  elseif ty == "n" then
+    return -read_number_from_file(stream)
+  elseif ty == "b" then
+    return -read_number_from_file(stream)
+  elseif ty == "s" then
+    return -read_number_from_file(stream)
+  elseif ty == "i" then
+    return -read_number_from_file(stream)
+  elseif ty == "l" then
+    return -read_number_from_file(stream)
+  elseif ty == "N" then
+    return read_number_from_file(stream)
+  elseif ty == "B" then
+    return read_number_from_file(stream)
+  elseif ty == "S" then
+    return read_number_from_file(stream)
+  elseif ty == "I" then
+    return read_number_from_file(stream)
+  elseif ty == "L" then
+    return read_number_from_file(stream)
+  elseif ty == "F" or ty == "D" then
+    return read_number_from_file(stream)
+  else
+    error("cannot unpack type="..ty)
+  end
+end
+
 function foundation.com.ascii_file_unpack(stream)
+  return mod.ascii_file_unpack(stream)
 end
