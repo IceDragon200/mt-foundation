@@ -393,16 +393,24 @@ end
 
 function foundation.com.ascii_file_pack(stream, term, options, depth)
   local value = foundation.com.ascii_pack(term, options, depth)
-  return stream:write(value)
+  local success, err = stream:write(value)
+
+  if success then
+    return #value, nil
+  else
+    return 0, err
+  end
 end
 
 local function read_number_from_file(stream)
   local acc = {}
   local i = 0
   local b
+  local br = 0
 
   while true do
     b = stream:read(1)
+    br = br + 1
 
     if b == "" then
       error("stream finished, but end marker not found")
@@ -416,73 +424,80 @@ local function read_number_from_file(stream)
     end
   end
 
-  return tonumber(table.concat(acc))
+  return tonumber(table.concat(acc)), br
 end
 
 function mod.ascii_file_unpack(stream)
-  local ty = stream:read(1)
+  local bytes_read = 0
+  local br
+
+  local ty, br = stream:read(1)
+  bytes_read = bytes_read + 1
 
   if ty == "Y" then
     assert("#" == stream:read(1))
-    return true
+    bytes_read = bytes_read + 1
+    return true, bytes_read
   elseif ty == "Z" then
     assert("#" == stream:read(1))
-    return false
+    bytes_read = bytes_read + 1
+    return false, bytes_read
   elseif ty == "0" then
     assert("#" == stream:read(1))
-    return nil
+    bytes_read = bytes_read + 1
+    return nil, bytes_read
   elseif ty == "M" then
-    local len = mod.ascii_file_unpack(stream)
+    local len, br = mod.ascii_file_unpack(stream)
+    bytes_read = bytes_read + br
     local map = {}
     if len > 0 then
       local key, value
       for _ = 1,len do
-        key = mod.ascii_file_unpack(stream)
-        value = mod.ascii_file_unpack(stream)
+        key, br = mod.ascii_file_unpack(stream)
+        bytes_read = bytes_read + br
+        value, br = mod.ascii_file_unpack(stream)
+        bytes_read = bytes_read + br
         map[key] = value
       end
     end
     assert("#" == stream:read(1))
-    return map
+    bytes_read = bytes_read + 1
+    return map, bytes_read
   elseif ty == "A" then
-    local len = mod.ascii_file_unpack(stream)
+    local len, br = mod.ascii_file_unpack(stream)
+    bytes_read = bytes_read + br
     local array = {}
     if len > 0 then
       local elem
       for i = 1,len do
-        elem = mod.ascii_file_unpack(stream)
+        elem, br = mod.ascii_file_unpack(stream)
+        bytes_read = bytes_read + br
         array[i] = elem
       end
     end
     assert("#" == stream:read(1))
-    return array
+    bytes_read = bytes_read + 1
+    return array, bytes_read
   elseif ty == "G" then
-    local len = mod.ascii_file_unpack(stream)
-    local body = stream:read(len)
+    local len, br = mod.ascii_file_unpack(stream)
+    bytes_read = bytes_read + br
+    local body, br = stream:read(len)
+    bytes_read = bytes_read + len
     assert("#" == stream:read(1))
-    return body
-  elseif ty == "n" then
-    return -read_number_from_file(stream)
-  elseif ty == "b" then
-    return -read_number_from_file(stream)
-  elseif ty == "s" then
-    return -read_number_from_file(stream)
-  elseif ty == "i" then
-    return -read_number_from_file(stream)
-  elseif ty == "l" then
-    return -read_number_from_file(stream)
-  elseif ty == "N" then
-    return read_number_from_file(stream)
-  elseif ty == "B" then
-    return read_number_from_file(stream)
-  elseif ty == "S" then
-    return read_number_from_file(stream)
-  elseif ty == "I" then
-    return read_number_from_file(stream)
-  elseif ty == "L" then
-    return read_number_from_file(stream)
+    bytes_read = bytes_read + 1
+    return body, bytes_read
+  elseif ty == "n" or ty == "b" or ty == "s" or ty == "i" or ty == "l" then
+    local num, br = read_number_from_file(stream)
+    bytes_read = bytes_read + br
+    return -num, bytes_read
+  elseif ty == "N" or ty == "B" or ty == "S" or ty == "I" or ty == "L" then
+    local num, br = read_number_from_file(stream)
+    bytes_read = bytes_read + br
+    return num, bytes_read
   elseif ty == "F" or ty == "D" then
-    return read_number_from_file(stream)
+    local num, br = read_number_from_file(stream)
+    bytes_read = bytes_read + br
+    return num, bytes_read
   else
     error("cannot unpack type="..ty)
   end
