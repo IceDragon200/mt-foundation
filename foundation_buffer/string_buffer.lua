@@ -16,8 +16,12 @@ function ic:size()
 end
 
 function ic:blob(len)
-  len = len or self.size()
-  return string.sub(self.m_data, 1, len)
+  if len then
+    len = len or self.size()
+    return string.sub(self.m_data, 1, len)
+  else
+    return self.m_data
+  end
 end
 
 function ic:open(mode)
