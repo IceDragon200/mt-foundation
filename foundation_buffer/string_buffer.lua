@@ -1,7 +1,7 @@
 --
 -- StringBuffer is an in-memory equivalent of love's File interface
 --
-local StringBuffer = foundation.com.Class:extends()
+local StringBuffer = foundation.com.Class:extends("foundation.com.StringBuffer")
 local ic = StringBuffer.instance_class
 
 function ic:initialize(data, mode)

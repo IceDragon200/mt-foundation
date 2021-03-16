@@ -51,11 +51,9 @@ function ic:get_item_within_weight(weight)
     local prev_weight = self.weight_at_index[index - 1] or 0
 
     if weight > current_weight then
-      print(index, weight, prev_weight, current_weight, "behind")
       -- currently behind
       index = index + math.floor((self.size - index + 1) / 2)
     elseif weight < prev_weight then
-      print(index, weight, prev_weight, current_weight, "ahead")
       -- currently ahead
       index = math.floor(index / 2)
     elseif weight > prev_weight and weight <= current_weight then

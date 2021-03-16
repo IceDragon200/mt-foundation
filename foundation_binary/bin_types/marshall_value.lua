@@ -1,14 +1,14 @@
 local ByteBuf = assert(foundation.com.ByteBuf)
 
---[[
-Marshall values can be a specific scalar type, annotated by a letter code
-
-f for stringified floats
-I for i32 integers
-Q for u32 strings
-B for u8 booleans
-T for tables
-]]
+--
+-- Marshall values can be a specific scalar type, annotated by a letter code
+--
+-- f for stringified floats
+-- I for i32 integers
+-- Q for u32 strings
+-- B for u8 booleans
+-- T for tables
+--
 local MarshallValue = foundation.com.Class:extends("MarshallValue")
 local ic = MarshallValue.instance_class
 
@@ -17,7 +17,6 @@ function ic:initialize()
 end
 
 function ic:write_integer(file, data)
-  -- integer, only integers are supported.
   local all_bytes_written = 0
   local bytes_written, err = ByteBuf.write(file, "I")
   all_bytes_written = all_bytes_written + bytes_written
@@ -30,7 +29,6 @@ function ic:write_integer(file, data)
 end
 
 function ic:write_float(file, data)
-  -- integer, only integers are supported.
   local all_bytes_written = 0
   local bytes_written, err = ByteBuf.write(file, "f")
   all_bytes_written = all_bytes_written + bytes_written
@@ -156,6 +154,7 @@ function ic:read(file)
   local all_bytes_read = 0
   local type_code, bytes_read = ByteBuf.read(file, 1)
   all_bytes_read = all_bytes_read + bytes_read
+
   if type_code == "0" then
     return nil, all_bytes_read
   elseif type_code == "f" then
