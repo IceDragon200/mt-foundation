@@ -239,7 +239,7 @@ function ByteBuf.w_u16string(file, data)
   if len > 65535 then
     error("string is too long")
   end
-  local num_bytes = ByteBuf.w_u16(file, len)
+  local num_bytes, err = ByteBuf.w_u16(file, len)
   if err then
     return num_bytes, err
   end
@@ -253,7 +253,7 @@ function ByteBuf.w_u32string(file, data)
   if len > 4294967295 then
     error("string is too long")
   end
-  local num_bytes = ByteBuf.w_u32(file, len)
+  local num_bytes, err = ByteBuf.w_u32(file, len)
   if err then
     return num_bytes, err
   end
@@ -267,7 +267,7 @@ function ByteBuf.w_u64string(file, data)
   if len > 4294967295 then
     error("string is too long")
   end
-  local num_bytes = ByteBuf.w_u32(file, len)
+  local num_bytes, err = ByteBuf.w_u32(file, len)
   if err then
     return num_bytes, err
   end
@@ -324,7 +324,12 @@ end
 -- Reader
 --
 function ByteBuf.read(file, len)
-  return file:read(len)
+  local blob = file:read(len)
+  local bytes_read = 0
+  if blob then
+    bytes_read = #blob
+  end
+  return blob, bytes_read
 end
 
 local INT_MAX = {
