@@ -1,3 +1,13 @@
+function foundation.com.number_round(num)
+  local floor = math.floor(num)
+  local norm = num - floor
+  if norm >= 0.5 then
+    return floor + 1
+  else
+    return floor
+  end
+end
+
 function foundation.com.number_lerp(a, b, t)
   return a + (b - a) * t
 end

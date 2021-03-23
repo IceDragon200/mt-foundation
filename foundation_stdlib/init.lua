@@ -1,4 +1,4 @@
-local mod = foundation.new_module("foundation_stdlib", "1.3.0")
+local mod = foundation.new_module("foundation_stdlib", "1.4.0")
 
 mod:require("lib/color.lua")
 mod:require("lib/cuboid.lua")
@@ -22,6 +22,7 @@ mod:require("lib/vector.lua")
 mod:require("lib/rect.lua")
 mod:require("lib/symbols.lua")
 
+mod:require("lib/waves.lua")
 mod:require("lib/easers.lua")
 mod:require("lib/tweener.lua")
 
