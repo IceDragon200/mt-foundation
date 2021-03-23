@@ -5,6 +5,55 @@
   You are free to copy and use this module/class
 
 ]]
+local HEX_TABLE = {
+  [0] = "0",
+  [1] = "1",
+  [2] = "2",
+  [3] = "3",
+  [4] = "4",
+  [5] = "5",
+  [6] = "6",
+  [7] = "7",
+  [8] = "8",
+  [9] = "9",
+  [10] = "A",
+  [11] = "B",
+  [12] = "C",
+  [13] = "D",
+  [14] = "E",
+  [15] = "F",
+}
+
+local function byte_to_escaped_hex(byte)
+  local hinibble = math.floor(byte / 16)
+  local lonibble = byte % 16
+  return "\\x" .. HEX_TABLE[hinibble] .. HEX_TABLE[lonibble]
+end
+
+local function string_hex_escape(str, mode)
+  mode = mode or "non-ascii"
+
+  local result = {}
+  local bytes = {string.byte(str, 1, -1)}
+
+  for i, byte in ipairs(bytes) do
+    if mode == "non-ascii" then
+      -- 92 \
+      if byte == 92 then
+        result[i] = "\\\\"
+      elseif byte >= 32 and byte < 127  then
+        result[i] = string.char(byte)
+      else
+        result[i] = byte_to_escaped_hex(byte)
+      end
+    else
+      result[i] = byte_to_escaped_hex(byte)
+    end
+  end
+
+  return table.concat(result)
+end
+
 --
 -- Used to merge multiple map-like tables together, if you need to merge lists
 -- use `list_concat/*` instead
@@ -180,39 +229,69 @@ function ic:assert(truth_value, message)
   end
 end
 
+function ic:neat_dump(value)
+  local ty = type(value)
+  if ty == "string" then
+    return ty .. "(" .. #value .. "); \"" .. string_hex_escape(value) .. "\""
+  else
+    return ty .. "; " .. dump(value)
+  end
+end
+
 function ic:assert_eq(a, b, message)
-  message = message or function () return ("expected " .. dump(a) .. " to be equal to " .. dump(b)) end
+  message = message or function ()
+    return ("expected to be equal to:\n\t left: " .. self:neat_dump(a) .. "\n\tright: " .. self:neat_dump(b))
+  end
   self:assert(a == b, message)
 end
 
 function ic:assert_neq(a, b, message)
-  message = message or function () return ("expected " .. dump(a) .. " to not be equal to " .. dump(b)) end
+  message = message or function ()
+    return ("expected to not be equal to:\n\t left: " .. self:neat_dump(a) .. "\n\tright: " .. self:neat_dump(b))
+  end
   self:assert(a ~= b, message)
 end
 
 function ic:assert_table_eq(a, b, message)
-  message = message or function () return ("expected " .. dump(a) .. " to be equal to " .. dump(b)) end
+  message = message or function ()
+    return ("expected to be equal to:\n\t left: " .. self:neat_dump(a) .. "\n\tright: " .. self:neat_dump(b))
+  end
   self:assert(table_equals(a, b), message)
 end
 
 function ic:assert_deep_eq(a, b, message)
-  message = message or function () return ("expected " .. dump(a) .. " to be equal to " .. dump(b)) end
+  message = message or function ()
+    return ("expected to be equal to:\n\t left: " .. self:neat_dump(a) .. "\n\tright: " .. self:neat_dump(b))
+  end
 
   self:assert(deep_equals(a, b), message)
 end
 
+function ic:assert_in_range(item, min, max, message)
+  message = message or function ()
+    return ("expected " .. self:neat_dump(item) .. " to be range of " .. self:neat_dump(min) .. ".." .. self:neat_dump(max))
+  end
+  self:assert(item >= min and item <= max, message)
+end
+
 function ic:assert_in(item, list, message)
-  message = message or ("expected " .. dump(item) .. " to be included in " .. dump(list))
+  message = message or function ()
+    return ("expected " .. self:neat_dump(item) .. " to be included in " .. self:neat_dump(list))
+  end
   self:assert(table_includes_value(list, item), message)
 end
 
 function ic:refute(truth_value, message)
-  message = message or function () return ("expected " .. dump(truth_value) .. " to be falsy") end
+  message = message or function ()
+    return ("expected " .. self:neat_dump(truth_value) .. " to be falsy")
+  end
   return self:assert(not truth_value, message)
 end
 
 function ic:refute_eq(a, b, message)
-  message = message or function () return ("expected " .. dump(a) .. " to not be equal to " .. dump(b)) end
+  message = message or function ()
+    return ("expected " .. self:neat_dump(a) .. " to not be equal to " .. self:neat_dump(b))
+  end
   self:refute(a == b, message)
 end
 
