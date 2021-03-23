@@ -33,15 +33,11 @@ function ic:initialize(initial_size_or_data, mode)
   self.m_data = ffi.new('unsigned char[?]', self.m_allocated_size)
   ffi.fill(self.m_data, self.m_allocated_size)
   ffi.copy(self.m_data, data, self.m_size)
-
-  print("Allocated Binary Buffer", "allocated_size=" .. self.m_allocated_size, "size=" .. self.m_size)
-
   self:open(mode)
 end
 
 function ic:blob(len)
   len = len or self.m_size
-  print("Reading Blob allocated_size=" .. self.m_allocated_size .. " size=" .. self.m_size .. " len=" .. len)
   return ffi.string(self.m_data, len)
 end
 
