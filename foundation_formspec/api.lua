@@ -459,7 +459,7 @@ function api.checkbox(x, y, name, label, is_selected)
 end
 
 function api.scrollbar(x, y, w, h, orientation, name, value)
-  args = x..","..y..
+  local args = x..","..y..
     ";"..w..","..h..
     ";"..orientation..
     ";"..name..
