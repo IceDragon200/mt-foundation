@@ -1,15 +1,17 @@
 local Groups = {}
 
+local NO_GROUPS = {}
+
 function Groups.get(object)
-  return object.groups or {}
+  return object.groups or NO_GROUPS
 end
 
 function Groups.get_item_groups(name)
   local item = minetest.registered_items[name]
   if item then
-    return item.groups or {}
+    return item.groups or NO_GROUPS
   end
-  return {}
+  return NO_GROUPS
 end
 
 function Groups.patch_get(object)
