@@ -5,7 +5,9 @@ local ascii_file_unpack = foundation.com.ascii_file_unpack
 
 local function cycle_pack(term)
   local blob = ascii_pack(term)
-  return ascii_unpack(blob)
+  local result, rest = ascii_unpack(blob)
+  assert(rest == "", "expected remaining string to be empty, got (" .. dump(rest) .. ")")
+  return result, rest
 end
 
 local function cycle_file_pack(term)
@@ -75,8 +77,16 @@ case:describe("ascii_file_[un]pack/3", function (t2)
     --t3:assert_eq(cycle_file_pack(-0xFFFFFFFFFFFFFFFF), -0xFFFFFFFFFFFFFFFF)
   end)
 
-  t2:test("can handle a simple string", function (t3)
+  t2:test("can pack floats", function (t3)
+    t3:assert_eq(cycle_file_pack(-0.2), -0.2)
+    t3:assert_eq(cycle_file_pack(0.2), 0.2)
+  end)
+
+  t2:test("can handle an empty string", function (t3)
     t3:assert_eq(cycle_file_pack(""), "") -- should be able to handle an empty string
+  end)
+
+  t2:test("can handle simple strings", function (t3)
     t3:assert_eq(cycle_file_pack("Hello"), "Hello")
     t3:assert_eq(cycle_file_pack("####"), "####") -- # is the termination character
     t3:assert_eq(cycle_file_pack("0123456789"), "0123456789")
@@ -147,6 +157,11 @@ case:describe("ascii_[un]pack/3", function (t2)
     --t3:assert_eq(cycle_pack(-0x100000000), -0x100000000)
     --t3:assert_eq(cycle_pack(-0x7FFFFFFFFFFFFFFF), -0x7FFFFFFFFFFFFFFF)
     --t3:assert_eq(cycle_pack(-0xFFFFFFFFFFFFFFFF), -0xFFFFFFFFFFFFFFFF)
+  end)
+
+  t2:test("can handl floats", function (t3)
+    t3:assert_eq(cycle_pack(-0.2), -0.2)
+    t3:assert_eq(cycle_pack(0.2), 0.2)
   end)
 
   t2:test("can handle a simple string", function (t3)
