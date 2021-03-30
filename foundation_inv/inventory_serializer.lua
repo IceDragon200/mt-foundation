@@ -1,11 +1,23 @@
+-- @type SerializedItemStack :: {
+--   name: String,
+--   count: Integer,
+--   wear: Integer,
+--   meta: Table,
+-- }
+--
+-- @type SerializedInventory :: {
+--   size: Integer,
+--   data: SerializedItemStack,
+-- }
 local is_blank = assert(foundation.com.is_blank)
 
 local InventorySerializer = {}
 
-function InventorySerializer.description(dumped_list)
-  local count = dumped_list.size
+-- InventorySerializer.description(SerializedInventory) :: SerializedItemStack
+function InventorySerializer.description(serialized_list)
+  local count = serialized_list.size
   local used = 0
-  for key,item_stack in pairs(dumped_list.data) do
+  for key,item_stack in pairs(serialized_list.data) do
     if not is_blank(item_stack.name) and item_stack.count > 0 then
       used = used + 1
     end
@@ -13,6 +25,7 @@ function InventorySerializer.description(dumped_list)
   return used .. " / " .. count
 end
 
+-- InventorySerializer.serialize_item_stack(ItemStack) :: SerializedItemStack
 function InventorySerializer.serialize_item_stack(item_stack)
   local item_name = item_stack:get_name()
   local count = item_stack:get_count()
@@ -36,6 +49,7 @@ function InventorySerializer.serialize_item_stack(item_stack)
   }
 end
 
+-- @spec InventorySerializer.serialize(List<ItemStack>) :: SerializedInventory
 function InventorySerializer.serialize(list)
   list = list or {}
 
@@ -47,9 +61,11 @@ function InventorySerializer.serialize(list)
   for key,item_stack in pairs(list) do
     result.data[key] = InventorySerializer.serialize_item_stack(item_stack)
   end
+
   return result
 end
 
+-- InventorySerializer.deserialize_item_stack(SerializedItemStack) :: ItemStack
 function InventorySerializer.deserialize_item_stack(source_stack)
   local item_stack = ItemStack({
     name = source_stack.name,
@@ -75,9 +91,9 @@ function InventorySerializer.deserialize_item_stack(source_stack)
   return item_stack
 end
 
+-- Deserializes a serialized inventory list from serialize/1
 --
---
---
+-- @spec InventorySerializer.deserialize_list(SerializedInventory, target_list::List<ItemStack>) :: List<ItemStack>
 function InventorySerializer.deserialize_list(dumped, target_list)
   assert(dumped, "expected dumped inventory list")
   assert(target_list, "expected a target inventory list")
