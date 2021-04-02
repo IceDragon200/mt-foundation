@@ -1,4 +1,4 @@
-local mod = foundation.new_module("foundation_stdlib", "1.4.0")
+local mod = foundation.new_module("foundation_stdlib", "1.5.0")
 
 mod:require("lib/color.lua")
 mod:require("lib/cuboid.lua")

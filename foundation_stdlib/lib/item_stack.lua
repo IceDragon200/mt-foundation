@@ -90,3 +90,9 @@ function foundation.com.set_itemstack_meta_description(itemstack, description)
   itemstack:get_meta():set_string("description", description)
   return itemstack
 end
+
+function foundation.com.append_itemstack_meta_description(itemstack, description)
+  local new_desc = foundation.com.get_itemstack_description(itemstack) .. description
+
+  return foundation.com.set_itemstack_meta_description(itemstack, new_desc)
+end
