@@ -399,12 +399,12 @@ function api.tabheader(x, y, w, h, name, captions, current_tab_index, is_transpa
 
   args = args..";"
   if is_transparent ~= nil then
-    args = args..is_transparent
+    args = args..to_bool(is_transparent)
   end
 
   args = args..";"
   if draw_border ~= nil then
-    args = args..draw_border
+    args = args..to_bool(draw_border)
   end
 
   return "tabheader["..args.."]"
