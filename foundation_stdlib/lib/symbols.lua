@@ -1,3 +1,5 @@
+-- @namespace foundation.com
+
 --
 -- Symbols are strings mapped to an integer, for... reasons
 --

@@ -1,3 +1,5 @@
+-- @namespace foundation.com
+
 foundation_stdlib:require("lib/string/bin_encoding.lua")
 foundation_stdlib:require("lib/string/dec_encoding.lua")
 foundation_stdlib:require("lib/string/hex_encoding.lua")
@@ -157,10 +159,9 @@ function foundation.com.string_pad_trailing(str, count, padding)
   return result
 end
 
---
+-- Returns a substring starting from the tail of the string
 --
 -- @spec string_rsub(String, Integer) :: String
--- @doc Returns a substring starting from the tail of the string
 function foundation.com.string_rsub(str, len)
   local i = #str - len + 1
   return string.sub(str, i)

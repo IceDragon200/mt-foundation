@@ -1,3 +1,5 @@
+-- @namespace foundation.com
+
 function foundation.com.maybe_start_node_timer(pos, duration)
   local timer = minetest.get_node_timer(pos)
 

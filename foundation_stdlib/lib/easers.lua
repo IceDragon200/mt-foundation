@@ -1,3 +1,5 @@
+-- @namespace foundation.com.Easers
+
 --
 -- A set of easing functions, can be used directly or through the tweener module.
 --

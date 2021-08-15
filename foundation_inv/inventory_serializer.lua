@@ -1,11 +1,13 @@
--- @type SerializedItemStack :: {
+-- @namespace foundation.com.InventorySerializer
+--
+-- @type SerializedItemStack: {
 --   name: String,
 --   count: Integer,
 --   wear: Integer,
 --   meta: Table,
 -- }
 --
--- @type SerializedInventory :: {
+-- @type SerializedInventory: {
 --   size: Integer,
 --   data: SerializedItemStack,
 -- }
@@ -13,7 +15,7 @@ local is_blank = assert(foundation.com.is_blank)
 
 local InventorySerializer = {}
 
--- InventorySerializer.description(SerializedInventory) :: SerializedItemStack
+-- @spec description(SerializedInventory): SerializedItemStack
 function InventorySerializer.description(serialized_list)
   local count = serialized_list.size
   local used = 0
@@ -25,7 +27,7 @@ function InventorySerializer.description(serialized_list)
   return used .. " / " .. count
 end
 
--- InventorySerializer.serialize_item_stack(ItemStack) :: SerializedItemStack
+-- @spec serialize_item_stack(ItemStack): SerializedItemStack
 function InventorySerializer.serialize_item_stack(item_stack)
   local item_name = item_stack:get_name()
   local count = item_stack:get_count()
@@ -49,7 +51,7 @@ function InventorySerializer.serialize_item_stack(item_stack)
   }
 end
 
--- @spec InventorySerializer.serialize(List<ItemStack>) :: SerializedInventory
+-- @spec serialize(ItemStack[]): SerializedInventory
 function InventorySerializer.serialize(list)
   list = list or {}
 
@@ -65,7 +67,7 @@ function InventorySerializer.serialize(list)
   return result
 end
 
--- InventorySerializer.deserialize_item_stack(SerializedItemStack) :: ItemStack
+-- @spec deserialize_item_stack(SerializedItemStack): ItemStack
 function InventorySerializer.deserialize_item_stack(source_stack)
   local item_stack = ItemStack({
     name = source_stack.name,
@@ -93,7 +95,7 @@ end
 
 -- Deserializes a serialized inventory list from serialize/1
 --
--- @spec InventorySerializer.deserialize_list(SerializedInventory, target_list::List<ItemStack>) :: List<ItemStack>
+  -- @spec deserialize_list(SerializedInventory, target_list: ItemStack[]): ItemStack[]
 function InventorySerializer.deserialize_list(dumped, target_list)
   assert(dumped, "expected dumped inventory list")
   assert(target_list, "expected a target inventory list")

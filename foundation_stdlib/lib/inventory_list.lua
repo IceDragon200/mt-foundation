@@ -1,3 +1,4 @@
+-- @namespace foundation.com.InventoryList
 foundation_stdlib:require("lib/item_stack.lua")
 
 local itemstack_new_blank = assert(foundation.com.itemstack_new_blank)
@@ -7,6 +8,7 @@ local itemstack_maybe_merge = assert(foundation.com.itemstack_maybe_merge)
 
 local InventoryList = {}
 
+-- @spec first_present_stack(ItemStack[]): ItemStack | nil
 function InventoryList.first_present_stack(list)
   assert(list, "expected an inventory list")
   for _,item_stack in ipairs(list) do
@@ -17,6 +19,7 @@ function InventoryList.first_present_stack(list)
   return nil
 end
 
+-- @spec merge_stack(list: ItemStack[], stack: ItemStack): (ItemStack[], ItemStack)
 function InventoryList.merge_stack(list, stack)
   assert(list, "expected an inventory list")
   local max_stack_size = stack:get_stack_max()
@@ -36,6 +39,7 @@ function InventoryList.merge_stack(list, stack)
   return list, stack
 end
 
+-- @spec extract_stack(list: ItemStack[], stack_or_size: ItemStack | Integer): (ItemStack[], ItemStack)
 function InventoryList.extract_stack(list, stack_or_size)
   assert(list, "expected an inventory list")
   local taken = nil

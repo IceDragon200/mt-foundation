@@ -1,9 +1,12 @@
+-- @namespace foundation.com
+
 -- Minetest has pos_to_string, but I believe that floors the vector coords and adds bracket around it
 -- this function is intended to keep the decimal places and only create a csv
 function foundation.com.vector_to_string(vec)
   return vec.x .. "," .. vec.y .. "," .. vec.z
 end
 
+-- @namespace foundation.com.Vector2
 local vector2 = {}
 
 function vector2.new(x, y)
@@ -79,6 +82,7 @@ vector2.mul = vector2.multiply
 vector2.div = vector2.divide
 vector2.idiv = vector2.idivide
 
+-- @namespace foundation.com.Vector3
 local vector3 = {}
 
 function vector3.new(x, y, z)
@@ -171,6 +175,7 @@ vector3.mul = vector3.multiply
 vector3.div = vector3.divide
 vector3.idiv = vector3.idivide
 
+-- @namespace foundation.com.Vector4
 local vector4 = {}
 
 function vector4.new(x, y, z, w)

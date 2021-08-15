@@ -1,3 +1,5 @@
+-- @namespace foundation.com
+
 -- Time in 'Network' frames, all networks run at the same speed so this function will return the equivalent network frame count
 
 function foundation.com.time_network_frames(time)

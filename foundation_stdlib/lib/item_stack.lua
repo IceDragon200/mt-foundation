@@ -1,3 +1,5 @@
+-- @namespace foundation.com
+
 function foundation.com.itemstack_is_blank(stack)
   if stack then
     -- return foundation.com.is_blank(stack:get_name()) or stack:get_count() == 0

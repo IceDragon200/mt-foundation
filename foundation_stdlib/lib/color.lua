@@ -1,13 +1,23 @@
+-- @namespace foundation.com.Color
+
 local Color = {}
 
 -- @type Byte :: 0..255
 --
--- @spec new(Byte, Byte, Byte, Byte) :: Color
+-- @type Color :: {
+--   r: Byte,
+--   g: Byte,
+--   b: Byte,
+--   a: Byte,
+-- }
+
+--
+-- @spec new(Byte, Byte, Byte, Byte): Color
 function Color.new(r, g, b, a)
   return { r = r, g = g, b = b, a = a or 255 }
 end
 
--- @spec add(Color, Color) :: Color
+-- @spec add(Color, Color): Color
 function Color.add(a, b)
   return {
     r = math.min((a.r * a.a / 255) + (b.r * b.a / 255), 255),
@@ -17,7 +27,7 @@ function Color.add(a, b)
   }
 end
 
--- @spec sub(Color, Color) :: Color
+-- @spec sub(Color, Color): Color
 function Color.sub(a, b)
   return {
     r = math.max((a.r * a.a / 255) - (b.r * b.a / 255), 0),
@@ -27,7 +37,7 @@ function Color.sub(a, b)
   }
 end
 
--- @spec mult(Color, Color) :: Color
+-- @spec mult(Color, Color): Color
 function Color.mult(a, b)
   return {
     r = (a.r * a.a / 255) * (b.r * b.a / 255) / 255,
@@ -37,7 +47,7 @@ function Color.mult(a, b)
   }
 end
 
--- to_string32(Color) :: String
+-- to_string32(Color): String
 function Color.to_string32(color)
   local result = "#" ..
     foundation.com.byte_to_hexpair(color.r) ..
@@ -48,7 +58,7 @@ function Color.to_string32(color)
   return result
 end
 
--- to_string24(Color) :: String
+-- to_string24(Color): String
 function Color.to_string24(color)
   local result = "#" ..
     foundation.com.byte_to_hexpair(color.r) ..
@@ -58,7 +68,7 @@ function Color.to_string24(color)
   return result
 end
 
--- to_string16(Color) :: String
+-- to_string16(Color): String
 function Color.to_string16(color)
   local result = "#" ..
     foundation.com.nibble_to_hex(math.floor(color.r / 16)) ..
@@ -69,7 +79,7 @@ function Color.to_string16(color)
   return result
 end
 
--- to_string12(Color) :: String
+-- to_string12(Color): String
 function Color.to_string12(color)
   local result = "#" ..
     foundation.com.nibble_to_hex(math.floor(color.r / 16)) ..

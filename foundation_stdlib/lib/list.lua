@@ -1,3 +1,5 @@
+-- @namespace foundation.com
+
 function foundation.com.list_slice(t, start, len)
   local result = {}
 

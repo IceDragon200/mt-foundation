@@ -1,5 +1,7 @@
-local WeightedList = foundation.com.Class:extends("WeightedList")
+-- @namespace foundation.com
 
+-- @class WeightedList
+local WeightedList = foundation.com.Class:extends("WeightedList")
 local ic = assert(WeightedList.instance_class)
 
 function ic:initialize()
@@ -13,7 +15,7 @@ end
 --
 -- Push item with specific weight unto the list
 --
--- @spec :push(term, Integer) :: self
+-- @spec #push(item: Any, weight: Integer): self
 function ic:push(item, weight)
   assert(weight, "need a weight")
   assert(weight > 0, "weight must be greater than 0")
@@ -31,7 +33,7 @@ end
 --
 -- Retrieve item in weight value
 --
--- @spec :get_item_within_weight(weight::Integer) :: term
+-- @spec #get_item_within_weight(weight: Integer): Any
 function ic:get_item_within_weight(weight)
   if weight < 1 then
     return nil
@@ -68,7 +70,7 @@ end
 --
 -- Randomly select an item from the list
 --
--- @spec :random() :: term
+-- @spec #random(): Any
 function ic:random()
   if self.total_weight > 0 then
     local weight = math.random(self.total_weight)
@@ -81,7 +83,7 @@ end
 --
 -- Retrieve a list of random items
 --
--- @spec :random_list(Integer) :: {term}
+-- @spec #random_list(Integer) :: Any[]
 function ic:random_list(count)
   local t = {}
   for i = 1,count do

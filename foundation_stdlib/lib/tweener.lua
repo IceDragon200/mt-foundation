@@ -1,3 +1,5 @@
+-- @namespace foundation.com.Tweener
+
 local Tweener = {}
 
 function Tweener.get_easer(easer)
@@ -14,7 +16,7 @@ end
 -- from is a table that contains the initial property values that should be tweened 'from'.
 -- to is a table that contains the expected end values to tween 'to'
 --
--- @spec new(table, table, table, string|function) :: (float) => void
+-- @spec new(object: Table, from: Table, to: Table, easer: String | Function): (function(Float): void)
 function Tweener.new(object, from, to, easer)
   local easer_fun = Tweener.get_easer(easer)
   assert(easer_fun, "expected an easer function")

@@ -1,3 +1,5 @@
+-- @namespace foundation.com.Waves
+
 --
 -- Utility functions for generating wave shapes.
 --

@@ -1,3 +1,5 @@
+-- @namespace foundation.com
+
 local PREFIXES = {
   --{"yotta", "Y", 1000000000000000000000000},
   --{"zetta", "Z", 1000000000000000000000},

@@ -1,3 +1,4 @@
+-- @namespace foundation.com.Directions
 local Directions = {}
 
 -- This uses a bit flag map, for quick use with binary-styled representations

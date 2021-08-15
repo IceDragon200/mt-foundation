@@ -1,3 +1,5 @@
+-- @namespace foundation.com
+
 function foundation.com.number_round(num)
   local floor = math.floor(num)
   local norm = num - floor

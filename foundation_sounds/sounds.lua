@@ -1,3 +1,5 @@
+-- @namespace foundation.com
+
 --
 -- Utility module for registering sounds for quick playback
 --
@@ -11,6 +13,7 @@ local function table_merge(...)
   return result
 end
 
+-- @class SoundsRegistry
 local SoundsRegistry = foundation.com.Class:extends("SoundsRegistry")
 local ic = SoundsRegistry.instance_class
 
@@ -18,7 +21,7 @@ function ic:initialize()
   self.registered = {}
 end
 
--- @spec :register(name: String,
+-- @spec #register(name: String,
 --                 filename: String,
 --                 default_params: Table) :: self
 function ic:register(name, filename, default_params)
@@ -41,7 +44,7 @@ end
 
 --
 --
--- @spec :play(name: String, params: Table) :: (boolean, SoundHandle)
+-- @spec #play(name: String, params: Table) :: (boolean, SoundHandle)
 function ic:play(name, params)
   local entry = self.registered[name]
   if entry then

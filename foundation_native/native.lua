@@ -60,7 +60,7 @@ do
     cursor.end_of_buffer = 0
 
     local result = {}
-    local i = 1
+    local i = 0
     ffi.copy(input_buffer, str, cursor.input_size)
     while cursor.input_index < cursor.input_size and
           cursor.end_of_buffer == 0 do
@@ -70,8 +70,8 @@ do
       --      " buffer_size=" .. cursor.buffer_size)
       callback(cursor, input_buffer, buffer)
 
-      result[i] = ffi.string(buffer, cursor.buffer_index)
       i = i + 1
+      result[i] = ffi.string(buffer, cursor.buffer_index)
       if cursor.end_of_buffer > 0 then
         cursor.buffer_index = 0
         cursor.end_of_buffer = 0

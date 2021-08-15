@@ -1,3 +1,4 @@
+-- @namespace foundation.com
 function foundation.com.iodata_to_string(value)
   if type(value) == "string" then
     return value

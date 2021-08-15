@@ -5,6 +5,7 @@
   You are free to copy and use this module/class
 
 ]]
+-- @namespace foundation.com
 local HEX_TABLE = {
   [0] = "0",
   [1] = "1",
@@ -85,9 +86,6 @@ local function table_equals(a, b)
   return true
 end
 
---
---
--- @spec deep_equals(Value, Value)! :: boolean
 local function deep_equals(a, b, depth)
   depth = depth or 0
   if depth > 20 then
@@ -166,6 +164,7 @@ local function format_message(message)
   return message
 end
 
+-- @class Luna
 function ic:initialize(name)
   self.name = name
   self.reporter = DefaultReporter

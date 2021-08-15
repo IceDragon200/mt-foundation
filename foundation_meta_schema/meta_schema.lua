@@ -1,14 +1,17 @@
+-- @namespace foundation.com
+
 --
 -- Structured metadata, because sometimes you need to know just what the f*** you're doing
 --
 -- Optionally, the MetaSchema can be compiled with a fixed name to reduce some of the overhead
 --
+-- @class MetaSchema
 local MetaSchema = foundation.com.Class:extends("MetaSchema")
-
 local m = assert(MetaSchema.instance_class)
 
 -- Initialize a new instance of the MetaSchema
--- @spec initialize(name: String, prefix: String, schema: Table)
+--
+-- @spec #initialize(name: String, prefix: String, schema: Table): void
 function m:initialize(name, prefix, schema)
   -- The name is used to help identify the schema
   self.name = name
@@ -57,17 +60,17 @@ function make_getter(entry, field_name)
   end
 end
 
---[[
-Compiles a given meta schema with a fixed basename
-
-The returned schema will have getters and setters of their entries.
-
-Args:
-* `basename` - a basename to give the field names
-
-Returns:
-* Compiled schema
-]]
+-- Compiles a given meta schema with a fixed basename
+--
+-- The returned schema will have getters and setters of their entries.
+--
+-- Args:
+-- * `basename` - a basename to give the field names
+--
+-- Returns:
+-- * Compiled schema
+--
+-- @spec #compile(String): Table
 function m:compile(basename)
   assert(basename, "expected a basename")
   local schema = {
@@ -88,7 +91,7 @@ function m:compile(basename)
 
     if entry.type == "schema" then
       local sub_schema = entry.schema:compile(field_name)
-      sub_schema["schema_" .. key] = sub_schema
+      schema["schema_" .. key] = sub_schema
       schema[setter_name] = function (self, meta, value)
         sub_schema:set(meta, value)
         return self
@@ -123,11 +126,12 @@ function m:compile(basename)
   return schema
 end
 
---[[
-Args:
-* `meta` - a NodeMetaRef
-* `buffer` - a buffer instance
-]]
+--
+-- Args:
+-- * `meta` - a NodeMetaRef
+-- * `buffer` - a buffer instance
+--
+-- @spec #set_field(MetaRef, basename: String, key: String, value: Any): void
 function m:set_field(meta, basename, key, value)
   assert(meta, "expected a meta")
   if self.schema[key] then
@@ -148,6 +152,7 @@ function m:set_field(meta, basename, key, value)
   end
 end
 
+-- @spec #set(MetaRef, basename: String, params: Table): void
 function m:set(meta, basename, params)
   assert(meta, "expected a metaref")
   for key,value in pairs(params) do
@@ -155,6 +160,7 @@ function m:set(meta, basename, params)
   end
 end
 
+-- @spec #get_field(MetaRef, basename: String, key: String): Any
 function m:get_field(meta, basename, key)
   assert(meta, "expected a metaref")
   if self.schema[key] then
@@ -177,7 +183,7 @@ function m:get_field(meta, basename, key)
 end
 
 --
--- @spec get(meta: MetaRef, basename: String) :: Table
+-- @spec #get(meta: MetaRef, basename: String): Table
 function m:get(meta, basename)
   assert(meta, "expected a meta")
   assert(basename, "expected a basename")

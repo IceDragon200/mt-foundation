@@ -1,3 +1,5 @@
+-- @namespace foundation.com
+
 --
 -- Utility module for dealing with formspecs, or rather to not deal with them.
 --
@@ -7,11 +9,13 @@ local iodata_to_string = assert(foundation.com.iodata_to_string)
 local string_starts_with = assert(foundation.com.string_starts_with)
 local table_intersperse = assert(foundation.com.table_intersperse)
 
+-- @class Form
 local Form = foundation.com.Class:extends("yatm.Form")
-
 local c = Form.instance_class
 
--- @spec c:initialize(kind :: "form" | "container")
+-- Initialize a new UI container, kind is either "form" or "container"
+--
+-- @spec initialize(kind: String)
 function c:initialize(kind)
   self.kind = kind or "form"
   self.name = ""

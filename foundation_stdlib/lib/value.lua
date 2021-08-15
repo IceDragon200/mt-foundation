@@ -1,3 +1,5 @@
+-- @namespace foundation.com
+
 function foundation.com.is_blank(value)
   if value == nil then
     return true
@@ -21,7 +23,7 @@ end
 
 --
 --
--- @spec deep_equals(Value, Value)! :: boolean
+-- @spec deep_equals(Value, Value) :: boolean
 function foundation.com.deep_equals(a, b, depth)
   depth = depth or 0
   if depth > 20 then

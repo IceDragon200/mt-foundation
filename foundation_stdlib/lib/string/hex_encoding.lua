@@ -1,3 +1,4 @@
+-- @namespace foundation.com
 local HEX_TABLE = {
   [0] = "0",
   [1] = "1",
@@ -58,9 +59,9 @@ function foundation.com.nibble_to_hex(nibble)
   return HEX_TABLE[nibble]
 end
 
---
 -- Removes any non-hex characters
 --
+-- @spec string_hex_clean(String) :: String
 function foundation.com.string_hex_clean(str)
   local result = {}
   local bytes = {string.byte(str, 1, -1)}
@@ -80,10 +81,9 @@ function foundation.com.string_hex_clean(str)
   return table.concat(result)
 end
 
---
+-- Decode a hexpair string as a plain byte
 --
 -- @spec string_hex_pair_to_byte(String) :: Integer
--- @doc Decode a hexpair string as a plain byte
 -- @example string_hex_pair_to_byte("FF") -- => 255
 function foundation.com.string_hex_pair_to_byte(pair)
   local hinibble = string.byte(pair, 1) or 0
@@ -178,10 +178,9 @@ function foundation.com.handle_escaped_hex(i, j, bytes, result)
   return i, j
 end
 
+-- Resolves all hex encoded values in the string
 --
---
--- @spec foundation.com.string_hex_unescape(String.t)
---   Resolves all hex encoded values in the string
+-- @spec lua_string_hex_unescape(String): String
 --
 -- Example:
 --   "\\x00\x00\\x01\\x02" > "\x00\x00\x01\x02"
@@ -223,7 +222,11 @@ function foundation.com.lua_string_hex_unescape(str)
 end
 
 minetest.log("info", "maybe setting lua string_hex functions")
+-- @spec string_hex_decode(String): String
 foundation.com.string_hex_decode = foundation.com.string_hex_decode or foundation.com.lua_string_hex_decode
+-- @spec string_hex_encode(String): String
 foundation.com.string_hex_encode = foundation.com.string_hex_encode or foundation.com.lua_string_hex_encode
+-- @spec string_hex_escape(String): String
 foundation.com.string_hex_escape = foundation.com.string_hex_escape or foundation.com.lua_string_hex_escape
+-- @spec string_hex_unescape(String): String
 foundation.com.string_hex_unescape = foundation.com.string_hex_unescape or foundation.com.lua_string_hex_unescape

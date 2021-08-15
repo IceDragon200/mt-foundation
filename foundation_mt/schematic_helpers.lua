@@ -1,7 +1,8 @@
+-- @namespace foundation.com.schematic_helpers
 foundation.com.schematic_helpers = {}
 
 --
--- @type YSliceSchematic :: {
+-- @type YSliceSchematic: {
 --   size = Vector3,
 --   data = {
 --     { name = String, param1 = Integer, param2 = Integer, prob = Integer, force_place = Boolean }
@@ -16,7 +17,7 @@ foundation.com.schematic_helpers = {}
 -- that is y,z,x.
 -- While minetest's schematics expect z,y,x
 --
--- @spec foundation.com.schematic_helpers.from_y_slices(YSliceSchematic) :: Schematic
+-- @spec from_y_slices(YSliceSchematic): Schematic
 function foundation.com.schematic_helpers.from_y_slices(schematic)
   local result = {}
   result.size = schematic.size
@@ -73,7 +74,7 @@ end
 --
 -- Create a new Builder instance
 --
--- @spec Builder:new() :: Builder
+-- @spec .new(): Builder
 function Builder:new(...)
   local obj = {}
   setmetatable(obj, { __index = Builder.instance_class })
@@ -86,7 +87,7 @@ local ic = Builder.instance_class
 --
 -- Initialize a builder's state
 --
--- @spec :initialize() :: void
+-- @spec #initialize(): void
 function ic:initialize()
   self.palette_index = 0
   self.palette = {}
@@ -98,7 +99,7 @@ end
 -- Clears any written data in the builder.
 -- This is normally used for recycling the same builder with it's palette intact.
 --
--- @spec :clear_data() :: self
+-- @spec #clear_data(): self
 function ic:clear_data()
   self.data = {}
   return self
@@ -107,7 +108,7 @@ end
 --
 -- Clears all data and palette information in the builder.
 --
--- @spec :clear() :: self
+-- @spec #clear(): self
 function ic:clear()
   self:clear_data()
   self.palette = {}
@@ -118,7 +119,7 @@ end
 --
 -- Calculates and retrieves the size and extents of the builder's data.
 --
--- @spec :get_size() :: (Vector3, Extents)
+-- @spec #get_size(): (Vector3, Extents)
 function ic:get_size()
   local x1 = 0
   local x2 = 0
@@ -174,7 +175,7 @@ end
 -- The swatch_id is then used by add_node and it's derivitives to
 -- add nodes to the builder data.
 --
--- @spec :add_palette_node(node: NodeDef) :: (swatch_id: Integer)
+-- @spec #add_palette_node(node: NodeDef): (swatch_id: Integer)
 function ic:add_palette_node(node)
   self.palette_index = self.palette_index + 1
   local swatch_id = self.palette_index
@@ -184,7 +185,7 @@ end
 --
 -- Add or replace an existing swatch with the given node data
 --
--- @spec :put_palette_node(swatch_id: Integer, node: NodeDef) :: (swatch_id: Integer)
+-- @spec #put_palette_node(swatch_id: Integer, node: NodeDef): (swatch_id: Integer)
 function ic:put_palette_node(swatch_id, node)
   self.palette[swatch_id] = node
   return swatch_id
@@ -193,7 +194,7 @@ end
 --
 -- Retrieve the node or nil registered at the specific swatch_id
 --
--- @spec :get_palette_node(swatch_id: Integer) :: NodeDef | nil
+-- @spec #get_palette_node(swatch_id: Integer): NodeDef | nil
 function ic:get_palette_node(swatch_id)
   return self.palette[swatch_id]
 end
@@ -201,7 +202,7 @@ end
 --
 -- Maybe add a palette node if a matching one can't be found
 --
--- @spec :find_or_add_palette_node(node: NodeDef) :: (swatch_id: Integer)
+-- @spec #find_or_add_palette_node(node: NodeDef): (swatch_id: Integer)
 function ic:find_or_add_palette_node(node)
   for swatch_id,other_node in pairs(self.palette) do
     if table_equals(node, other_node) then
@@ -214,7 +215,7 @@ end
 --
 -- Place a swatch in the builder's data at the specified position
 --
--- @spec :put_node(pos: Vector3, swatch_id: Integer) :: self
+-- @spec #put_node(pos: Vector3, swatch_id: Integer): self
 function ic:put_node(pos, swatch_id)
   if swatch_id then
     assert(self.palette[swatch_id], "expected node to be registered for swatch")
@@ -228,7 +229,7 @@ end
 --
 -- Retrieve swatch_id at specifed position
 --
--- @spec :get_swatch_at(pos: Vector3) :: (swatch_id: Integer | nil)
+-- @spec #get_swatch_at(pos: Vector3): (swatch_id: Integer | nil)
 function ic:get_swatch_at(pos)
   return self.data[minetest.hash_node_position(pos)]
 end
@@ -247,7 +248,7 @@ end
 --
 -- Fill all nodes within the specified range with swatch_id
 --
--- @spec :fill_range(pos1: Vector3, pos2: Vector3, swatch_id: Integer | nil) :: self
+-- @spec #fill_range(pos1: Vector3, pos2: Vector3, swatch_id: Integer | nil): self
 function ic:fill_range(pos1, pos2, swatch_id)
   local x1, x2, y1, y2, z1, z2 = calculate_range(pos1, pos2)
 
@@ -266,7 +267,7 @@ end
 -- Optionally a range can be specified (sel_pos1 and sel_pos2) to pick a specific
 -- section of data to copy
 --
--- @spec :blit(pos: Vector3!, builder: Builder!, sel_pos1: Vector3 | nil, sel_pos2: Vector3 | nil) :: self
+-- @spec #blit(pos: Vector3, builder: Builder, sel_pos1: Vector3 | nil, sel_pos2: Vector3 | nil): self
 function ic:blit(pos, builder, sel_pos1, sel_pos2)
   local other_swatch_map = {}
 
@@ -316,7 +317,7 @@ end
 --
 -- Converts the built data to a y-slice style schematic
 --
--- @spec :to_yslice_schematic() :: YSliceSchematic
+-- @spec #to_yslice_schematic(): YSliceSchematic
 function ic:to_yslice_schematic()
   -- first up we need the size and extents
   -- the extents are used to loop over the data and filling in air
@@ -369,7 +370,7 @@ end
 --
 -- Converts the builder data to a minetest schematic
 --
--- @spec :to_schematic() :: Schematic
+-- @spec #to_schematic(): Schematic
 function ic:to_schematic()
   local y_slice_schematic = self:to_yslice_schematic()
 
@@ -381,7 +382,7 @@ foundation.com.schematic_helpers.Builder = Builder
 --
 -- Creates a new builder instance
 --
--- @spec foundation.com.schematic_helpers.build() :: Builder
+-- @spec build(): Builder
 function foundation.com.schematic_helpers.build()
   return foundation.com.schematic_helpers.Builder:new()
 end

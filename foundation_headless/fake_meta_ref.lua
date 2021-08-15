@@ -1,3 +1,6 @@
+-- @namespace foundation.com
+
+-- @class FakeMetaRef
 local FakeMetaRef = foundation.com.Class:extends("FakeMetaRef")
 local table_equals = assert(foundation.com.table_equals)
 
