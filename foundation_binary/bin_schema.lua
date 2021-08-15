@@ -1,3 +1,5 @@
+-- @namespace foundation.com
+
 local ByteBuf = assert(foundation.com.ByteBuf)
 
 local BinSchema = foundation.com.Class:extends("BinSchema")
@@ -29,15 +31,15 @@ local ic = BinSchema.instance_class
   "u32string"
 
 @type element_type :: scalar_type | IType.t
-@type definition :: [
+@type Definition :: [
   non_neg_integer | -- Padding
   {name :: String, "*array", element_type} | -- Variable length array
   {name :: String, "array", element_type, length :: non_neg_integer} | -- Fixed length array
   {name :: String, "map", key_type, value_type} | -- Map
   {name :: String, element_type} | -- Any other type
 ]
-@spec initialize(name :: String, definition) :: void
 ]]
+-- @spec #initialize(name: String, Definition): void
 function ic:initialize(name, definition)
   ic._super.initialize(self)
   assert(definition, "expected a definition list")
@@ -88,6 +90,7 @@ function ic:initialize(name, definition)
   end)
 end
 
+-- @spec #size(): Integer
 function ic:size()
   return foundation.com.list_reduce(self.m_definition, 0, function (block, current_size)
     -- Padding
@@ -103,6 +106,7 @@ function ic:size()
   end)
 end
 
+-- @spec #write(Stream, blob: String): Integer
 function ic:write(stream, data)
   return foundation.com.list_reduce(self.m_definition, 0, function (block, all_bytes_written)
     if block.type == 0 then
@@ -125,6 +129,7 @@ function ic:write(stream, data)
   end), nil
 end
 
+-- @spec #read(Stream, target: Table): Integer
 function ic:read(stream, target)
   target = target or {}
   return target, foundation.com.list_reduce(self.m_definition, 0, function (block, all_bytes_read)

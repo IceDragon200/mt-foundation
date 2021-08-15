@@ -1,3 +1,5 @@
+-- @namespace foundation.com
+
 --
 -- Binary Buffer - same interface as StringBuf but using an FFI allocated uchar array
 --
@@ -7,6 +9,8 @@ if not foundation.com.ffi then
 end
 
 local ffi = assert(foundation.com.ffi)
+
+-- @class BinaryBuffer
 local BinaryBuffer = foundation.com.Class:extends('BinaryBuffer')
 local ic = BinaryBuffer.instance_class
 

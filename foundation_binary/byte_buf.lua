@@ -1,3 +1,4 @@
+-- @namespace foundation.com.ByteBuf
 local ByteDecoder = assert(foundation.com.ByteDecoder)
 local bit = assert(foundation.com.bit, "expected bit module")
 
@@ -6,6 +7,7 @@ local ByteBuf = {}
 --
 -- Writer functions
 --
+-- @spec write(Stream, data: Any): (Integer, error: String | nil)
 function ByteBuf.write(file, data)
   local t = type(data)
   local num_bytes = 0
@@ -46,6 +48,8 @@ function ByteBuf.write(file, data)
 end
 
 -- Signed Integers
+--
+-- @spec w_iv(Stream, len: Integer, int: Integer): (Integer, error: String | nil)
 function ByteBuf.w_iv(file, len, int)
   local r = int
   local num_bytes = 0
@@ -75,32 +79,39 @@ function ByteBuf.w_iv(file, len, int)
   return num_bytes
 end
 
+-- @spec w_i64(Stream, int: Integer): (Integer, error: String | nil)
 function ByteBuf.w_i64(file, int)
   assert(type(int) == "number", "expected an integer")
   return ByteBuf.w_iv(file, 8, int)
 end
 
+-- @spec w_i32(Stream, int: Integer): (Integer, error: String | nil)
 function ByteBuf.w_i32(file, int)
   assert(type(int) == "number", "expected an integer")
   return ByteBuf.w_iv(file, 4, int)
 end
 
+-- @spec w_i24(Stream, int: Integer): (Integer, error: String | nil)
 function ByteBuf.w_i24(file, int)
   assert(type(int) == "number", "expected an integer")
   return ByteBuf.w_iv(file, 3, int)
 end
 
+-- @spec w_i16(Stream, int: Integer): (Integer, error: String | nil)
 function ByteBuf.w_i16(file, int)
   assert(type(int) == "number", "expected an integer")
   return ByteBuf.w_iv(file, 2, int)
 end
 
+-- @spec w_i8(Stream, int: Integer): (Integer, error: String | nil)
 function ByteBuf.w_i8(file, int)
   assert(type(int) == "number", "expected an integer")
   return ByteBuf.w_iv(file, 1, int)
 end
 
 -- Unsigned Integers
+--
+-- @spec w_uv(Stream, len: Integer, int: Integer): (Integer, error: String | nil)
 function ByteBuf.w_uv(file, len, int)
   assert(int >= 0, "expected integer to be greater than or equal to 0")
   local r = int
@@ -117,26 +128,31 @@ function ByteBuf.w_uv(file, len, int)
   return num_bytes
 end
 
+-- @spec w_u64(Stream, int: Integer): (Integer, error: String | nil)
 function ByteBuf.w_u64(file, int)
   assert(type(int) == "number", "expected an integer")
   return ByteBuf.w_uv(file, 8, int)
 end
 
+-- @spec w_u32(Stream, int: Integer): (Integer, error: String | nil)
 function ByteBuf.w_u32(file, int)
   assert(type(int) == "number", "expected an integer")
   return ByteBuf.w_uv(file, 4, int)
 end
 
+-- @spec w_u24(Stream, int: Integer): (Integer, error: String | nil)
 function ByteBuf.w_u24(file, int)
   assert(type(int) == "number", "expected an integer")
   return ByteBuf.w_uv(file, 3, int)
 end
 
+-- @spec w_u16(Stream, int: Integer): (Integer, error: String | nil)
 function ByteBuf.w_u16(file, int)
   assert(type(int) == "number", "expected an integer")
   return ByteBuf.w_uv(file, 2, int)
 end
 
+-- @spec w_u8(Stream, int: Integer): (Integer, error: String | nil)
 function ByteBuf.w_u8(file, int)
   assert(type(int) == "number", "expected an integer")
   return ByteBuf.w_uv(file, 1, int)
@@ -147,6 +163,8 @@ end
 -- http://sandbox.mc.edu/~bennet/cs110/flt/ftod.html
 -- http://sandbox.mc.edu/~bennet/cs110/flt/dtof.html
 -- TODO: still a work in progress
+--
+-- @spec w_fv(Stream, exponent_bits: Integer, mantissa_bits: Integer, flt: Float): (Integer, error: String | nil)
 function ByteBuf.w_fv(file, exponent_bits, mantissa_bits, flt)
   local sign = 0
   if flt < 0 then
@@ -200,6 +218,7 @@ end
 --end
 
 -- Helpers
+-- @spec w_u8bool(Stream, Boolean): (Integer, error: String | nil)
 function ByteBuf.w_u8bool(file, bool)
   if bool then
     return ByteBuf.w_u8(file, 1)
@@ -209,6 +228,8 @@ function ByteBuf.w_u8bool(file, bool)
 end
 
 -- Null-Terminated string
+--
+-- @spec w_cstring(Stream, String): (Integer, error: String | nil)
 function ByteBuf.w_cstring(file, str)
   local num_bytes, err = ByteBuf.write(file, str)
   if err then
@@ -218,6 +239,7 @@ function ByteBuf.w_cstring(file, str)
   return num_bytes + nbytes, err
 end
 
+-- @spec w_u8string(Stream, String): (Integer, error: String | nil)
 function ByteBuf.w_u8string(file, data)
   assert(data, "expected a string of some kind")
   -- length
@@ -233,6 +255,7 @@ function ByteBuf.w_u8string(file, data)
   return num_bytes + written, err
 end
 
+-- @spec w_u16string(Stream, String): (Integer, error: String | nil)
 function ByteBuf.w_u16string(file, data)
   -- length
   local len = #data
@@ -247,6 +270,7 @@ function ByteBuf.w_u16string(file, data)
   return num_bytes + written, err
 end
 
+-- @spec w_u32string(Stream, String): (Integer, error: String | nil)
 function ByteBuf.w_u32string(file, data)
   -- length
   local len = #data
@@ -261,6 +285,7 @@ function ByteBuf.w_u32string(file, data)
   return num_bytes + written, err
 end
 
+-- @spec w_u64string(Stream, String): (Integer, error: String | nil)
 function ByteBuf.w_u64string(file, data)
   -- length
   local len = #data
@@ -275,6 +300,7 @@ function ByteBuf.w_u64string(file, data)
   return num_bytes + written, err
 end
 
+-- @spec w_map(Stream, key_type: String, value_type: String, Table): (Integer, error: String | nil)
 function ByteBuf.w_map(file, key_type, value_type, data)
   -- length
   local len = foundation.com.table_length(data)
@@ -297,6 +323,7 @@ function ByteBuf.w_map(file, key_type, value_type, data)
   return num_bytes, nil
 end
 
+-- @spec w_varray(Stream, type: String, data: Any[], len: Integer): (Integer, error: String | nil)
 function ByteBuf.w_varray(file, type, data, len)
   local writer_name = "w_" .. type
   local all_bytes_written = 0
@@ -311,6 +338,7 @@ function ByteBuf.w_varray(file, type, data, len)
   return all_bytes_written, nil
 end
 
+-- @spec w_array(Stream, type: String, data: Any[]): (Integer, error: String | nil)
 function ByteBuf.w_array(file, type, data)
   -- length
   local len = #data
