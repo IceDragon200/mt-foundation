@@ -1,3 +1,5 @@
+-- @namespace foundation.com.Version
+
 --
 -- Version Helper for parsing semantic versions
 --
@@ -31,7 +33,7 @@ end
 
 -- Parses a string into a version table
 --
--- @spec version:parse(str: String) :: Table
+-- @spec #parse(str: String) :: Table
 function version:parse(str)
   local parts = string.split(str, ".")
 
@@ -44,7 +46,7 @@ end
 
 -- Attempts to convert given value into a version table
 --
--- @spec version:parse(value: String | Table) :: Table
+-- @spec #cast(value: String | Table) :: Table
 function version:cast(value)
   local typename = type(value)
   if typename == "table" then
@@ -58,7 +60,7 @@ end
 
 -- Compares given 2 versions, the versions can either be tables or strings
 --
--- @spec version:compare(a: Term, b: Term) :: version.GT | version.LT | version.EQ
+-- @spec #compare(a: Term, b: Term) :: version.GT | version.LT | version.EQ
 function version:compare(a, b)
   a = self:cast(a)
   b = self:cast(b)

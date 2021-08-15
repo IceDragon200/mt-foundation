@@ -2,6 +2,7 @@
 -- Base module for foundation
 --
 -- Provides mod registration, taken from the nokore base
+-- @namespace foundation
 foundation = rawget(_G, "foundation") or {}
 
 local FoundationModule = {}
@@ -29,22 +30,38 @@ local function path_join(a, b)
   return a .. "/" .. b
 end
 
+-- Helper function for quickly creating a full mod name for items or other
+-- registrations.
+--
+-- @spec #make_name(local_name: String): String
+function FoundationModule:make_name(local_name)
+  return self._name .. ":" .. local_name
+end
 
 -- Helper function for registering a node under the parent mod
+--
+-- @spec #register_node(name: String, entry: Table): Table
 function FoundationModule:register_node(name, entry)
-  return minetest.register_node(self._name .. ":" .. name, entry)
+  return minetest.register_node(self:make_name(name), entry)
 end
 
 -- Helper function for registering a craftitem under the parent mod
+--
+-- @spec #register_craftitem(name: String, entry: Table): Table
 function FoundationModule:register_craftitem(name, entry)
-  return minetest.register_craftitem(self._name .. ":" .. name, entry)
+  return minetest.register_craftitem(self:make_name(name), entry)
 end
 
 -- Helper function for registering a tool under the parent mod
+--
+-- @spec #register_tool(name: String, entry: Table): Table
 function FoundationModule:register_tool(name, entry)
-  return minetest.register_tool(self._name .. ":" .. name, entry)
+  return minetest.register_tool(self:make_name(name), entry)
 end
 
+-- Helper function for performing a dofile with the mod's path
+--
+-- @spec #require(Path): Any
 function FoundationModule:require(basename)
   local filename = path_join(self.modpath, basename)
   if self.loaded_files[filename] then
@@ -60,7 +77,7 @@ end
 -- Creates or retrieves an existing mod's module
 -- The modpath is automatically set on call
 --
--- @spec foundation.new_module(name: String, default: Table) :: Table
+-- @spec new_module(name: String, default: Table): FoundationModule
 function foundation.new_module(name, version, default)
   assert(name, "expected a name")
   assert(version, "expected a version")
@@ -80,7 +97,7 @@ end
 --
 -- Determines if specified module exists
 --
--- @spec foundation.is_module_present(name: String, optional_version: String) :: Boolean
+-- @spec is_module_present(name: String, optional_version: String): Boolean
 function foundation.is_module_present(name, optional_version)
   local value = rawget(_G, name)
 
@@ -95,7 +112,7 @@ function foundation.is_module_present(name, optional_version)
 end
 
 -- Bootstrap itself
-foundation.new_module("foundation", "0.1.0", foundation)
+foundation.new_module("foundation", "0.2.0", foundation)
 
 -- hardcoded for now, trigger the self tests
 foundation.self_test = true
