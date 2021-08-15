@@ -1,3 +1,4 @@
+-- @namespace foundation.com
 local mod = foundation_ascii_pack
 
 local NUM_TO_HEX = {
@@ -446,32 +447,35 @@ function mod.unpack_nil(term)
   end
 end
 
-function mod.unpack(term)
-  local ty = string.sub(term, 1, 1)
+function mod.unpack(blob)
+  local ty = string.sub(blob, 1, 1)
 
   if ty == "Y" or ty == "Z" then
-    return mod.unpack_boolean(term)
+    return mod.unpack_boolean(blob)
   elseif ty == "0" then
-    return mod.unpack_nil(term)
+    return mod.unpack_nil(blob)
   elseif ty == "M" then
-    return mod.unpack_map(term)
+    return mod.unpack_map(blob)
   elseif ty == "A" then
-    return mod.unpack_array(term)
+    return mod.unpack_array(blob)
   elseif ty == "G" then
-    return mod.unpack_string(term)
+    return mod.unpack_string(blob)
   elseif ty == "n" or ty == "b" or ty == "s" or ty == "i" or ty == "l" or
          ty == "N" or ty == "B" or ty == "S" or ty == "I" or ty == "L" then
-    return mod.unpack_int(term)
+    return mod.unpack_int(blob)
   elseif ty == "F" or ty == "D" then
-    return mod.unpack_float(term)
+    return mod.unpack_float(blob)
   else
     error("cannot unpack type="..ty)
   end
 end
 
+-- @spec ascii_pack(term: Any, options: Table): String
 foundation.com.ascii_pack = mod.pack
+-- @spec ascii_unpack(String): Any
 foundation.com.ascii_unpack = mod.unpack
 
+-- @spec ascii_file_pack(Stream): (Integer, String | nil)
 function foundation.com.ascii_file_pack(stream, term, options, depth)
   local value = foundation.com.ascii_pack(term, options, depth)
   local success, err = stream:write(value)
@@ -588,6 +592,7 @@ function mod.ascii_file_unpack(stream)
   end
 end
 
+-- @spec ascii_file_unpack(Stream): Any
 function foundation.com.ascii_file_unpack(stream)
   return mod.ascii_file_unpack(stream)
 end
