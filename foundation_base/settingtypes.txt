@@ -1,0 +1,16 @@
+#
+# Foundation Base Settings
+#   These settings will affect all foundation modules
+#
+
+#
+# Should foundation run its unit tests on startup?
+# Tests ensure that foundation and its modules are all working as intended
+# in an environment before startup.
+foundation_enable_tests (Enable Tests) bool false
+
+#
+# Should foundation run its benchmarks on startup?
+# Benchmarks are useful for determining the performance of some functions
+# and if they need optimizing.
+foundation_enable_benchmarks (Enable Benchmarks) bool false

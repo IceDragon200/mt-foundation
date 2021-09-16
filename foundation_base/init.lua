@@ -124,6 +124,6 @@ dofile(foundation.modpath .. "/version.lua")
 
 if foundation.self_test then
   assert(foundation.is_module_present("foundation"), "expected foundation itself to be present")
-  assert(foundation.is_module_present("foundation", "0.1.0"), "expected it's match to match")
+  assert(foundation.is_module_present("foundation", "0.2.0"), "expected it's own version to match")
 end
 
