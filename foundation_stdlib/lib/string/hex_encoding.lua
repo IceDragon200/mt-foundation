@@ -1,51 +1,12 @@
 -- @namespace foundation.com
-local HEX_TABLE = {
-  [0] = "0",
-  [1] = "1",
-  [2] = "2",
-  [3] = "3",
-  [4] = "4",
-  [5] = "5",
-  [6] = "6",
-  [7] = "7",
-  [8] = "8",
-  [9] = "9",
-  [10] = "A",
-  [11] = "B",
-  [12] = "C",
-  [13] = "D",
-  [14] = "E",
-  [15] = "F",
-}
-
-local HEX_TO_DEC = {}
-for dec, hex in pairs(HEX_TABLE) do
-  HEX_TO_DEC[hex] = dec
-end
-HEX_TO_DEC["a"] = 10
-HEX_TO_DEC["b"] = 11
-HEX_TO_DEC["c"] = 12
-HEX_TO_DEC["d"] = 13
-HEX_TO_DEC["e"] = 14
-HEX_TO_DEC["f"] = 15
-
-local HEXB_TO_DEC = {}
-for hexc, dec in pairs(HEX_TO_DEC) do
-  HEXB_TO_DEC[string.byte(hexc)] = dec
-end
-
-local HEX_BYTE_TO_DEC = {}
-for hex_char, dec in pairs(HEX_TO_DEC) do
-  HEX_BYTE_TO_DEC[string.byte(hex_char, 1, 1)] = dec
-end
+local HEX_BYTE_TO_DEC = assert(foundation.com.HEX_BYTE_TO_DEC)
+local HEX_TABLE = assert(foundation.com.HEX_TABLE)
 
 local function byte_to_escaped_hex(byte)
   local hinibble = math.floor(byte / 16)
   local lonibble = byte % 16
   return "\\x" .. HEX_TABLE[hinibble] .. HEX_TABLE[lonibble]
 end
-
-foundation.com.HEX_TABLE = HEX_TABLE
 
 function foundation.com.byte_to_hexpair(byte)
   assert(byte >= 0 and byte <= 255, "expected byte to be between 0..255")
@@ -161,9 +122,9 @@ end
 function foundation.com.handle_escaped_hex(i, j, bytes, result)
   local hinibble = bytes[i + 2]
   local lonibble = bytes[i + 3]
-  if HEXB_TO_DEC[hinibble] and HEXB_TO_DEC[lonibble] then
-    local hi = HEXB_TO_DEC[hinibble]
-    local lo = HEXB_TO_DEC[lonibble]
+  if HEX_BYTE_TO_DEC[hinibble] and HEX_BYTE_TO_DEC[lonibble] then
+    local hi = HEX_BYTE_TO_DEC[hinibble]
+    local lo = HEX_BYTE_TO_DEC[lonibble]
     result[j] = string.char(hi * 16 + lo)
   else
     -- something isn't right, skip over this

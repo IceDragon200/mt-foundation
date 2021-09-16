@@ -1,5 +1,95 @@
 -- @namespace foundation.com
+local CROCKFORD_BASE32_ENCODE_TABLE = assert(foundation.com.CROCKFORD_BASE32_ENCODE_TABLE)
 
+local POW2 = {}
+
+for x = 0,8 do
+  POW2[x] = math.pow(2, x * 8)
+end
+
+-- Encodes a list of integers or strings as crawford base32, the list should contain interspersed values
+-- That is the odd numbered parameters should be the integer length, followed by the integer
+--
+-- Usage:
+--    list_crawford_base32_le_rolling_encode_table(4, int32, 2, int16, 6, int48) -- => Table
+--
+-- @spec list_crawford_base32_le_rolling_encode_table((int_len: Integer, int: Integer | String)...): Table
+function foundation.com.list_crawford_base32_le_rolling_encode_table(...)
+  local items = {...}
+  local len = #items
+  local len1 = len + 1
+  local i = 1
+  local j
+  local acc = 0
+  local po
+  local slen
+  local ilen
+  local item
+  local int
+  local str
+  local segments
+  local value
+  local result = {}
+  local r = 1
+  local _
+
+  while i < len1 do
+    -- integer length in bytes
+    ilen = items[i]
+    -- the integer
+    item = items[i + 1]
+    -- increment the items counter
+    i = i + 2
+    -- determine the number segments that is the integer's byte count (as bits)
+    -- divided by the base32 bit length (5), floored
+    segments = math.floor(ilen * 8 / 5)
+
+    if type(item) == "string" then
+      str = item
+      int = 0
+      slen = string.len(str)
+      po = 0
+
+      for j = 1,slen do
+        value = string.byte(str, j)
+        int = int + value * POW2[po]
+        po = po + 1
+      end
+    elseif type(item) == "number" then
+      int = item
+    else
+      error("unexpected item")
+    end
+
+    int = math.floor(int)
+
+    for _ = 1,segments do
+      -- add 5 bits of the int to the accumulator
+      acc = acc + (int % 32)
+      -- modulo the accumulator to get the next value
+      value = acc % 32
+      -- reduce the accumulator
+      acc = math.floor(acc / 32)
+      -- reduce the primary integer
+      int = math.floor(int / 32)
+      -- write the encoded value
+      result[r] = CROCKFORD_BASE32_ENCODE_TABLE[value]
+      -- increment the result index
+      r = r + 1
+    end
+  end
+
+  while acc > 0 do
+    value = acc % 32
+    acc = math.floor(acc / 32)
+    result[r] = CROCKFORD_BASE32_ENCODE_TABLE[value]
+    r = r + 1
+  end
+
+  return result
+end
+
+-- @spec list_slice(Table, start: Integer, len: Integer): Table
 function foundation.com.list_slice(t, start, len)
   local result = {}
 
@@ -11,10 +101,12 @@ function foundation.com.list_slice(t, start, len)
   return result
 end
 
+local list_slice = foundation.com.list_slice
+
 function foundation.com.list_last(t, count)
   if count then
     count = math.min(#t, count)
-    return foundation.com.list_slice(t, #t - count + 1, count)
+    return list_slice(t, #t - count + 1, count)
   else
     return t[#t]
   end
@@ -43,10 +135,14 @@ function foundation.com.list_reduce(list, acc, fun)
   return acc
 end
 
+local list_reduce = foundation.com.list_reduce
+
 -- Perform a reduce map on the specified list, this will return a new list
 -- where elements were transformed by 'fun'
+--
+-- @spec list_map(Table, ReducerFunction): Table
 function foundation.com.list_map(list, fun)
-  return foundation.com.list_reduce(list, {}, function (value, acc)
+  return list_reduce(list, {}, function (value, acc)
     table.insert(acc, fun(value))
     return acc, false
   end)
