@@ -49,7 +49,7 @@ case:describe(".serialize/1", function (t2)
   end)
 end)
 
-case:describe(".deserialize/1", function (t2)
+case:describe(".deserialize_list/1", function (t2)
   t2:test("can deserialize a serialized list of item stacks", function (t3)
     local list = {
       ItemStack({
