@@ -47,11 +47,13 @@ do
 
   case:describe("e_i40", function (t2)
     t2:xtest("can encode an integer as a signed value", function (t3)
+      t3:assert_eq("\xFF\xFF\xFF\xFF\xFF", mod:e_i40(-1))
     end)
   end)
 
   case:describe("e_i48", function (t2)
     t2:xtest("can encode an integer as a signed value", function (t3)
+      t3:assert_eq("\xFF\xFF\xFF\xFF\xFF", mod:e_i48(-1))
     end)
   end)
 
@@ -105,11 +107,24 @@ do
 
   case:describe("e_u40", function (t2)
     t2:xtest("can encode an integer as an unsigned value", function (t3)
+      t3:assert_eq("\x00\x00\x00\x00\x00", mod:e_u40(0))
+      t3:assert_eq("\x01\x00\x00\x00\x00", mod:e_u40(1))
+      t3:assert_eq("\x00\x01\x00\x00\x00", mod:e_u40(256))
+      t3:assert_eq("\x00\x00\x01\x00\x00", mod:e_u40(65536))
+      t3:assert_eq("\x00\x00\x00\x01\x00", mod:e_u40(16777216))
+      t3:assert_eq("\x00\x00\x00\x00\x01", mod:e_u40(8589934591))
     end)
   end)
 
   case:describe("e_u48", function (t2)
     t2:xtest("can encode an integer as an unsigned value", function (t3)
+      t3:assert_eq("\x00\x00\x00\x00\x00\x00", mod:e_u48(0))
+      t3:assert_eq("\x01\x00\x00\x00\x00\x00", mod:e_u48(1))
+      t3:assert_eq("\x00\x01\x00\x00\x00\x00", mod:e_u48(256))
+      t3:assert_eq("\x00\x00\x01\x00\x00\x00", mod:e_u48(65536))
+      t3:assert_eq("\x00\x00\x00\x01\x00\x00", mod:e_u48(16777216))
+      t3:assert_eq("\x00\x00\x00\x00\x01\x00", mod:e_u48(8589934591))
+      t3:assert_eq("\x00\x00\x00\x00\x00\x01", mod:e_u48(2199023255551))
     end)
   end)
 
@@ -157,7 +172,14 @@ do
   end)
 
   case:describe("e_i24", function (t2)
-
+    t2:test("can encode an integer as a signed value", function (t3)
+      t3:assert_eq("\x00\x00\x00", mod:e_i24(0))
+      t3:assert_eq("\x00\x00\x01", mod:e_i24(1))
+      t3:assert_eq("\x00\x00\xFF", mod:e_i24(255))
+      t3:assert_eq("\x7F\xFF\xFF", mod:e_i24(8388607))
+      t3:assert_eq("\x80\x00\x00", mod:e_i24(-8388608))
+      t3:assert_eq("\xFF\xFF\xFF", mod:e_i24(-1))
+    end)
   end)
 
   case:describe("e_i32", function (t2)
