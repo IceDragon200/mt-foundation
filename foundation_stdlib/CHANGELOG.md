@@ -1,3 +1,14 @@
+# 1.7.0
+
+__Added Functions__
+
+* `foundation.com.Vector2.copy/1`
+* `foundation.com.Vector3.copy/1`
+* `foundation.com.Vector4.copy/1`
+* `foundation.com.Vector4.to_string/2` updated to match other vector to_string/2
+* `foundation.com.Vector4.idivide/3`
+* `foundation.com.Vector4.idiv/3` aliased from `foundation.com.Vector4.idivide/3`
+
 # 1.6.0
 
 __Added Functions__
