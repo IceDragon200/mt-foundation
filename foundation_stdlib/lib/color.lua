@@ -47,7 +47,7 @@ function Color.mult(a, b)
   }
 end
 
--- to_string32(Color): String
+-- @spec to_string32(Color): String
 function Color.to_string32(color)
   local result = "#" ..
     foundation.com.byte_to_hexpair(color.r) ..
@@ -58,7 +58,7 @@ function Color.to_string32(color)
   return result
 end
 
--- to_string24(Color): String
+-- @spec to_string24(Color): String
 function Color.to_string24(color)
   local result = "#" ..
     foundation.com.byte_to_hexpair(color.r) ..
@@ -68,7 +68,7 @@ function Color.to_string24(color)
   return result
 end
 
--- to_string16(Color): String
+-- @spec to_string16(Color): String
 function Color.to_string16(color)
   local result = "#" ..
     foundation.com.nibble_to_hex(math.floor(color.r / 16)) ..
@@ -79,7 +79,7 @@ function Color.to_string16(color)
   return result
 end
 
--- to_string12(Color): String
+-- @spec to_string12(Color): String
 function Color.to_string12(color)
   local result = "#" ..
     foundation.com.nibble_to_hex(math.floor(color.r / 16)) ..

@@ -79,6 +79,8 @@ case:maybe_error()
 
 mod:require("/tests/color_test.lua")
 mod:require("/tests/direction_test.lua")
+mod:require("/tests/iodata_test.lua")
+mod:require("/tests/list_test.lua")
 mod:require("/tests/number_test.lua")
 mod:require("/tests/string_test.lua")
 mod:require("/tests/table_test.lua")
