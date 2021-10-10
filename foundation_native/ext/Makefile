@@ -1,16 +1,17 @@
+CC=gcc
 INCLUDE_DIRS=-I./include/ -I.
 
 .PHONY : default_target
 default_target: all
 
-%.o: %.c
-	gcc $(INCLUDE_DIRS) -fPIC -Wall -Werror -O3 -c $< -o $@
-
-%.so: %.o
-	gcc $(INCLUDE_DIRS) -fPIC -shared -Wall -Werror -lc $< -o $@
-
 .PHONY : all
 all: foundation_utils.so
+
+%.so: %.o
+	$(CC) $(INCLUDE_DIRS) -fPIC -shared -Wall -Werror -lc $< -o $@
+
+%.o: %.c
+	$(CC) $(INCLUDE_DIRS) -fPIC -Wall -Werror -O3 -c $< -o $@
 
 clean:
 	rm -v *.so

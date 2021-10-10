@@ -1,2 +1,2 @@
 all:
-	echo Nothing to do here
+	make -C foundation_native
