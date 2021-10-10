@@ -154,8 +154,17 @@ function DefaultReporter:report(...)
   print(...)
 end
 
+local NullReporter = {}
+function NullReporter:report(...)
+  --
+end
+
+-- @class Luna
 local Luna = foundation.com.Class:extends()
 local ic = Luna.instance_class
+
+Luna.NullReporter = NullReporter
+Luna.DefaultReporter = DefaultReporter
 
 local function format_message(message)
   if type(message) == "function" then
@@ -164,10 +173,15 @@ local function format_message(message)
   return message
 end
 
--- @class Luna
-function ic:initialize(name)
+Luna.default_config = {
+  reporter = DefaultReporter
+}
+
+-- @spec #initialize(name: String, config?: Table): void
+function ic:initialize(name, config)
   self.name = name
-  self.reporter = DefaultReporter
+  self.config = table_merge(Luna.default_config, config or {})
+  self.reporter = self.config.reporter
   self.stats = {
     time_elapsed = 0.0,
     assertions_passed = 0,
