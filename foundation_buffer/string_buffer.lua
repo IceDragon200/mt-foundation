@@ -1,9 +1,22 @@
+-- @namespace foundation.com
+
 --
 -- StringBuffer is an in-memory equivalent of love's File interface
 --
+
+-- @class StringBuffer
 local StringBuffer = foundation.com.Class:extends("foundation.com.StringBuffer")
 local ic = StringBuffer.instance_class
 
+-- Initializes a Buffer with data and a possible mode
+--
+-- Modes:
+--   * `r` - open the buffer in read-only mode
+--   * `w` - open the buffer in write-only mode
+--   * `rw` - open the buffer in read-write mode
+--   * `a` - open the buffer in append mode, similar to write, but starts from end of data
+--
+-- @spec #initialize(data: String, mode?: String): void
 function ic:initialize(data, mode)
   assert(type(data) == "string", "expected a string for data")
   ic._super.initialize(self)
@@ -11,10 +24,16 @@ function ic:initialize(data, mode)
   self:open(mode)
 end
 
+-- Reports the byte size of the internal data
+--
+-- @spec #size(): Integer
 function ic:size()
   return #self.m_data
 end
 
+-- Returns the internal data as a string, or a part of the data given a length
+--
+-- @spec #blob(len?: Integer): String
 function ic:blob(len)
   if len then
     len = len or self.size()
@@ -24,6 +43,9 @@ function ic:blob(len)
   end
 end
 
+-- Opens the buffer in the specified mode see #initialize/2 for modes.
+--
+-- @spec open(mode: String): void
 function ic:open(mode)
   self.m_cursor = 1
   self.m_mode = mode or "r"
@@ -33,44 +55,70 @@ function ic:open(mode)
   end
 end
 
+-- Closes the buffer for reading or writing, will also reset the cursor position
+--
+-- @spec close(): void
 function ic:close()
   self.m_cursor = 1
   self.m_mode = nil
 end
 
+-- Has the buffer reached the end of the data?
+--
+-- @spec #isEOF(): Boolean
 function ic:isEOF()
   return self.m_cursor > #self.m_data
 end
 
+-- Reports current cursor position
+--
+-- @spec #tell(): Integer
 function ic:tell()
   return self.m_cursor
 end
 
+-- Resets the cursor position
+--
+-- @spec #rewind(): self
 function ic:rewind()
   self.m_cursor = 1
   return self
 end
 
+-- Moves the cursor to the specified position, note that the cursor is 1-index.
+--
+-- @spec #seek(pos: Integer): self
 function ic:seek(pos)
   self.m_cursor = pos
   return self
 end
 
--- Because of lua's annoying 1 index
+-- Alternative to seek, instead this is 0-index
+--
+-- @spec #cseek(pos: Integer): self
 function ic:cseek(pos)
   return self:seek(pos + 1)
 end
 
+-- Move the cursor ahead by the specific amount
+--
+-- @spec #walk(distance?: Integer = 1): self
 function ic:walk(distance)
   distance = distance or 1
   self.m_cursor = self.m_cursor + distance
   return self
 end
 
+-- Locates a specific pattern in the underlying data
+--
+-- @spec #find(pattern: String): (Integer, Integer) | (nil, Integer)
 function ic:find(pattern)
   return string.find(self.m_data, pattern, self.m_cursor)
 end
 
+-- Determines if the head of the string matches the specific pattern
+--
+-- @spec #scan(pattern: String): (String, bytes_read: Integer) | (nil, Integer)
 function ic:scan(pattern)
   local i, j = self:find("^" .. pattern)
   if i then
@@ -80,6 +128,9 @@ function ic:scan(pattern)
   end
 end
 
+-- Scans and returns everything until the pattern matches (including the match)
+--
+-- @spec #scan_until(pattern: String): (String, Integer) | (nil, Integer)
 function ic:scan_until(pattern)
   local k = self:tell()
   local i, j = self:find(pattern)
@@ -90,6 +141,7 @@ function ic:scan_until(pattern)
   end
 end
 
+-- @spec #scan_upto(pattern: String): (String, Integer) | (nil, Integer)
 function ic:scan_upto(pattern)
   local k = self:tell()
   local i, j = self:find(pattern)
@@ -100,6 +152,7 @@ function ic:scan_upto(pattern)
   end
 end
 
+-- @spec #scan_while(pattern: String): String
 function ic:scan_while(pattern)
   local k = self:tell()
   local result = {}
@@ -113,12 +166,14 @@ function ic:scan_while(pattern)
     end
   end
 
-  for _, _ in pairs(result) do
+  local k = next(result)
+  if k then
     return table.concat(result)
   end
   return nil
 end
 
+-- @spec #skip(pattern: String): Boolean
 function ic:skip(pattern)
   local i, j = self:find("^" .. pattern)
   if i then
@@ -129,6 +184,7 @@ function ic:skip(pattern)
   end
 end
 
+-- @spec #skip_until(pattern: String): Boolean
 function ic:skip_until(pattern)
   local i, j = self:find(pattern)
   if i then
@@ -139,6 +195,7 @@ function ic:skip_until(pattern)
   end
 end
 
+-- @spec #calc_read_length(len?: Integer): Integer
 function ic:calc_read_length(len)
   assert(self.m_mode == "r" or self.m_mode == "rw", "expected read mode")
   local remaining_len = #self.m_data - self.m_cursor + 1
@@ -146,11 +203,13 @@ function ic:calc_read_length(len)
   return len
 end
 
+-- @spec #peek_bytes(len?: Integer): Integer[]
 function ic:peek_bytes(len)
   local len = self:calc_read_length(len)
   return string.byte(self.m_data, self.m_cursor, self.m_cursor + len - 1), len
 end
 
+-- @spec #read_bytes(len?: Integer): Integer[]
 function ic:read_bytes(len)
   local len = self:calc_read_length(len)
   local pos = self.m_cursor
@@ -158,11 +217,19 @@ function ic:read_bytes(len)
   return string.byte(self.m_data, pos, pos + len - 1), len
 end
 
+-- Reads the buffers next available data without advancing the cursor.
+-- If len is not specified will return the remaining data in the buffer.
+--
+-- @spec #peek(len?: Integer): String
 function ic:peek(len)
   local len = self:calc_read_length(len)
   return string.sub(self.m_data, self.m_cursor, self.m_cursor + len - 1), len
 end
 
+-- Reads the buffer's next available data and advances the cursor.
+-- If the len is not specified will return the remaining data in the buffer.
+--
+-- @spec #read(len?: Integer): (String, bytes_read: Integer)
 function ic:read(len)
   local len = self:calc_read_length(len)
   local pos = self.m_cursor
@@ -170,6 +237,10 @@ function ic:read(len)
   return string.sub(self.m_data, pos, pos + len - 1), len
 end
 
+-- Writes the specified data to the buffer.
+-- The data can be anything that supports tostring/1
+--
+-- @spec #write(data: Any): (true, nil) | (false, String)
 function ic:write(data)
   assert(self.m_mode == "w" or self.m_mode == "rw", "expected write mode")
   data = tostring(data)
