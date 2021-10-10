@@ -4,6 +4,39 @@ local mod = assert(foundation.com.InventorySerializer)
 local ITERATIONS = 1000000
 local case = Luna:new("foundation.com.InventorySerializer benchmark")
 
+case:describe("ItemStack/0..1", function (t2)
+  t2:test("creating "..ITERATIONS.." empty item stacks", function (t3)
+    for _ = 1,ITERATIONS do
+      ItemStack()
+    end
+  end)
+
+  t2:test("creating "..ITERATIONS.." itemstring item stacks", function (t3)
+    for _ = 1,ITERATIONS do
+      ItemStack("yatm_core:hammer_iron 1")
+    end
+  end)
+
+  t2:test("creating "..ITERATIONS.." table item stacks", function (t3)
+    for _ = 1,ITERATIONS do
+      ItemStack({
+        name = "yatm_core:hammer_iron",
+        count = 1,
+        wear = 50,
+      })
+    end
+  end)
+
+  t2:test("creating "..ITERATIONS.." table item stacks with blank name", function (t3)
+    for _ = 1,ITERATIONS do
+      ItemStack({
+        name = "",
+        count = 0,
+      })
+    end
+  end)
+end)
+
 case:describe(".serialize/1", function (t2)
   t2:test("can serialize an empty list ("..ITERATIONS.." times)", function (t3)
     local list = {}
