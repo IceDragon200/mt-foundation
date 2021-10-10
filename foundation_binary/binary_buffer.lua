@@ -1,7 +1,7 @@
 -- @namespace foundation.com
 
 --
--- Binary Buffer - same interface as StringBuf but using an FFI allocated uchar array
+-- Binary Buffer - similar interface as StringBuf but using an FFI allocated uchar array
 --
 if not foundation.com.ffi then
   foundation.com.error("foundation.com.BinaryBuffer is unavailable as it requires LuaJIT's FFI module")
