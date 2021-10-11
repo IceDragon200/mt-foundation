@@ -1,4 +1,4 @@
-local mod = foundation.new_module("foundation_stdlib", "1.7.0")
+local mod = foundation.new_module("foundation_stdlib", "1.8.0")
 
 mod:require("lib/encoding_tables.lua")
 
@@ -12,10 +12,10 @@ mod:require("lib/list.lua")
 mod:require("lib/meta_ref.lua")
 mod:require("lib/node_timer.lua")
 mod:require("lib/number.lua")
+mod:require("lib/string.lua")
 mod:require("lib/path.lua")
 mod:require("lib/pretty_units.lua")
 mod:require("lib/random.lua")
-mod:require("lib/string.lua")
 mod:require("lib/table.lua")
 mod:require("lib/time.lua")
 mod:require("lib/type_conversion.lua")

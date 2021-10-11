@@ -1,3 +1,11 @@
+# 1.8.0
+
+__Added Functions__
+
+* `foundation.com.path_components/1`
+* `foundation.com.path_basename/1`
+* `foundation.com.path_dirname/1`
+
 # 1.7.0
 
 __Added Functions__

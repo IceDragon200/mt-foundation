@@ -1,71 +1,77 @@
 -- @namespace foundation.com
+local string_split = assert(foundation.com.string_split)
 
-local SEPARATOR_BYTE = string.byte("/")
+local SEPARATOR = "/"
 
--- @spec path_dirname(a: String): String
-function foundation.com.path_dirname(a)
-  local len = string.len(a)
-  local tail = string.len(a)
-  local b = string.byte(a, tail)
-
-  if tail == 0 then
-    return "."
+function foundation.com.path_components(a)
+  if a == "" then
+    return {}
   else
-    local i = tail
-
-    while i > 0 do
-      b = string.byte(a, i)
-
-      if b == SEPARATOR_BYTE then
-        return string.sub(a, 1, i)
+    local parts = string_split(a, SEPARATOR)
+    local result = {}
+    local i = 0
+    local was_blank = false
+    for j,part in pairs(parts) do
+      if part == "" then
+        if not was_blank then
+          was_blank = true
+          i = i + 1
+          result[i] = part
+        end
+      else
+        was_blank = false
+        i = i + 1
+        result[i] = part
       end
     end
 
-    if tail == len then
-      return a
+    return result
+  end
+end
+
+-- @spec path_dirname(a: String): String
+function foundation.com.path_dirname(a)
+  local components = foundation.com.path_components(a)
+
+  if components[2] then
+    -- it has 2 or more components
+    components[#components] = nil
+    if components[2] then
+      return table.concat(components, SEPARATOR)
     else
-      return string.sub(a, 1, tail)
+      if components[1] == "" then
+        return "/"
+      else
+        return components[1]
+      end
+    end
+  else
+    -- has an initial component
+    if components[1] then
+      return "/" .. components[1]
+    else
+      return "."
     end
   end
 end
 
 -- @spec path_basename(a: String): String
 function foundation.com.path_basename(a)
-  local len = string.len(a)
-  local tail = string.len(a)
-  local b = string.byte(a, tail)
-
-  -- if string ends with a /, shorten the initial length to exclude it
-  while tail > 0 and b == SEPARATOR_BYTE do
-    tail = tail - 1
-    b = string.byte(a, tail)
-  end
-
-  if tail == 0 then
-    return ""
-  else
-    local i = tail
-
-    while i > 0 do
-      b = string.byte(a, i)
-
-      if b == SEPARATOR_BYTE then
-        return string.sub(a, i+1, tail)
-      end
+  local components = foundation.com.path_components(a)
+  if components[1] then
+    local item = components[#components]
+    if item == "" then
+      return ""
     end
-
-    if tail == len then
-      return a
-    else
-      return string.sub(a, 1, tail)
-    end
+    return item
   end
+  return ""
 end
 
 -- @spec path_join(a: String, b: String): String
 function foundation.com.path_join(a, b)
-  local a = foundation.com.string_trim_trailing(a, "/")
-  local b = foundation.com.string_trim_leading(b, "/")
+  local a = foundation.com.string_trim_trailing(a, SEPARATOR)
+  local b = foundation.com.string_trim_leading(b, SEPARATOR)
 
-  return a .. "/" .. b
+  return a .. SEPARATOR .. b
 end
