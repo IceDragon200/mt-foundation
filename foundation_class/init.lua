@@ -10,10 +10,12 @@ local Class = {
   instance_class = {}
 }
 
+-- @spec #initialize(...): void
 function Class.instance_class:initialize()
   --
 end
 
+-- @spec #method(name): Function
 function Class.instance_class:method(name)
   local func = self[name]
   if type(func) == "function" then
@@ -26,6 +28,7 @@ function Class.instance_class:method(name)
   end
 end
 
+-- @spec &extends(String): Class
 function Class:extends(name)
   local klass = {
     _super = self,
@@ -39,12 +42,14 @@ function Class:extends(name)
   return klass
 end
 
+-- @spec &alloc(): Any
 function Class:alloc()
   local instance = {}
   setmetatable(instance, { __index = self.instance_class })
   return instance
 end
 
+-- @spec &new(): Any
 function Class:new(...)
   local instance = self:alloc()
   if instance.initialize then
