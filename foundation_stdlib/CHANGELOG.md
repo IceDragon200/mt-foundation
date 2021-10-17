@@ -1,3 +1,17 @@
+# 1.9.0
+
+__Added Functions__
+
+* `foundation.com.Vector2`
+  * `dump_data/1`
+  * `load_data/1`
+* `foundation.com.Vector3`
+  * `dump_data/1`
+  * `load_data/1`
+* `foundation.com.Vector4`
+  * `dump_data/1`
+  * `load_data/1`
+
 # 1.8.0
 
 __Added Functions__

@@ -99,6 +99,18 @@ function vector2.idivide(dest, v1, v2)
   return dest
 end
 
+-- Intended to be used by persistence systems to dump a vector2 to a plain table
+--
+-- @spec dump_data(Vector2): Table
+function vector2.dump_data(vec)
+  return { x = vec.x, y = vec.y }
+end
+
+-- @spec load_data(Table): Vector2
+function vector2.load_data(data)
+  return vector2.new(data.x, data.y)
+end
+
 vector2.sub = vector2.subtract
 vector2.mul = vector2.multiply
 vector2.div = vector2.divide
@@ -213,6 +225,18 @@ function vector3.idivide(dest, v1, v2)
   dest.y = math.floor(v1y / v2y)
   dest.z = math.floor(v1z / v2z)
   return dest
+end
+
+-- Intended to be used by persistence systems to dump a vector3 to a plain table
+--
+-- @spec dump_data(Vector3): Table
+function vector3.dump_data(vec)
+  return { x = vec.x, y = vec.y, z = vec.z }
+end
+
+-- @spec load_data(Table): Vector3
+function vector3.load_data(data)
+  return vector3.new(data.x, data.y, data.z)
 end
 
 vector3.sub = vector3.subtract
@@ -337,6 +361,18 @@ function vector4.idivide(dest, v1, v2)
   dest.z = math.floor(v1z / v2z)
   dest.w = math.floor(v1w / v2w)
   return dest
+end
+
+-- Intended to be used by persistence systems to dump a vector4 to a plain table
+--
+-- @spec dump_data(Vector4): Table
+function vector4.dump_data(vec)
+  return { x = vec.x, y = vec.y, z = vec.z, w = vec.w }
+end
+
+-- @spec load_data(Table): Vector4
+function vector4.load_data(data)
+  return vector4.new(data.x, data.y, data.z, data.w)
 end
 
 vector4.sub = vector4.subtract
