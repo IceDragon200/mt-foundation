@@ -3,6 +3,9 @@
 -- interpolating items into a formspec element and you start missing commas,
 -- semi-colons or even brackets in larger formspecs.
 --
+
+-- @namespace foundation.com.formspec.api
+
 foundation.com.formspec = {}
 
 local api = {}
@@ -379,6 +382,7 @@ function api.textlist(x, y, w, h, name, listitems, selected_index, is_transparen
   return "textlist["..args.."]"
 end
 
+-- @spec tabheader(x: Integer, y: Integer, w?: Integer, h?: Integer, name: String, captions: [String], current_tab_index: Integer, is_transparent: Boolean, draw_border: Boolean): String
 function api.tabheader(x, y, w, h, name, captions, current_tab_index, is_transparent, draw_border)
   local args = x..","..y
 
