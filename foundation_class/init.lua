@@ -3,7 +3,7 @@
 --
 -- Please don't abuse classes, use them sparingly.
 --
-local mod = foundation.new_module("foundation_class", "1.0.0")
+local mod = foundation.new_module("foundation_class", "2.0.0")
 
 mod:require("class.lua")
 
