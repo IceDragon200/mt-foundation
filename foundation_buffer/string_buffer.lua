@@ -3,6 +3,7 @@
 --
 -- StringBuffer is an in-memory equivalent of love's File interface
 --
+local utf8 = foundation.com.utf8
 
 -- @class StringBuffer
 local StringBuffer = foundation.com.Class:extends("foundation.com.StringBuffer")
@@ -203,13 +204,13 @@ function ic:calc_read_length(len)
   return len
 end
 
--- @spec #peek_bytes(len?: Integer): Integer[]
+-- @spec #peek_bytes(len?: Integer): (Integer[], Integer)
 function ic:peek_bytes(len)
   local len = self:calc_read_length(len)
   return string.byte(self.m_data, self.m_cursor, self.m_cursor + len - 1), len
 end
 
--- @spec #read_bytes(len?: Integer): Integer[]
+-- @spec #read_bytes(len?: Integer): (Integer[], Integer)
 function ic:read_bytes(len)
   local len = self:calc_read_length(len)
   local pos = self.m_cursor
@@ -220,7 +221,7 @@ end
 -- Reads the buffers next available data without advancing the cursor.
 -- If len is not specified will return the remaining data in the buffer.
 --
--- @spec #peek(len?: Integer): String
+-- @spec #peek(len?: Integer): (String, Integer))
 function ic:peek(len)
   local len = self:calc_read_length(len)
   return string.sub(self.m_data, self.m_cursor, self.m_cursor + len - 1), len
@@ -235,6 +236,21 @@ function ic:read(len)
   local pos = self.m_cursor
   self.m_cursor = self.m_cursor + len
   return string.sub(self.m_data, pos, pos + len - 1), len
+end
+
+if utf8 then
+  -- @since "2.0.0"
+  -- @spec read_utf8_codepoint(): (String, Integer)
+  function ic:read_utf8_codepoint()
+    local pos = self.m_cursor
+    local uni8char, tail = utf8.next_codepoint(self.m_data, pos)
+    if uni8char then
+      self.m_cursor = tail + 1
+      return uni8char, string.len(uni8char)
+    else
+      return '', 0
+    end
+  end
 end
 
 -- Writes the specified data to the buffer.
