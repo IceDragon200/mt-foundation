@@ -4,11 +4,38 @@
 --   For dealing with utf-8 strings and converting codepoints
 --
 -- https://www.ietf.org/rfc/rfc3629.txt
-local mod = foundation.new_module("foundation_utf8", "1.0.0")
+local mod = foundation.new_module("foundation_utf8", "1.1.0")
 
 -- @namespace foundation.com.utf8
 
 local utf8 = {}
+
+-- Returns the length of the next codepoint, only the first character is
+-- analyzed, so this can be used in parsing to determine the number of bytes
+-- that should be parsed next.
+--
+-- If the string has no bytes then `nil` is returned for the length instead.
+--
+-- @spec next_codepoint_length(str: String, start: Integer): Integer | nil
+function utf8.next_codepoint_length(str, start)
+  start = start or 1
+  local byte = string.byte(str, start)
+  if byte then
+    local len = 1
+    if byte >= 0xF0 and byte <= 0xF7 then
+      -- 0001 0000-0010 FFFF | 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
+      len = 4
+    elseif byte >= 0xE0 and byte <= 0xEF then
+      -- 0000 0800-0000 FFFF | 1110xxxx 10xxxxxx 10xxxxxx
+      len = 3
+    elseif byte >= 0xC0 and byte <= 0xDF then
+      -- 0000 0080-0000 07FF | 110xxxxx 10xxxxxx
+      len = 2
+    end
+    return len
+  end
+  return nil
+end
 
 -- Returns the next codepoints start and tail position so the character can be
 -- extracted or just to determine if it actually exists
@@ -17,20 +44,9 @@ local utf8 = {}
 -- @spec next_codepoint_pos(str: String, start: Integer): (Integer, Integer) | (nil, nil)
 function utf8.next_codepoint_pos(str, start)
   start = start or 1
-  local byte = string.byte(str, start)
-  if byte then
-    local tail = start
-    if byte >= 0xF0 and byte <= 0xF7 then
-      -- 0001 0000-0010 FFFF | 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
-      tail = start + 3
-    elseif byte >= 0xE0 and byte <= 0xEF then
-      -- 0000 0800-0000 FFFF | 1110xxxx 10xxxxxx 10xxxxxx
-      tail = start + 2
-    elseif byte >= 0xC0 and byte <= 0xDF then
-      -- 0000 0080-0000 07FF | 110xxxxx 10xxxxxx
-      tail = start + 1
-    end
-    return start, tail
+  local len = utf8.next_codepoint_length(str, start)
+  if len then
+    return start, start + len - 1
   end
   return nil, nil
 end
