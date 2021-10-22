@@ -110,6 +110,16 @@ function ic:reverse()
   return self
 end
 
+-- Clears all data in the list, this will replace the internal table with an
+-- empty one, it is safe to call #data/0 before to retrieve the table.
+--
+-- @spec #clear(): self
+function ic:clear()
+  self.m_data = {}
+  self.m_cursor = 0
+  return self
+end
+
 -- Pushes the item unto the list.
 -- Yes, you can push nil.
 --
