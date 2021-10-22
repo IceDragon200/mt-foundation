@@ -196,6 +196,9 @@ function ic:skip_until(pattern)
   end
 end
 
+-- @alias skip_bytes = walk
+ic.skip_bytes = ic.walk
+
 -- @spec #calc_read_length(len?: Integer): Integer
 function ic:calc_read_length(len)
   assert(self.m_mode == "r" or self.m_mode == "rw", "expected read mode")
@@ -239,6 +242,8 @@ function ic:read(len)
 end
 
 if utf8 then
+  -- Reads the next bytes as a utf8 codepoint string
+  --
   -- @since "2.0.0"
   -- @spec read_utf8_codepoint(): (String, Integer)
   function ic:read_utf8_codepoint()
@@ -249,6 +254,52 @@ if utf8 then
       return uni8char, string.len(uni8char)
     else
       return '', 0
+    end
+  end
+
+  -- Read len number of codepoints and return it as a string
+  --
+  -- @since "2.0.0"
+  -- @spec read_utf8_codepoints(len: Integer): (String, Integer)
+  function ic:read_utf8_codepoints(len)
+    local result = ''
+    local all_bytes_read = 0
+
+    for _ = 1,len do
+      local char, bytes_read = self:read_utf8_codepoint()
+      if char then
+        all_bytes_read = all_bytes_read + bytes_read
+        result = result .. char
+      else
+        break
+      end
+    end
+
+    return result, all_bytes_read
+  end
+
+  -- Peeks the next bytes as a utf8 codepoint string
+  --
+  -- @since "2.1.0"
+  -- @spec peek_utf8_codepoint(): (String, Integer)
+  function ic:peek_utf8_codepoint()
+    local pos = self.m_cursor
+    local uni8char, tail = utf8.next_codepoint(self.m_data, pos)
+    if uni8char then
+      return uni8char, string.len(uni8char)
+    else
+      return '', 0
+    end
+  end
+
+  function ic:skip_utf8_codepoint()
+    local pos = self.m_cursor
+    local start, tail = utf8.next_codepoint_pos(self.m_data, pos)
+    if start and tail then
+      self.m_cursor = tail + 1
+      return true
+    else
+      return false
     end
   end
 end

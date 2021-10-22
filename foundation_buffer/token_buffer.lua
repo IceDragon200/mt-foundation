@@ -42,7 +42,11 @@ local function _check_readable(self)
 end
 
 local function _check_writable(self)
-  assert(self.m_mode == 'w' or self.m_mode == 'rw' or self.m_mode == 'a')
+  if self.m_mode == 'w' or self.m_mode == 'rw' or self.m_mode == 'a' then
+    -- ok
+  else
+    error("expected TokenBuffer to be in some kind of write mode")
+  end
 end
 
 function ic:initialize(tokens, mode)
@@ -109,7 +113,7 @@ end
 
 -- @doc Returns a list of the matched tokens, or nil if no match
 --
--- @spec #scan(...tokens: [String]): [Token] | nil
+-- @spec #scan(...token_names: [String]): [Token] | nil
 function ic:scan(...)
   _check_readable(self)
   local token_matchers = {...}
@@ -195,7 +199,32 @@ function ic:scan_upto(token_name)
   return tokens
 end
 
--- @doc Checks if all the given token names match the curre
+-- @spec #is_next_token(String): Boolean
+function ic:is_next_token(token_name)
+  _check_readable(self)
+
+  if self.m_cursor <= #self.m_data then
+    local token = self.m_data[self.m_cursor]
+    return token[1] == token_name
+  end
+
+  return false
+end
+
+-- @spec #next_token(): Token
+function ic:next_token()
+  _check_readable(self)
+
+  if self.m_cursor <= #self.m_data then
+    local token = self.m_data[self.m_cursor]
+    self.m_cursor = self.m_cursor + 1
+    return token
+  end
+
+  return nil
+end
+
+-- @doc Checks if all the given token names match the current tokens
 --
 -- @spec #match_tokens(...tokens: [String]): Boolean
 function ic:match_tokens(...)
