@@ -54,11 +54,14 @@ function Class:is_child_of(ancestor)
   return false
 end
 
+-- @spec &ancestors(): Class[]
 function Class:ancestors()
   local klass = self
   local result = {}
+  local i = 0
   while klass do
-    table.insert(result, klass)
+    i = i + 1
+    result[i] = klass
     klass = klass._super
   end
   return result
