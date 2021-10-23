@@ -1,9 +1,20 @@
 -- @namespace foundation.com
+
+local Class = foundation.com.Class
 local table_copy = assert(foundation.com.table_copy)
 
 -- @class List<T>
-local List = foundation.com.Class:extends("foundation.com.List")
+local List = Class:extends("foundation.com.List")
 local ic = List.instance_class
+
+local function list_next(list, index)
+  index = index + 1
+  if index > list.m_cursor then
+    return nil
+  else
+    return index, list.m_data[index]
+  end
+end
 
 -- @spec #initialize(data?: T[] | List<T>): void
 function ic:initialize(data)
@@ -11,9 +22,11 @@ function ic:initialize(data)
 
   if data then
     if type(data) == "table" then
-      if foundation.com.Class.is_object(data) then
+      if Class.is_object(data) then
         if data:is_instance_of(List) then
           self:initialize_copy(data)
+        elseif data.to_list then
+          self:initialize_copy(data:to_list())
         else
           error("Expected object to be an instance of List")
         end
@@ -33,6 +46,14 @@ function ic:initialize(data)
     self.m_data = {}
     self.m_cursor = 0
   end
+end
+
+-- Returns itself, but is an interface function for other classes to implement
+--
+-- @since "1.1.0"
+-- @spec #to_list(): List<T>
+function ic:to_list()
+  return self
 end
 
 -- Compares self against another list to determine if they contain the same
@@ -134,6 +155,103 @@ function ic:push(...)
   return self
 end
 
+-- Concatenates one list into the target list.
+--
+-- @since "1.1.0"
+-- @spec #concat(other: List<T> | Table | {#to_list<T>}): self
+function ic:concat(other)
+  if Class.is_object(other) then
+    if other:is_instance_of(List) then
+      return self:_concat_list(other)
+    elseif other.to_list then
+      return self:_concat_list(other:to_list())
+    else
+      error("unexpected object")
+    end
+  elseif type(other) == "table" then
+    for _,item in ipairs(other) do
+      self.m_cursor = self.m_cursor + 1
+      self.m_data[self.m_cursor] = item
+    end
+    return self
+  else
+    error("unexpected value")
+  end
+end
+
+function ic:_concat_list(list)
+  local data = list.m_data
+  local len = list.m_cursor
+
+  if len > 0 then
+    for i = 1,len do
+      self.m_cursor = self.m_cursor + 1
+      self.m_data[self.m_cursor] = data[i]
+    end
+  end
+  return self
+end
+
+-- Removes the first element or elements in the list and returns them
+--
+-- @since "1.1.0"
+-- @spec #shift(len: Integer): T[] | nil
+-- @spec #shift(): T | nil
+function ic:shift(len)
+  local item
+  local data
+  local i
+
+  if len then
+    local result = {}
+
+    if self.m_cursor > 0 then
+      len = math.min(self.m_cursor, len)
+      for x = 1,len do
+        result[x] = self.m_data[x]
+      end
+
+      data = self.m_data
+      self.m_data = {}
+
+      if self.m_cursor > len then
+        i = 0
+        for x = len+1,self.m_cursor do
+          i = i + 1
+          self.m_data[i] = data[x]
+        end
+      end
+
+      self.m_cursor = self.m_cursor - len
+    end
+
+    return result
+  else
+    if self.m_cursor > 0 then
+      item = self.m_data[1]
+
+      if self.m_cursor == 1 then
+        self.m_data[1] = nil
+        self.m_cursor = self.m_cursor - 1
+      else
+        data = self.m_data
+        self.m_data = {}
+        i = 0
+        len = self.m_cursor
+        self.m_cursor = self.m_cursor - 1
+        for x = 2,len do
+          i = i + 1
+          self.m_data[i] = data[x]
+        end
+      end
+
+      return item
+    end
+
+    return nil
+  end
+end
+
 -- Pops the last item in the list.
 -- A `len` is specified it will attempt to pop that many items from the list and
 -- return a table containing those items.
@@ -141,6 +259,7 @@ end
 -- @spec #pop(len: Integer): T[] | nil
 -- @spec #pop(): T | nil
 function ic:pop(len)
+  local item
   if len then
     local result = {}
     if self.m_cursor > 0 then
@@ -149,7 +268,7 @@ function ic:pop(len)
       local i = 0
 
       for x = start,tail do
-        local item = self.m_data[x]
+        item = self.m_data[x]
         self.m_data[x] = nil
         self.m_cursor = self.m_cursor - 1
         i = i + 1
@@ -159,7 +278,7 @@ function ic:pop(len)
     return result
   else
     if self.m_cursor > 0 then
-      local item = self.m_data[self.m_cursor]
+      item = self.m_data[self.m_cursor]
       self.m_data[self.m_cursor] = nil
       self.m_cursor = self.m_cursor - 1
       return item
@@ -173,14 +292,15 @@ end
 --
 -- @spec #pop_at(pos: Integer): T | nil
 function ic:pop_at(pos)
+  local item
   if pos > 0 and pos <= self.m_cursor then
     if pos == self.m_cursor then
-      local item = self.m_data[pos]
+      item = self.m_data[pos]
       self.m_data[pos] = nil
       self.m_cursor = self.m_cursor - 1
       return item
     else
-      local item = self.m_data[pos]
+      item = self.m_data[pos]
       local data = self.m_data
       self.m_data = {}
       local i = 0
@@ -292,6 +412,42 @@ function ic:pop_sample()
     return self:pop_at(pos)
   end
   return nil
+end
+
+-- @since "1.1.0"
+-- @spec #reduce(Any, Function/2): Any
+function ic:reduce(acc, callback)
+  if self.m_cursor > 0 then
+    for _, item in list_next,self,0 do
+      acc = callback(item, acc)
+    end
+  end
+  return acc
+end
+
+-- @since "1.1.0"
+-- @spec #each(): (Function, List<T>, Integer)
+-- @spec #each(Function/1): self
+function ic:each(callback)
+  if callback then
+    if self.m_cursor > 0 then
+      for _, item in list_next,self,0 do
+        callback(item)
+      end
+    end
+    return self
+  end
+
+  return list_next, self, 0
+end
+
+-- @since "1.1.0"
+-- @spec #map(Function<T>/1): List<T>
+function ic:map(callback)
+  return self:reduce(List:new(), function (item, acc)
+    acc:push(callback(item))
+    return acc
+  end)
 end
 
 foundation.com.List = List

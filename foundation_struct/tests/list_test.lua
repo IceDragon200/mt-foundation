@@ -160,12 +160,83 @@ case:describe("#push/1+", function (t2)
   end)
 end)
 
+case:describe("#concat/1", function (t2)
+  t2:test("can concatentate with an empty lists", function (t3)
+    local a = m:new()
+    local b = m:new()
+
+    a:concat(b)
+
+    t3:assert_eq(0, a:size())
+  end)
+
+  t2:test("can concatentate a list with items into an empty list", function (t3)
+    local a = m:new()
+    local b = m:new({ "a", "b", "c" })
+
+    a:concat(b)
+    t3:assert_eq(3, a:size())
+    t3:assert_table_eq({"a", "b", "c"}, a:data())
+  end)
+
+  t2:test("can concatentate a list with items into another list with items", function (t3)
+    local a = m:new({ 1, 2, 3 })
+    local b = m:new({ "a", "b", "c" })
+
+    a:concat(b)
+
+    t3:assert_eq(6, a:size())
+    t3:assert_table_eq({1, 2, 3, "a", "b", "c"}, a:data())
+  end)
+end)
+
+case:describe("#shift/0", function (t2)
+  t2:test("can pop the last item on a list", function (t3)
+    local list = m:new({ "a", "b", "c" })
+
+    t3:assert_eq("a", list:shift())
+    t3:assert_eq(2, list:size())
+    t3:assert_eq("b", list:shift())
+    t3:assert_eq(1, list:size())
+    t3:assert_eq("c", list:shift())
+    t3:assert_eq(0, list:size())
+    t3:assert_eq(nil, list:shift())
+    t3:assert_eq(0, list:size())
+  end)
+end)
+
+case:describe("#shift/1", function (t2)
+  t2:test("can shift a list of items off the list", function (t3)
+    local list = m:new({ "a", "b", "c" })
+
+    t3:assert_table_eq({"a", "b"}, list:shift(2))
+    t3:assert_eq(1, list:size())
+    t3:assert_eq("c", list:first())
+    t3:assert_eq("c", list:last())
+  end)
+
+  t2:test("can adjust shift if length", function (t3)
+    local list = m:new({ "a", "b", "c" })
+
+    t3:assert_table_eq({"a", "b", "c"}, list:shift(4))
+    t3:assert_eq(0, list:size())
+    t3:assert_eq(nil, list:first())
+  end)
+end)
+
 case:describe("#pop/0", function (t2)
   t2:test("can pop the last item on a list", function (t3)
     local list = m:new({ "a", "b", "c" })
+
     t3:assert_eq("c", list:pop())
     t3:assert_eq(2, list:size())
     t3:assert_eq("b", list:last())
+    t3:assert_eq("b", list:pop())
+    t3:assert_eq(1, list:size())
+    t3:assert_eq("a", list:pop())
+    t3:assert_eq(0, list:size())
+    t3:assert_eq(nil, list:pop())
+    t3:assert_eq(0, list:size())
   end)
 end)
 
@@ -329,6 +400,85 @@ case:describe("#pop_sample/0", function (t2)
     t3:assert_in(list:pop_sample(), {"a", "b", "c"})
 
     t3:assert_eq(2, list:size())
+  end)
+end)
+
+case:describe("#reduce/2", function (t2)
+  t2:test("can iterate an empty list", function (t3)
+    local list = m:new()
+
+    local result = list:reduce(0, function (_item, acc)
+      return acc
+    end)
+
+    t3:assert_eq(0, result)
+  end)
+
+  t2:test("can iterate a list with items", function (t3)
+    local list = m:new({ 1, 2, 3 })
+
+    local result = list:reduce(0, function (item, acc)
+      return acc + item
+    end)
+
+    t3:assert_eq(6, result)
+  end)
+end)
+
+case:describe("#each/1", function (t2)
+  t2:test("can iterate an empty list", function (t3)
+    local list = m:new()
+
+    local touched = false
+    local result = list:each(function (item)
+      touched = true
+    end)
+
+    t3:refute(touched)
+  end)
+
+  t2:test("can iterate over a list", function (t3)
+    local list = m:new({ 1, 2, 3 })
+
+    local seen = {}
+    list:each(function (item)
+      table.insert(seen, item)
+    end)
+
+    t3:assert_table_eq({ 1, 2, 3 }, seen)
+  end)
+
+  t2:test("will return a valid lua iterator without a callback", function (t3)
+    local list = m:new({ 1, 2, 3 })
+
+    local seen = {}
+    for i, item in list:each() do
+      seen[i] = item
+    end
+
+    t3:assert_table_eq({ 1, 2, 3 }, seen)
+  end)
+end)
+
+case:describe("#map/1", function (t2)
+  t2:test("can map an empty list", function (t3)
+    local list = m:new()
+
+    local result = list:map(function (item)
+      return item
+    end)
+
+    t3:assert_table_eq({}, result:data())
+  end)
+
+  t2:test("can map values in a list and return a new list", function (t3)
+    local list = m:new({ 1, 2, 3 })
+
+    local result = list:map(function (item)
+      return item * 2
+    end)
+
+    t3:assert_table_eq({ 2, 4, 6 }, result:data())
   end)
 end)
 
