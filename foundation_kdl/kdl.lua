@@ -4,6 +4,8 @@ local mod = foundation_kdl
 local KDL = {}
 foundation_kdl.KDL = KDL
 
+mod:require("kdl/node.lua")
+
 mod:require("kdl/lexer.lua")
 -- @spec tokenize(String): (true, Table) | (false, Table, String)
 KDL.tokenize = KDL.Lexer.tokenize
@@ -14,7 +16,6 @@ KDL.decode = KDL.Decoder.decode
 
 mod:require("kdl/encoder.lua")
 -- @spec encode(Table): String
-function KDL.encode(node)
-end
+KDL.encode = KDL.Encoder.encode
 
 foundation.com.KDL = KDL
