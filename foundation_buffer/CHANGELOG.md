@@ -1,3 +1,11 @@
+# 2.1.0
+
+* Added `foundation.com.StringBuffer#peek_utf8_codepoint/0`
+* Added `foundation.com.StringBuffer#skip_utf8_codepoint/0`
+* Added `foundation.com.TokenBuffer#is_next_token/1`
+* Added `foundation.com.TokenBuffer#next_token/0`
+* Added `foundation.com.TokenBuffer#peek_token/0`
+
 # 2.0.0
 
 * Added `foundation.com.TokenBuffer`

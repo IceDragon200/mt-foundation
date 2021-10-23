@@ -199,6 +199,7 @@ function ic:scan_upto(token_name)
   return tokens
 end
 
+-- @since "2.1.0"
 -- @spec #is_next_token(String): Boolean
 function ic:is_next_token(token_name)
   _check_readable(self)
@@ -211,6 +212,20 @@ function ic:is_next_token(token_name)
   return false
 end
 
+-- @since "2.1.0"
+-- @spec #peek_token(): Token
+function ic:peek_token()
+  _check_readable(self)
+
+  if self.m_cursor <= #self.m_data then
+    local token = self.m_data[self.m_cursor]
+    return token
+  end
+
+  return nil
+end
+
+-- @since "2.1.0"
 -- @spec #next_token(): Token
 function ic:next_token()
   _check_readable(self)

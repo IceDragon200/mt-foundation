@@ -292,6 +292,10 @@ if utf8 then
     end
   end
 
+  -- Skips the next bytes as a utf8 codepoint
+  --
+  -- @since "2.1.0"
+  -- @spec skip_utf8_codepoint(): (String, Integer)
   function ic:skip_utf8_codepoint()
     local pos = self.m_cursor
     local start, tail = utf8.next_codepoint_pos(self.m_data, pos)
