@@ -479,5 +479,3 @@ end)
 case:execute()
 case:display_stats()
 case:maybe_error()
-
-error("done")
