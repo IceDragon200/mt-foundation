@@ -7,6 +7,7 @@ local table_copy = assert(foundation.com.table_copy)
 local List = Class:extends("foundation.com.List")
 local ic = List.instance_class
 
+-- @spec list_next(List<T>, Integer): (Integer, T) | nil
 local function list_next(list, index)
   index = index + 1
   if index > list.m_cursor then
@@ -15,6 +16,8 @@ local function list_next(list, index)
     return index, list.m_data[index]
   end
 end
+
+List.list_next = list_next
 
 -- @spec #initialize(data?: T[] | List<T>): void
 function ic:initialize(data)
@@ -89,7 +92,7 @@ end
 
 -- Returns a copy of the list
 --
--- @spec #copy(): List
+-- @spec #copy(): List<T>
 function ic:copy()
   local list = self._class:alloc()
   list:initialize_copy(self)
@@ -415,11 +418,11 @@ function ic:pop_sample()
 end
 
 -- @since "1.1.0"
--- @spec #reduce(Any, Function/2): Any
+-- @spec #reduce(Any, Function/3): Any
 function ic:reduce(acc, callback)
   if self.m_cursor > 0 then
-    for _, item in list_next,self,0 do
-      acc = callback(item, acc)
+    for index, item in list_next,self,0 do
+      acc = callback(item, index, acc)
     end
   end
   return acc
@@ -431,8 +434,8 @@ end
 function ic:each(callback)
   if callback then
     if self.m_cursor > 0 then
-      for _, item in list_next,self,0 do
-        callback(item)
+      for index, item in list_next,self,0 do
+        callback(item, index)
       end
     end
     return self
@@ -444,8 +447,8 @@ end
 -- @since "1.1.0"
 -- @spec #map(Function<T>/1): List<T>
 function ic:map(callback)
-  return self:reduce(List:new(), function (item, acc)
-    acc:push(callback(item))
+  return self:reduce(List:new(), function (item, index, acc)
+    acc:push(callback(item, index))
     return acc
   end)
 end

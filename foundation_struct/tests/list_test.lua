@@ -407,7 +407,7 @@ case:describe("#reduce/2", function (t2)
   t2:test("can iterate an empty list", function (t3)
     local list = m:new()
 
-    local result = list:reduce(0, function (_item, acc)
+    local result = list:reduce(0, function (_item, _index, acc)
       return acc
     end)
 
@@ -417,7 +417,7 @@ case:describe("#reduce/2", function (t2)
   t2:test("can iterate a list with items", function (t3)
     local list = m:new({ 1, 2, 3 })
 
-    local result = list:reduce(0, function (item, acc)
+    local result = list:reduce(0, function (item, _index, acc)
       return acc + item
     end)
 
@@ -430,7 +430,7 @@ case:describe("#each/1", function (t2)
     local list = m:new()
 
     local touched = false
-    local result = list:each(function (item)
+    local result = list:each(function (item, _index)
       touched = true
     end)
 
@@ -441,13 +441,15 @@ case:describe("#each/1", function (t2)
     local list = m:new({ 1, 2, 3 })
 
     local seen = {}
-    list:each(function (item)
+    list:each(function (item, _index)
       table.insert(seen, item)
     end)
 
     t3:assert_table_eq({ 1, 2, 3 }, seen)
   end)
+end)
 
+case:describe("#each/0", function (t2)
   t2:test("will return a valid lua iterator without a callback", function (t3)
     local list = m:new({ 1, 2, 3 })
 
