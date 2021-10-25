@@ -7,13 +7,18 @@
 -- @spec table_concat(...Table): Table
 function foundation.com.table_concat(...)
   local result = {}
-  local i = 0
-  for _,t in ipairs({...}) do
-    for _,value in ipairs(t) do
-      i = i + 1
-      result[i] = value
+  local len = select('#', ...)
+  local t
+  if len > 0 then
+    for i = 1,len do
+      t = select(i, ...)
+      for _,value in ipairs(t) do
+        i = i + 1
+        result[i] = value
+      end
     end
   end
+
   return result
 end
 
@@ -95,9 +100,15 @@ end
 -- @spec table_merge(...Table): Table
 function foundation.com.table_merge(...)
   local result = {}
-  for _,t in ipairs({...}) do
-    for key,value in pairs(t) do
-      result[key] = value
+  local len = select('#', ...)
+  local t
+
+  if len > 0 then
+    for i = 1,len do
+      t = select(i, ...)
+      for key,value in pairs(t) do
+        result[key] = value
+      end
     end
   end
   return result
@@ -106,15 +117,22 @@ end
 -- @spec table_deep_merge(...Table): Table
 function foundation.com.table_deep_merge(...)
   local result = {}
-  for _,t in ipairs({...}) do
-    for key,value in pairs(t) do
-      if type(result[key]) == "table" and type(value) == "table" and not result[key][1] and not value[1] then
-        result[key] = foundation.com.table_deep_merge(result[key], value)
-      else
-        result[key] = value
+  local len = select('#', ...)
+  local t
+
+  if len > 0 then
+    for i = 1,len do
+      t = select(i, ...)
+      for key,value in pairs(t) do
+        if type(result[key]) == "table" and type(value) == "table" and not result[key][1] and not value[1] then
+          result[key] = foundation.com.table_deep_merge(result[key], value)
+        else
+          result[key] = value
+        end
       end
     end
   end
+
   return result
 end
 
