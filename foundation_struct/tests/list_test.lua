@@ -161,7 +161,7 @@ case:describe("#push/1+", function (t2)
 end)
 
 case:describe("#concat/1", function (t2)
-  t2:test("can concatentate with an empty lists", function (t3)
+  t2:test("can concatenate with an empty lists", function (t3)
     local a = m:new()
     local b = m:new()
 
@@ -170,7 +170,7 @@ case:describe("#concat/1", function (t2)
     t3:assert_eq(0, a:size())
   end)
 
-  t2:test("can concatentate a list with items into an empty list", function (t3)
+  t2:test("can concatenate a list with items into an empty list", function (t3)
     local a = m:new()
     local b = m:new({ "a", "b", "c" })
 
@@ -179,7 +179,7 @@ case:describe("#concat/1", function (t2)
     t3:assert_table_eq({"a", "b", "c"}, a:data())
   end)
 
-  t2:test("can concatentate a list with items into another list with items", function (t3)
+  t2:test("can concatenate a list with items into another list with items", function (t3)
     local a = m:new({ 1, 2, 3 })
     local b = m:new({ "a", "b", "c" })
 

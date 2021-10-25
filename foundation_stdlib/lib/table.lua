@@ -9,12 +9,13 @@ function foundation.com.table_concat(...)
   local result = {}
   local len = select('#', ...)
   local t
+  local x = 0
   if len > 0 then
     for i = 1,len do
       t = select(i, ...)
       for _,value in ipairs(t) do
-        i = i + 1
-        result[i] = value
+        x = x + 1
+        result[x] = value
       end
     end
   end
@@ -59,6 +60,7 @@ function foundation.com.table_key_of(t, expected)
   return nil
 end
 
+-- @spec table_reduce(table: Table, acc: T, Function/3): T
 function foundation.com.table_reduce(tbl, acc, fun)
   local should_break
   for k, v in pairs(tbl) do
@@ -138,7 +140,14 @@ end
 
 -- Makes a copy of the given table
 --
-foundation.com.table_copy = foundation.com.table_merge
+-- @spec table_copy(Table): Table
+function foundation.com.table_copy(tab)
+  local result = {}
+  for key,value in pairs(tab) do
+    result[key] = value
+  end
+  return result
+end
 
 -- Sets a key in the specified table to the given value.
 -- You really shouldn't need this under normal circumstances.

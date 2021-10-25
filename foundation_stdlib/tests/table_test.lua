@@ -3,6 +3,112 @@ local m = foundation.com
 
 local case = Luna:new("foundation.com.table")
 
+case:describe("table_concat/1+", function (t2)
+  t2:test("can concatenate several array-like tables together", function (t3)
+    local t1 = {1, 2, 3}
+    local t2 = {"a", "b", "c"}
+
+    t3:assert_table_eq({1, 2, 3, "a", "b", "c"}, m.table_concat(t1, t2))
+  end)
+end)
+
+case:describe("table_take/2", function (t2)
+  t2:test("can pick out pairs from a table by keys", function (t3)
+    local t1 = {
+      name = "John Doe",
+      age = 1000,
+      address = "Somewhere",
+      state = "FL",
+    }
+
+    t3:assert_table_eq(
+      {
+        name = "John Doe",
+        age = 1000,
+      },
+      m.table_take(t1, { "name", "age" })
+    )
+  end)
+end)
+
+case:describe("table_drop/2", function (t2)
+  t2:test("can drop a list of keys from a table", function (t3)
+    local t1 = {
+      name = "John Doe",
+      age = 1000,
+      address = "Somewhere",
+      state = "FL",
+    }
+
+    t3:assert_table_eq(
+      {
+        name = "John Doe",
+        age = 1000,
+      },
+      m.table_drop(t1, { "address", "state" })
+    )
+  end)
+end)
+
+case:describe("table_key_of/2", function (t2)
+  t2:test("can lookup a key given only the value", function (t3)
+    local t1 = {
+      name = "John Doe",
+      age = 1000,
+      address = "Somewhere",
+      state = "FL",
+    }
+
+    t3:assert_table_eq(
+      {
+        name = "John Doe",
+        age = 1000,
+      },
+      m.table_drop(t1, { "address", "state" })
+    )
+  end)
+end)
+
+case:describe("table_merge/1+", function (t2)
+  t2:test("can merge multiple tables together", function (t3)
+    local t1  = {
+      name = "John Doe",
+      age = 1000,
+    }
+
+    local t2 = {
+      address = "Somewhere",
+      state = "FL",
+    }
+
+    t3:assert_table_eq(
+      {
+        name = "John Doe",
+        age = 1000,
+        address = "Somewhere",
+        state = "FL",
+      },
+      m.table_merge(t1, t2)
+    )
+  end)
+end)
+
+case:describe("table_copy/1", function (t2)
+  t2:test("can shallow copy a table", function (t3)
+    local t1 = {
+      name = "John Doe",
+      age = 1000,
+      address = "Somewhere",
+      state = "FL",
+    }
+
+    local t2 = m.table_copy(t1)
+
+    t3:refute_eq(t2, t1)
+    t3:assert_table_eq(t2, t1)
+  end)
+end)
+
 case:describe("table_equals/2", function (t2)
   t2:test("compares 2 tables and determines if they're equal", function (t3)
     t3:assert(m.table_equals({a = 1}, {a = 1}))
@@ -51,60 +157,6 @@ case:describe("is_table_empty/1", function (t2)
   t2:test("returns false if table contains any pairs", function (t3)
     t3:refute(m.is_table_empty({a = 1}))
     t3:refute(m.is_table_empty({b = 1, c = nil}))
-  end)
-end)
-
-
-case:describe("list_last/1", function (t2)
-  t2:test("returns the last element in the list", function (t3)
-    t3:assert_eq(nil, m.list_last({}))
-    t3:assert_eq(1, m.list_last({1}))
-    t3:assert_eq("abcdef", m.list_last({"zyx", "abcdef"}))
-    t3:assert_eq(5, m.list_last({1, 2, 3, 4, 5}))
-  end)
-end)
-
-case:describe("list_last/2", function (t2)
-  t2:test("returns the last n elements in list", function (t3)
-    t3:assert_table_eq({}, m.list_last({}, 1))
-    t3:assert_table_eq({1}, m.list_last({1}, 1))
-    t3:assert_table_eq({2, 3, 4}, m.list_last({1, 2, 3, 4}, 3))
-    t3:assert_table_eq({1, 2, 3, 4}, m.list_last({1, 2, 3, 4}, 5))
-  end)
-end)
-
-case:describe("list_concat/*", function (t2)
-  t2:test("can concatentate multiple list-like tables together", function (t3)
-    local a = {"abc", "def"}
-    local b = {"other", "stuff"}
-    local c = {1, 2, 3}
-    local r = m.list_concat(a, b, c)
-    t3:assert_table_eq(r, {"abc", "def", "other", "stuff", 1, 2, 3})
-  end)
-end)
-
-case:describe("list_sample/1", function (t2)
-  t2:test("randomly select one element from a given list", function (t3)
-    local items = {"a", "b", "c", "d"}
-    local item = m.list_sample(items)
-    t3:assert_in(item, items)
-  end)
-end)
-
-case:describe("list_get_next/2", function (t2)
-  local l = {"abc", "def", "xyz", "123", "456"}
-
-  t2:test("will return the first element given a nil element", function (t3)
-    t3:assert_eq(foundation.com.list_get_next(l, nil), "abc")
-  end)
-
-  t2:test("will return the next element given an existing element name", function (t3)
-    t3:assert_eq(foundation.com.list_get_next(l, "abc"), "def")
-    t3:assert_eq(foundation.com.list_get_next(l, "def"), "xyz")
-  end)
-
-  t2:test("will loop around the next element given an existing element name", function (t3)
-    t3:assert_eq(foundation.com.list_get_next(l, "456"), "abc")
   end)
 end)
 
