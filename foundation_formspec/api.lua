@@ -43,15 +43,17 @@ function api.raw(item)
   return {__raw=item}
 end
 
--- Tells the API that the value should be replaced with whatever it's expected default is
+-- Tells the API that the value should be replaced with whatever its expected default is
 function api.default()
   return {__default=true}
 end
 
+-- @spec formspec_version(Integer): String
 function api.formspec_version(version)
   return "formspec_version["..version.."]"
 end
 
+-- @spec size(w: Number, h: Number, fixed_size?: Boolean): String
 function api.size(w, h, fixed_size)
   if fixed_size == nil then
     return "size["..w..","..h.."]"
@@ -60,22 +62,27 @@ function api.size(w, h, fixed_size)
   end
 end
 
+-- @spec position(x: Number, y: Number): String
 function api.position(x, y)
   return "position["..x..","..y.."]"
 end
 
+-- @spec anchor(x: Number, y: Number): String
 function api.anchor(x, y)
   return "anchor["..x..","..y.."]"
 end
 
+-- @spec no_prepend(): String
 function api.no_prepend()
   return "no_prepend[]"
 end
 
+-- @spec real_coordinates(Boolean): String
 function api.real_coordinates(is_enabled)
   return "real_coordinates["..to_bool(is_enabled).."]"
 end
 
+-- @spec container(x: Number, y: Number, Function/0): String
 function api.container(x, y, callback)
   local result = "container["..x..","..y.."]"
   if callback then
@@ -85,6 +92,7 @@ function api.container(x, y, callback)
   end
 end
 
+-- @spec container_end(): String
 function api.container_end()
   return "container_end[]"
 end
