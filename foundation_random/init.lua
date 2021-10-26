@@ -9,4 +9,4 @@ mod:require("lib/weighted_list.lua")
 mod:require("lib/ulid.lua")
 
 mod:require("tests.lua")
-mod:require("benchmarks.lua")
+--mod:require("benchmarks.lua")
