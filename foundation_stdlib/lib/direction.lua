@@ -1,4 +1,5 @@
 -- @namespace foundation.com.Directions
+
 local Directions = {}
 
 -- This uses a bit flag map, for quick use with binary-styled representations
@@ -164,7 +165,7 @@ local D = Directions.D_DOWN  -- Y-
 
 -- Never again, f*** this seriously.
 -- Updated 2019-10-30, changed it a bit
-Directions.FACEDIR_TO_NEW_FACEDIR = {
+Directions.FACEDIR_TO_LOCAL_FACE = {
   -- Yp
   [0]  = fm(U, N, S, E, W, D),
   [1]  = fm(U, W, E, N, S, D),
@@ -199,7 +200,7 @@ Directions.FACEDIR_TO_NEW_FACEDIR = {
 
 Directions.FACEDIR_TO_FACES = {}
 
-for facedir, map in pairs(Directions.FACEDIR_TO_NEW_FACEDIR) do
+for facedir, map in pairs(Directions.FACEDIR_TO_LOCAL_FACE) do
   Directions.FACEDIR_TO_FACES[facedir] = {}
   for dir, dir2 in pairs(map) do
     -- invert mapping
@@ -247,7 +248,7 @@ function Directions.facedir_to_face(facedir, base_face)
 end
 
 function Directions.facedir_to_local_faces(facedir)
-  return Directions.FACEDIR_TO_NEW_FACEDIR[facedir % 32]
+  return Directions.FACEDIR_TO_LOCAL_FACE[facedir % 32]
 end
 
 function Directions.facedir_to_local_face(facedir, base_face)
@@ -272,6 +273,16 @@ function Directions.facedir_to_fd_axis_and_fd_rotation(facedir)
   local fd_axis = math.floor((facedir % 32) / 4)
   local fd_rotation = (facedir % 4)
   return fd_axis * 4, fd_rotation
+end
+
+function Directions.rotate_facedir_axis_clockwise(facedir)
+  local fd_axis, fd_rotation = Directions.facedir_to_fd_axis_and_fd_rotation(facedir)
+  return (fd_axis + 4) % 32 + fd_rotation
+end
+
+function Directions.rotate_facedir_axis_anticlockwise(facedir)
+  local fd_axis, fd_rotation = Directions.facedir_to_fd_axis_and_fd_rotation(facedir)
+  return (fd_axis - 4) % 32 + fd_rotation
 end
 
 function Directions.rotate_facedir_face_clockwise(facedir)
