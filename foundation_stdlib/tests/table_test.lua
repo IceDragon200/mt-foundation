@@ -109,6 +109,36 @@ case:describe("table_copy/1", function (t2)
   end)
 end)
 
+case:describe("table_deep_copy/1", function (t2)
+  t2:test("can make a deep copy of a table", function (t3)
+    local t1 = {
+      name = "John Doe",
+      age = 1000,
+      position = {
+        x = 1,
+        y = 2,
+        z = 3,
+      },
+      meta = {
+        address = {
+          address1 = "Somewhere",
+          state = "MR",
+          country_code = "JM",
+        },
+      },
+    }
+
+    local t2 = m.table_deep_copy(t1)
+
+    t3:refute_eq(t2, t1)
+    t3:refute_eq(t2.position, t1.position)
+    t3:refute_eq(t2.meta, t1.meta)
+    t3:refute_eq(t2.meta.address, t1.meta.address)
+
+    t3:assert_deep_eq(t2, t1)
+  end)
+end)
+
 case:describe("table_equals/2", function (t2)
   t2:test("compares 2 tables and determines if they're equal", function (t3)
     t3:assert(m.table_equals({a = 1}, {a = 1}))

@@ -52,6 +52,13 @@ function vector2.floor(dest, v2)
   return dest
 end
 
+-- @spec ceil(dest: Vector2, v2: Vector2): Vector2
+function vector2.ceil(dest, v2)
+  dest.x = math.ceil(v2.x)
+  dest.y = math.ceil(v2.y)
+  return dest
+end
+
 -- @spec round(dest: Vector2, v2: Vector2): Vector2
 function vector2.round(dest, v2)
   dest.x = math.floor(v2.x + 0.5)
@@ -161,6 +168,14 @@ function vector3.floor(dest, v1)
   dest.x = math.floor(v1.x)
   dest.y = math.floor(v1.y)
   dest.z = math.floor(v1.z)
+  return dest
+end
+
+-- @spec ceil(Vector3, Vector3): Vector3
+function vector3.ceil(dest, v1)
+  dest.x = math.ceil(v1.x)
+  dest.y = math.ceil(v1.y)
+  dest.z = math.ceil(v1.z)
   return dest
 end
 
@@ -291,6 +306,15 @@ function vector4.floor(dest, v1)
   dest.y = math.floor(v1.y)
   dest.z = math.floor(v1.z)
   dest.w = math.floor(v1.w)
+  return dest
+end
+
+-- @spec ceil(Vector4, Vector4): Vector4
+function vector4.ceil(dest, v1)
+  dest.x = math.ceil(v1.x)
+  dest.y = math.ceil(v1.y)
+  dest.z = math.ceil(v1.z)
+  dest.w = math.ceil(v1.w)
   return dest
 end
 

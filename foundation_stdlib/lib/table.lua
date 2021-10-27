@@ -149,6 +149,26 @@ function foundation.com.table_copy(tab)
   return result
 end
 
+-- Makes a deep copy of the table.
+-- Note that this function is recursive and does not make any effort to
+-- deduplicate any values for sake of performance.
+--
+-- @recursive unsafe
+-- @spec table_deep_copy(Table): Table
+function foundation.com.table_deep_copy(tab)
+  local result = {}
+
+  for key, value in pairs(tab) do
+    if type(value) == "table" then
+      result[key] = foundation.com.table_deep_copy(value)
+    else
+      result[key] = value
+    end
+  end
+
+  return result
+end
+
 -- Sets a key in the specified table to the given value.
 -- You really shouldn't need this under normal circumstances.
 --

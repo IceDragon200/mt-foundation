@@ -1,3 +1,19 @@
+# 1.11.0
+
+__Added Functions__
+
+* `foundation.com.table_deep_copy/1`
+* `foundation.com.Vector2`
+  * `ceil/2`
+* `foundation.com.Vector3`
+  * `ceil/2`
+* `foundation.com.Vector4`
+  * `ceil/2`
+
+# 1.10.0
+
+Stuff changed
+
 # 1.9.0
 
 __Added Functions__
