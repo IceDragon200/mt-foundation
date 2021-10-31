@@ -30,6 +30,7 @@ case:describe("next_codepoint/1", function (t2)
     t3:assert_eq("o", codepoint)
     codepoint, tail = mod.next_codepoint(subject, tail + 1)
     t3:assert_eq(nil, codepoint)
+    t3:assert_eq(nil, tail)
   end)
 end)
 

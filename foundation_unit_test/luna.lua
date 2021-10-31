@@ -1,6 +1,7 @@
 --[[
 
-  Luna is a test framework to replace knife.test, this has been extracted from my own personal project for use in minetest.
+  Luna is a test framework to replace knife.test,
+  this has been extracted from my own personal project for use in minetest.
 
   You are free to copy and use this module/class
 
@@ -152,11 +153,13 @@ end
 local DefaultReporter = {}
 function DefaultReporter:report(...)
   print(...)
+  return self
 end
 
 local NullReporter = {}
 function NullReporter:report(...)
   --
+  return self
 end
 
 -- @class Luna
@@ -253,28 +256,32 @@ end
 
 function ic:assert_eq(a, b, message)
   message = message or function ()
-    return ("expected to be equal to:\n\t left: " .. self:neat_dump(a) .. "\n\tright: " .. self:neat_dump(b))
+    return ("expected to be equal to:\n\t left: " .. self:neat_dump(a) ..
+            "\n\tright: " .. self:neat_dump(b))
   end
   self:assert(a == b, message)
 end
 
 function ic:assert_neq(a, b, message)
   message = message or function ()
-    return ("expected to not be equal to:\n\t left: " .. self:neat_dump(a) .. "\n\tright: " .. self:neat_dump(b))
+    return ("expected to not be equal to:\n\t left: " .. self:neat_dump(a) ..
+            "\n\tright: " .. self:neat_dump(b))
   end
   self:assert(a ~= b, message)
 end
 
 function ic:assert_table_eq(a, b, message)
   message = message or function ()
-    return ("expected to be equal to:\n\t left: " .. self:neat_dump(a) .. "\n\tright: " .. self:neat_dump(b))
+    return ("expected to be equal to:\n\t left: " .. self:neat_dump(a) ..
+            "\n\tright: " .. self:neat_dump(b))
   end
   self:assert(table_equals(a, b), message)
 end
 
 function ic:assert_deep_eq(a, b, message)
   message = message or function ()
-    return ("expected to be equal to:\n\t left: " .. self:neat_dump(a) .. "\n\tright: " .. self:neat_dump(b))
+    return ("expected to be equal to:\n\t left: " .. self:neat_dump(a) ..
+            "\n\tright: " .. self:neat_dump(b))
   end
 
   self:assert(deep_equals(a, b), message)
@@ -282,14 +289,16 @@ end
 
 function ic:assert_in_range(item, min, max, message)
   message = message or function ()
-    return ("expected " .. self:neat_dump(item) .. " to be range of " .. self:neat_dump(min) .. ".." .. self:neat_dump(max))
+    return ("expected " .. self:neat_dump(item) .. " to be range of " ..
+            self:neat_dump(min) .. ".." .. self:neat_dump(max))
   end
   self:assert(item >= min and item <= max, message)
 end
 
 function ic:assert_in(item, list, message)
   message = message or function ()
-    return ("expected " .. self:neat_dump(item) .. " to be included in " .. self:neat_dump(list))
+    return ("expected " .. self:neat_dump(item) .. " to be included in " ..
+            self:neat_dump(list))
   end
   self:assert(table_includes_value(list, item), message)
 end
@@ -374,10 +383,21 @@ end
 function ic:display_stats()
   local stats = self:bake_stats()
   local total_tests = stats.tests_passed + stats.tests_failed
-  local total_assertions = stats.assertions_passed + stats.assertions_failed
+  local total_assertions =
+    stats.assertions_passed +
+    stats.assertions_failed
+
   self.reporter:report("\n")
-  self.reporter:report(stats.tests_passed .. " passed", stats.tests_failed .. " failed", total_tests .. " total")
-  self.reporter:report(stats.assertions_passed .. " assertions passed", stats.assertions_failed .. " assertions failed", total_assertions .. " total assertions")
+  self.reporter:report(
+    stats.tests_passed .. " passed",
+    stats.tests_failed .. " failed",
+    total_tests .. " total"
+  )
+  self.reporter:report(
+    stats.assertions_passed .. " assertions passed",
+    stats.assertions_failed .. " assertions failed",
+    total_assertions .. " total assertions"
+  )
   self.reporter:report("\n")
   return self
 end

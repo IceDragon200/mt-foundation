@@ -63,7 +63,7 @@ function utf8.next_codepoint(str, start)
     return string.sub(str, start, tail), tail
   end
 
-  return nil, 0
+  return nil, nil
 end
 
 -- Returns a table with all the codepoints in the string

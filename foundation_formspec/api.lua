@@ -9,6 +9,14 @@
 foundation.com.formspec = {}
 
 local api = {}
+local vector2 = foundation.com.Vector2
+
+-- @type Raw<T>: {
+--   __raw: T,
+-- }
+--
+
+local LIST_SPACING = 0.25
 
 local function to_bool(item)
   -- a hack to quickly get a boolean from a normal value
@@ -27,6 +35,10 @@ local function to_color(item)
 end
 
 local function to_text(item)
+  if item == nil then
+    return ""
+  end
+
   if type(item) == "table" then
     if item.__raw then
       return item.__raw
@@ -37,8 +49,31 @@ local function to_text(item)
   return minetest.formspec_escape(tostring(item))
 end
 
+-- @spec calc_inventory_offset(size): Integer
+function api.calc_inventory_offset(size)
+  return size + LIST_SPACING * 2 * math.max(size - 1, 0)
+end
+
+-- Calculates the size[] that a form needs to be to contain the given inventory
+-- The inventory is specified by its size (cols and rows) a vector2 is returned
+-- where x is the width of the form and y is the height.
+-- Note that this does not compensate for margins outside the inventory.
+--
+-- @spec calc_form_inventory_size(cols: Integer, rows: Integer): Vector2
+function api.calc_form_inventory_size(cols, rows)
+  return vector2.new(
+    -- all that really needs to be compensated is the spacing
+    -- cells + spacing * 2 * max(cells - 1, 0)
+    -- the `* 2` on spacing is to compensate for the bi-directional
+    cols + LIST_SPACING * math.max(cols - 1, 0),
+    rows + LIST_SPACING * math.max(rows - 1, 0)
+  )
+end
+
 -- Utility function for specifying a text element that should be interpolated
 -- raw and not escaped
+--
+-- @spec raw(T): Raw<T>
 function api.raw(item)
   return {__raw=item}
 end
@@ -275,10 +310,17 @@ function api.field_close_on_enter(name, should_close_on_enter)
   return "field_close_on_enter["..name..";"..to_bool(should_close_on_enter).."]"
 end
 
+-- @spec textarea(x: Integer,
+--                y: Integer,
+--                w: Integer,
+--                h: Integer,
+--                name?: String,
+--                label: String,
+--                default: Any): String
 function api.textarea(x, y, w, h, name, label, default)
   local args = x..","..y..
     ";"..w..","..h..
-    ";"..name..
+    ";"..(name or "")..
     ";"..to_text(label)..
     ";"..to_text(default or "")
 

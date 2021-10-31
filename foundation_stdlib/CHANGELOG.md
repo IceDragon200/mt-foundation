@@ -1,3 +1,7 @@
+# 1.11.1
+
+* `foundation.com.table_equals/2` can now handle nils for both arguments
+
 # 1.11.0
 
 __Added Functions__

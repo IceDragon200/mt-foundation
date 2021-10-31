@@ -113,7 +113,7 @@ case:describe("#each/1", function (t2)
     local ll = m:new()
 
     local touched = false
-    local result = ll:each(function (item, _node)
+    ll:each(function (_item, _node)
       touched = true
     end)
 
@@ -138,7 +138,7 @@ case:describe("#each/0", function (t2)
 
     local seen = {}
     local i = 0
-    for node, item in ll:each() do
+    for _node, item in ll:each() do
       i = i + 1
       seen[i] = item
     end

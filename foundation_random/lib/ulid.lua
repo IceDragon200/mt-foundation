@@ -6,7 +6,6 @@ local integer_le_encode = assert(foundation.com.integer_le_encode)
 local integer_be_encode = assert(foundation.com.integer_be_encode)
 local integer_hex_be_encode = assert(foundation.com.integer_hex_be_encode)
 local list_crawford_base32_le_rolling_encode_table = assert(foundation.com.list_crawford_base32_le_rolling_encode_table)
-local ULID = {}
 
 local secrand = SecureRandom()
 
@@ -34,21 +33,14 @@ local function format_hex_be_string(time48, random_a48, random_b32)
          integer_hex_be_encode(random_b32, 4)
 end
 
-local function right_unroll_table(target, source, i, len)
-  local l = #source
-
-  for _ = 1,len do
-    target[i] = source[l]
-    i = i + 1
-    l = l - 1
-  end
-
-  return i, target
-end
-
--- @spec format_string(time48: Integer, random_a48: Integer | String, random_b32: Integer | String): String
+-- @spec format_string(
+--         time48: Integer,
+--         random_a48: Integer | String,
+--         random_b32: Integer | String): String
 local function format_string(time48, random_a48, random_b32)
-  local result = list_crawford_base32_le_rolling_encode_table(6, time48, 6, random_a48, 4, random_b32)
+  local result = list_crawford_base32_le_rolling_encode_table(
+    6, time48, 6, random_a48, 4, random_b32
+  )
   local i = #result
 
   if i < 26 then

@@ -3,12 +3,12 @@
 --
 -- Binary Buffer - similar interface as StringBuf but using an FFI allocated uchar array
 --
-if not foundation.com.ffi then
+if not foundation_binary.ffi then
   foundation.com.error("foundation.com.BinaryBuffer is unavailable as it requires LuaJIT's FFI module")
   return
 end
 
-local ffi = assert(foundation.com.ffi)
+local ffi = assert(foundation_binary.ffi)
 
 -- @class BinaryBuffer
 local BinaryBuffer = foundation.com.Class:extends('BinaryBuffer')

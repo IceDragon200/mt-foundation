@@ -126,7 +126,7 @@ function ic:reverse()
 
     for x = 1,half do
       x2 = 1 + self.m_cursor - x
-      local tmp = self.m_data[x2]
+      tmp = self.m_data[x2]
       self.m_data[x2] = self.m_data[x]
       self.m_data[x] = tmp
     end

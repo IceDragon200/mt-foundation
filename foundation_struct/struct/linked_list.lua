@@ -16,7 +16,7 @@ local ic = LinkedList.instance_class
 -- }
 
 -- @spec linked_list_next(LinkedList<T>, LinkedList.Node<T>): (LinkedList.Node<T>, T) | nil
-local function linked_list_next(ll, node)
+local function linked_list_next(_ll, node)
   node = node.next
 
   if node then

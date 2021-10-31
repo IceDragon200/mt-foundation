@@ -430,7 +430,7 @@ case:describe("#each/1", function (t2)
     local list = m:new()
 
     local touched = false
-    local result = list:each(function (item, _index)
+    list:each(function (_item, _index)
       touched = true
     end)
 
