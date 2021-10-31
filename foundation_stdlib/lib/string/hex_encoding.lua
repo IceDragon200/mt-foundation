@@ -128,7 +128,7 @@ function foundation.com.handle_escaped_hex(i, j, bytes, result)
     result[j] = string.char(hi * 16 + lo)
   else
     -- something isn't right, skip over this
-    result[j] = string.char(byte)
+    result[j] = string.char(bytes[1])
     result[j + 1] = "x"
     result[j + 2] = string.char(hinibble)
     result[j + 3] = string.char(lonibble)

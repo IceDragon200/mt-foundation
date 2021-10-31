@@ -1,9 +1,10 @@
 -- @namespace foundation.com
+local mod = foundation_stdlib
 
-foundation_stdlib:require("lib/string/bin_encoding.lua")
-foundation_stdlib:require("lib/string/dec_encoding.lua")
-foundation_stdlib:require("lib/string/hex_encoding.lua")
-foundation_stdlib:require("lib/string/oct_encoding.lua")
+mod:require("lib/string/bin_encoding.lua")
+mod:require("lib/string/dec_encoding.lua")
+mod:require("lib/string/hex_encoding.lua")
+mod:require("lib/string/oct_encoding.lua")
 
 local ref_id = 0
 
@@ -91,9 +92,10 @@ function foundation.com.string_remove_spaces(str)
   local i = 1
   local len = #bytes
   local j = 1
+  local byte
 
   while i <= len do
-    local byte = bytes[i]
+    byte = bytes[i]
 
     -- skip spaces, newlines, returns and tabs
     if byte == 32 or
@@ -180,13 +182,16 @@ function foundation.com.string_split(str, pattern)
     end
   else
     local remaining = str
-    local pattern_length = #pattern
+    local _pattern_length = #pattern
     local i = 1
+    local part
+    local head
+    local tail
 
     while remaining do
-      local head, tail = string.find(remaining, pattern)
+      head, tail = string.find(remaining, pattern)
       if head then
-        local part = string.sub(remaining, 1, head - 1)
+        part = string.sub(remaining, 1, head - 1)
         result[i] = part
         remaining = string.sub(remaining, tail + 1)
       else

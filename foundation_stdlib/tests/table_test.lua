@@ -5,16 +5,16 @@ local case = Luna:new("foundation.com.table")
 
 case:describe("table_concat/1+", function (t2)
   t2:test("can concatenate several array-like tables together", function (t3)
-    local t1 = {1, 2, 3}
-    local t2 = {"a", "b", "c"}
+    local tab1 = {1, 2, 3}
+    local tab2 = {"a", "b", "c"}
 
-    t3:assert_table_eq({1, 2, 3, "a", "b", "c"}, m.table_concat(t1, t2))
+    t3:assert_table_eq({1, 2, 3, "a", "b", "c"}, m.table_concat(tab1, tab2))
   end)
 end)
 
 case:describe("table_take/2", function (t2)
   t2:test("can pick out pairs from a table by keys", function (t3)
-    local t1 = {
+    local tab1 = {
       name = "John Doe",
       age = 1000,
       address = "Somewhere",
@@ -26,14 +26,14 @@ case:describe("table_take/2", function (t2)
         name = "John Doe",
         age = 1000,
       },
-      m.table_take(t1, { "name", "age" })
+      m.table_take(tab1, { "name", "age" })
     )
   end)
 end)
 
 case:describe("table_drop/2", function (t2)
   t2:test("can drop a list of keys from a table", function (t3)
-    local t1 = {
+    local tab1 = {
       name = "John Doe",
       age = 1000,
       address = "Somewhere",
@@ -45,14 +45,14 @@ case:describe("table_drop/2", function (t2)
         name = "John Doe",
         age = 1000,
       },
-      m.table_drop(t1, { "address", "state" })
+      m.table_drop(tab1, { "address", "state" })
     )
   end)
 end)
 
 case:describe("table_key_of/2", function (t2)
   t2:test("can lookup a key given only the value", function (t3)
-    local t1 = {
+    local tab1 = {
       name = "John Doe",
       age = 1000,
       address = "Somewhere",
@@ -64,19 +64,19 @@ case:describe("table_key_of/2", function (t2)
         name = "John Doe",
         age = 1000,
       },
-      m.table_drop(t1, { "address", "state" })
+      m.table_drop(tab1, { "address", "state" })
     )
   end)
 end)
 
 case:describe("table_merge/1+", function (t2)
   t2:test("can merge multiple tables together", function (t3)
-    local t1  = {
+    local tab1  = {
       name = "John Doe",
       age = 1000,
     }
 
-    local t2 = {
+    local tab2 = {
       address = "Somewhere",
       state = "FL",
     }
@@ -88,30 +88,30 @@ case:describe("table_merge/1+", function (t2)
         address = "Somewhere",
         state = "FL",
       },
-      m.table_merge(t1, t2)
+      m.table_merge(tab1, tab2)
     )
   end)
 end)
 
 case:describe("table_copy/1", function (t2)
   t2:test("can shallow copy a table", function (t3)
-    local t1 = {
+    local tab1 = {
       name = "John Doe",
       age = 1000,
       address = "Somewhere",
       state = "FL",
     }
 
-    local t2 = m.table_copy(t1)
+    local tab2 = m.table_copy(tab1)
 
-    t3:refute_eq(t2, t1)
-    t3:assert_table_eq(t2, t1)
+    t3:refute_eq(tab2, tab1)
+    t3:assert_table_eq(tab2, tab1)
   end)
 end)
 
 case:describe("table_deep_copy/1", function (t2)
   t2:test("can make a deep copy of a table", function (t3)
-    local t1 = {
+    local tab1 = {
       name = "John Doe",
       age = 1000,
       position = {
@@ -128,14 +128,14 @@ case:describe("table_deep_copy/1", function (t2)
       },
     }
 
-    local t2 = m.table_deep_copy(t1)
+    local tab2 = m.table_deep_copy(tab1)
 
-    t3:refute_eq(t2, t1)
-    t3:refute_eq(t2.position, t1.position)
-    t3:refute_eq(t2.meta, t1.meta)
-    t3:refute_eq(t2.meta.address, t1.meta.address)
+    t3:refute_eq(tab2, tab1)
+    t3:refute_eq(tab2.position, tab1.position)
+    t3:refute_eq(tab2.meta, tab1.meta)
+    t3:refute_eq(tab2.meta.address, tab1.meta.address)
 
-    t3:assert_deep_eq(t2, t1)
+    t3:assert_deep_eq(tab2, tab1)
   end)
 end)
 
@@ -145,6 +145,12 @@ case:describe("table_equals/2", function (t2)
     t3:refute(m.table_equals({a = 1}, {a = 1, b = 2}))
     t3:refute(m.table_equals({a = 1}, {a = 2}))
     t3:refute(m.table_equals({a = 1}, {b = 1}))
+  end)
+
+  t2:test("can handle nils", function (t3)
+    t3:assert(m.table_equals(nil, nil))
+    t3:refute(m.table_equals(nil, {a = 1}))
+    t3:refute(m.table_equals({a = 1}, nil))
   end)
 end)
 
@@ -158,7 +164,7 @@ case:describe("table_intersperse/2", function (t2)
 
   t2:test("will return an empty table given an empty table", function (t3)
     local t = {}
-    local r = m.table_intersperse({}, ",")
+    local r = m.table_intersperse(t, ",")
     t3:assert_table_eq(r, {})
   end)
 end)

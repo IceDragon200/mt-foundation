@@ -11,7 +11,7 @@ local Symbols = {
 
 function Symbols:alloc_symbol(symbol)
   if self.m_symbol_to_id[symbol] then
-    error("symbol already allocated `" .. sym .. "`")
+    error("symbol already allocated `" .. symbol .. "`")
   end
 
   self.m_ids = self.m_ids + 1

@@ -1,7 +1,8 @@
 -- @namespace foundation.com
 
--- Minetest has pos_to_string, but I believe that floors the vector coords and adds bracket around it
--- this function is intended to keep the decimal places and only create a csv
+-- Minetest has pos_to_string, but I believe that floors the vector coords
+-- and adds bracket around it this function is intended to keep the
+-- decimal places and only create a csv
 function foundation.com.vector_to_string(vec)
   return vec.x .. "," .. vec.y .. "," .. vec.z
 end
@@ -294,10 +295,10 @@ function vector4.zero()
   return vector4.new(0, 0, 0, 0)
 end
 
--- @spec to_string(Vector4, seperator?: String): String
-function vector4.to_string(v1, seperator)
-  seperator = seperator or ","
-  return v1.x .. "," .. v1.y .. "," .. v1.z .. "," .. v1.w
+-- @spec to_string(Vector4, sep?: String): String
+function vector4.to_string(v1, sep)
+  sep = sep or ","
+  return v1.x .. sep .. v1.y .. sep .. v1.z .. sep .. v1.w
 end
 
 -- @spec floor(Vector4, Vector4): Vector4

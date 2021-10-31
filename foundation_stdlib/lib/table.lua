@@ -226,6 +226,15 @@ end
 --
 -- @spec table_equals(a: Table, b: Table): Boolean
 function foundation.com.table_equals(a, b)
+  if a == b then
+    -- even if a and b are nil, its true that they are at least equal
+    return true
+  elseif a == nil then
+    return false
+  elseif b == nil then
+    return false
+  end
+
   local merged = foundation.com.table_merge(a, b)
   for key,_ in pairs(merged) do
     if a[key] ~= b[key] then
