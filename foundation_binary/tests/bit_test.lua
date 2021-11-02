@@ -2,7 +2,7 @@ local Luna = assert(foundation.com.Luna)
 
 local bit_modules = {}
 for _, bit_module_name in ipairs({"bit", "native_bit", "local_bit"}) do
-  local m = foundation.com[bit_module_name]
+  local m = foundation.com[bit_module_name] or foundation_binary[bit_module_name]
   if m then
     bit_modules[bit_module_name] = m
   else
