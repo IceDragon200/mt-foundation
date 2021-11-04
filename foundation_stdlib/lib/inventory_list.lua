@@ -8,6 +8,19 @@ local itemstack_maybe_merge = assert(foundation.com.itemstack_maybe_merge)
 
 local InventoryList = {}
 
+-- Determines if the given inventory list should be considered empty
+--
+-- @spec is_empty(ItemStack[]): Boolean
+function InventoryList.is_empty(list)
+  for _index, item_stack in ipairs(list) do
+    if not item_stack:is_empty() then
+      return false
+    end
+  end
+
+  return true
+end
+
 -- @spec first_present_stack(ItemStack[]): ItemStack | nil
 function InventoryList.first_present_stack(list)
   assert(list, "expected an inventory list")

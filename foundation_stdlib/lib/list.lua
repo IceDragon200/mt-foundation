@@ -207,3 +207,29 @@ function foundation.com.list_uniq(l)
   end
   return result
 end
+
+-- @spec list_split(Table, alen: Integer): (Table, Table)
+function foundation.com.list_split(list, alen)
+  local head = {}
+  local tail = {}
+
+  local source_len = #list
+
+  if source_len > 0 then
+    if alen > 0 then
+      for i = 1,math.min(alen, source_len) do
+        head[i] = list[i]
+      end
+    end
+
+    if source_len > alen then
+      local j = 0
+      for i = alen+1,source_len do
+        j = j + 1
+        tail[j] = list[i]
+      end
+    end
+  end
+
+  return head, tail
+end

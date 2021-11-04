@@ -1,3 +1,7 @@
+# 1.12.0
+
+* `foundation.com.list_split/2` can split a list-like table into 2 tables specifying the length of the first
+
 # 1.11.1
 
 * `foundation.com.table_equals/2` can now handle nils for both arguments
