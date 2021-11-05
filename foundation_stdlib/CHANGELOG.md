@@ -1,6 +1,9 @@
 # 1.12.0
 
+__Added Functions__
+
 * `foundation.com.list_split/2` can split a list-like table into 2 tables specifying the length of the first
+* `foundation.com.InventoryList.is_empty/1` can determine if a inventory itemstack list is empty
 
 # 1.11.1
 
