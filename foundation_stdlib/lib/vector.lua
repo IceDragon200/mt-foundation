@@ -46,6 +46,11 @@ function vector2.to_string(v2, seperator)
   return v2.x .. seperator .. v2.y
 end
 
+-- @spec equals(a: Vector2, b: Vector2): Boolean
+function vector2.equals(a, b)
+  return a.x == b.x and a.y == b.y
+end
+
 -- @spec floor(dest: Vector2, v2: Vector2): Vector2
 function vector2.floor(dest, v2)
   dest.x = math.floor(v2.x)
@@ -162,6 +167,11 @@ end
 function vector3.to_string(v1, seperator)
   seperator = seperator or ","
   return v1.x .. seperator .. v1.y .. seperator .. v1.z
+end
+
+-- @spec equals(a: Vector3, b: Vector3): Boolean
+function vector3.equals(a, b)
+  return a.x == b.x and a.y == b.y and a.z == b.z
 end
 
 -- @spec floor(Vector3, Vector3): Vector3
@@ -299,6 +309,11 @@ end
 function vector4.to_string(v1, sep)
   sep = sep or ","
   return v1.x .. sep .. v1.y .. sep .. v1.z .. sep .. v1.w
+end
+
+-- @spec equals(a: Vector4, b: Vector4): Boolean
+function vector4.equals(a, b)
+  return a.x == b.x and a.y == b.y and a.z == b.z and a.w == b.w
 end
 
 -- @spec floor(Vector4, Vector4): Vector4
