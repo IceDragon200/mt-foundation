@@ -389,8 +389,8 @@ function mod.unpack_array(term)
     local array = {}
 
     if len > 0 then
+      local elem
       for i = 1,len do
-        local elem
         elem, term = mod.unpack(term)
         array[i] = elem
       end
@@ -490,6 +490,7 @@ end
 function mod.ascii_file_unpack(stream)
   local bytes_read = 0
   local br
+  local len
 
   local ty = stream:read(1)
   bytes_read = bytes_read + 1
@@ -501,7 +502,7 @@ function mod.ascii_file_unpack(stream)
   elseif ty == "0" then
     return nil, bytes_read
   elseif ty == "M" then
-    local len, br = mod.ascii_file_unpack(stream)
+    len, br = mod.ascii_file_unpack(stream)
     bytes_read = bytes_read + br
     local map = {}
     assert(len >= 0, "expected positive map size")
@@ -517,7 +518,7 @@ function mod.ascii_file_unpack(stream)
     end
     return map, bytes_read
   elseif ty == "A" then
-    local len, br = mod.ascii_file_unpack(stream)
+    len, br = mod.ascii_file_unpack(stream)
     bytes_read = bytes_read + br
     local array = {}
     assert(len >= 0, "expected positive array size")
@@ -531,7 +532,7 @@ function mod.ascii_file_unpack(stream)
     end
     return array, bytes_read
   elseif ty == "G" then
-    local len, br = mod.ascii_file_unpack(stream)
+    len, br = mod.ascii_file_unpack(stream)
     bytes_read = bytes_read + br
     assert(len >= 0, "expected positive string size")
     if len > 0 then
@@ -582,7 +583,7 @@ function mod.ascii_file_unpack(stream)
     bytes_read = bytes_read + 16
     return num, bytes_read
   elseif ty == "F" or ty == "D" then
-    local len, br = mod.ascii_file_unpack(stream)
+    len, br = mod.ascii_file_unpack(stream)
     bytes_read = bytes_read + br
     local body, br = stream:read(len)
     bytes_read = bytes_read + len
