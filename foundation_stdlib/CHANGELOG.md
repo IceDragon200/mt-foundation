@@ -1,3 +1,14 @@
+# 1.13.0
+
+__Added Functions__
+
+* `foundation.com.Vector2`
+  * `equals/2`
+* `foundation.com.Vector3`
+  * `equals/2`
+* `foundation.com.Vector4`
+  * `equals/2`
+
 # 1.12.0
 
 __Added Functions__
