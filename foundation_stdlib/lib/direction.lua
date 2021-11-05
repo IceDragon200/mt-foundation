@@ -277,12 +277,12 @@ end
 
 function Directions.rotate_facedir_axis_clockwise(facedir)
   local fd_axis, fd_rotation = Directions.facedir_to_fd_axis_and_fd_rotation(facedir)
-  return (fd_axis + 4) % 32 + fd_rotation
+  return (fd_axis + 4) % 24 + fd_rotation
 end
 
 function Directions.rotate_facedir_axis_anticlockwise(facedir)
   local fd_axis, fd_rotation = Directions.facedir_to_fd_axis_and_fd_rotation(facedir)
-  return (fd_axis - 4) % 32 + fd_rotation
+  return (fd_axis - 4) % 24 + fd_rotation
 end
 
 function Directions.rotate_facedir_face_clockwise(facedir)
