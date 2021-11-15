@@ -15,13 +15,15 @@ local ic = NaiveDateTime.instance_class
 
 function ic:write(file, datetime)
   local all_bytes_written = 0
+  local bytes_written = 0
+  local err
   -- Datetime Version, in case the format needs to change
-  local bytes_written, err = ByteBuf.w_u32(file, 0)
+  bytes_written, err = ByteBuf.w_u32(file, 0)
   all_bytes_written = all_bytes_written + bytes_written
   if err then
     return all_bytes_written, err
   end
-  local bytes_written, err = NaiveDateTimeSchema0:write(file, datetime)
+  bytes_written, err = NaiveDateTimeSchema0:write(file, datetime)
   all_bytes_written = all_bytes_written + bytes_written
   return all_bytes_written, err
 end

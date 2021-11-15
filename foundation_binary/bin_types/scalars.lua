@@ -225,9 +225,7 @@ end
 
 function Scalars.normalize_type(t)
   if type(t) == "string" then
-    local scalar_type = Scalars[t]
-    assert(scalar_type, "expected a scalar type")
-    return scalar_type
+    return assert(Scalars[t], "expected a scalar type")
   elseif type(t) == "table" then
     assert(t.write, "expected write/3")
     assert(t.read, "expected read/2")

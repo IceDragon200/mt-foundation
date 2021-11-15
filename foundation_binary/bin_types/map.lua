@@ -15,18 +15,21 @@ end
 function ic:write(file, data)
   local len = foundation.com.table_length(data)
   local all_bytes_written = 0
-  local bytes_written, err = ByteBuf.w_u32(file, len)
+  local bytes_written = 0
+  local err
+
+  bytes_written, err = ByteBuf.w_u32(file, len)
   all_bytes_written = all_bytes_written + bytes_written
   if err then
     return all_bytes_written, err
   end
   for key,value in pairs(data) do
-    local bytes_written, err = self.key_type:write(file, key)
+    bytes_written, err = self.key_type:write(file, key)
     all_bytes_written = all_bytes_written + bytes_written
     if err then
       return all_bytes_written, err
     end
-    local bytes_written, err = self.value_type:write(file, value)
+    bytes_written, err = self.value_type:write(file, value)
     all_bytes_written = all_bytes_written + bytes_written
     if err then
       return all_bytes_written, err
@@ -39,10 +42,14 @@ function ic:read(file)
   local len, all_bytes_read = ByteBuf.r_u32(file)
   if len then
     local result = {}
+    local key
+    local value
+    local bytes_read = 0
+
     for _ = 1,len do
-      local key, bytes_read = self.key_type:read(file)
+      key, bytes_read = self.key_type:read(file)
       all_bytes_read = all_bytes_read + bytes_read
-      local value, bytes_read = self.value_type:read(file)
+      value, bytes_read = self.value_type:read(file)
       all_bytes_read = all_bytes_read + bytes_read
       result[key] = value
     end
