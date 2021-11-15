@@ -85,13 +85,13 @@ function Rect.size(rect)
 end
 
 -- @since "1.10.0"
--- @spec area(Rect): Integer
+-- @spec area(Rect): Number
 function Rect.area(rect)
   return rect.w * rect.h
 end
 
 -- @since "1.10.0"
--- @spec perimeter(Rect): Integer
+-- @spec perimeter(Rect): Number
 function Rect.perimeter(rect)
   return rect.w * 2 + rect.h * 2
 end
@@ -108,6 +108,7 @@ end
 -- Shrink the specified rect by the given horizontal and vertical size
 -- if no vertical is given, it is assumed to be the same size as the horizontal
 --
+-- @mutative
 -- @spec contract(Rect, x: Number, y: Number): Rect
 function Rect.contract(rect, x, y)
   y = y or x
@@ -123,6 +124,7 @@ end
 -- Expands the size of the rect from the center point, inverse of contract.
 --
 -- @since "1.10.0"
+-- @mutative
 -- @spec expand(Rect, x: Number, y: Number): Rect
 function Rect.expand(rect, x, y)
   y = y or x
@@ -132,6 +134,7 @@ end
 
 -- Changes the width and height of the specified rectangle
 --
+-- @mutative
 -- @spec resize(Rect, w: Number, h: Number): Rect
 function Rect.resize(rect, w, h)
   rect.w = w
@@ -143,6 +146,7 @@ end
 -- Changes the x and y coords of the specified rectangle
 --
 -- @since "1.10.0"
+-- @mutative
 -- @spec move(Rect, x: Number, y: Number): Rect
 function Rect.move(rect, x, y)
   rect.x = x
@@ -153,6 +157,7 @@ end
 
 -- Moves the rectangle relative by the given coords
 --
+-- @mutative
 -- @spec translate(Rect, x: Number, y: Number): Rect
 function Rect.translate(rect, x, y)
   rect.x = rect.x + x
@@ -164,6 +169,7 @@ end
 -- Rounds all components in the rect using floor.
 --
 -- @since "1.10.0"
+-- @mutative
 -- @spec floor(rect: Rect): Rect
 function Rect.floor(rect)
   rect.x = math.floor(rect.x)
@@ -177,6 +183,7 @@ end
 -- Rounds all components in the rect using ceil.
 --
 -- @since "1.10.0"
+-- @mutative
 -- @spec ceil(rect: Rect): Rect
 function Rect.ceil(rect)
   rect.x = math.ceil(rect.x)
@@ -190,6 +197,7 @@ end
 -- Rounds all components in the rect.
 --
 -- @since "1.10.0"
+-- @mutative
 -- @spec round(rect: Rect): Rect
 function Rect.round(rect)
   rect.x = number_round(rect.x)
@@ -205,6 +213,7 @@ end
 -- left or top and 1 means to align to the right or bottom, 0 is centered.
 --
 -- @since "1.10.0"
+-- @mutative
 -- @spec align(rect: Rect, x?: -1..1, y?: -1..1, container: Rect): Rect
 function Rect.align(rect, x, y, container)
   if x then
@@ -235,6 +244,7 @@ end
 -- the rect.
 --
 -- @since "1.10.0"
+-- @mutative
 -- @spec subdivide(rect: Rect, x_subdivisions?: Integer, y_subdivisions?: Integer): Rect[]
 function Rect.subdivide(rect, x_subdivisions, y_subdivisions)
   local x

@@ -1,7 +1,5 @@
 -- @namespace foundation.com.Cuboid
-foundation_stdlib:require("lib/vector.lua")
-
-local Vector3 = foundation.com.Vector3
+local Vector3 = assert(foundation.com.Vector3)
 
 local Cuboid = {}
 
@@ -28,6 +26,14 @@ end
 -- @spec dimensions(Cuboid): Vector3
 function Cuboid.dimensions(cuboid)
   return Vector3.new(cuboid.w, cuboid.h, cuboid.d)
+end
+
+-- @alias size = dimensions
+Cuboid.size = Cuboid.dimensions
+
+-- @spec volume(Cuboid): Number
+function Cuboid.volume(cuboid)
+  return cuboid.w * cuboid.h * cuboid.d
 end
 
 -- @mutative
