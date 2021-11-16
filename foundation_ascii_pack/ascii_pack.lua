@@ -1,6 +1,8 @@
 -- @namespace foundation.com
 local mod = foundation_ascii_pack
 
+local iodata_to_string = assert(foundation.com.iodata_to_string)
+
 local NUM_TO_HEX = {
   [0] = "0",
   [1] = "1",
@@ -44,7 +46,7 @@ local function byte_to_hex(byte)
   local hi = math.floor(byte / 16)
   local lo = byte % 16
 
-  return NUM_TO_HEX[hi] .. NUM_TO_HEX[lo]
+  return {NUM_TO_HEX[hi], NUM_TO_HEX[lo]}
 end
 
 local function hex_to_byte(hex2)
@@ -64,7 +66,8 @@ local function vint_to_hex(length, int)
   for i = 1,length do
     result[i] = byte_to_hex(bytes[1 + length - i])
   end
-  return table.concat(result)
+
+  return result
 end
 
 local function hex_to_vint(_length, value)
@@ -100,52 +103,65 @@ end
 -- Y true
 -- Z false
 --
+
+-- @spec pack_float(Float): Iodata
 function mod.pack_float(term)
   -- FIXME: proper encoding one day
   local blob = tostring(term)
-  return "D"..mod.pack_int(#blob)..blob
+  return {"D", mod.pack_int(#blob), blob}
 end
 
+-- @spec pack_nint4(Integer): Iodata
 function mod.pack_nint4(term)
-  return "n"..nibble_to_hex(term)
+  return {"n", nibble_to_hex(term)}
 end
 
+-- @spec pack_nint8(Integer): Iodata
 function mod.pack_nint8(term)
-  return "b"..byte_to_hex(term)
+  return {"b", byte_to_hex(term)}
 end
 
+-- @spec pack_nint16(Integer): Iodata
 function mod.pack_nint16(term)
-  return "s"..vint_to_hex(2, term)
+  return {"s", vint_to_hex(2, term)}
 end
 
+-- @spec pack_nint32(Integer): Iodata
 function mod.pack_nint32(term)
-  return "i"..vint_to_hex(4, term)
+  return {"i", vint_to_hex(4, term)}
 end
 
+-- @spec pack_nint64(Integer): Iodata
 function mod.pack_nint64(term)
-  return "l"..vint_to_hex(8, term)
+  return {"l", vint_to_hex(8, term)}
 end
 
+-- @spec pack_pint4(Integer): Iodata
 function mod.pack_pint4(term)
-  return "N"..nibble_to_hex(term)
+  return {"N", nibble_to_hex(term)}
 end
 
+-- @spec pack_pint8(Integer): Iodata
 function mod.pack_pint8(term)
-  return "B"..byte_to_hex(term)
+  return {"B", byte_to_hex(term)}
 end
 
+-- @spec pack_pint16(Integer): Iodata
 function mod.pack_pint16(term)
-  return "S"..vint_to_hex(2, term)
+  return {"S", vint_to_hex(2, term)}
 end
 
+-- @spec pack_pint32(Integer): Iodata
 function mod.pack_pint32(term)
-  return "I"..vint_to_hex(4, term)
+  return {"I", vint_to_hex(4, term)}
 end
 
+-- @spec pack_pint64(Integer): Iodata
 function mod.pack_pint64(term)
-  return "L"..vint_to_hex(8, term)
+  return {"L", vint_to_hex(8, term)}
 end
 
+-- @spec pack_int4(Integer): Iodata
 function mod.pack_int4(term)
   if term >= 0 then
     return mod.pack_pint4(term)
@@ -154,6 +170,7 @@ function mod.pack_int4(term)
   end
 end
 
+-- @spec pack_int8(Integer): Iodata
 function mod.pack_int8(term)
   if term >= 0 then
     return mod.pack_pint8(term)
@@ -162,6 +179,7 @@ function mod.pack_int8(term)
   end
 end
 
+-- @spec pack_int16(Integer): Iodata
 function mod.pack_int16(term)
   if term >= 0 then
     return mod.pack_pint16(term)
@@ -170,6 +188,7 @@ function mod.pack_int16(term)
   end
 end
 
+-- @spec pack_int32(Integer): Iodata
 function mod.pack_int32(term)
   if term >= 0 then
     return mod.pack_pint32(term)
@@ -178,6 +197,7 @@ function mod.pack_int32(term)
   end
 end
 
+-- @spec pack_int64(Integer): Iodata
 function mod.pack_int64(term)
   if term >= 0 then
     return mod.pack_pint64(term)
@@ -186,6 +206,7 @@ function mod.pack_int64(term)
   end
 end
 
+-- @spec pack_int(Integer): Iodata
 function mod.pack_int(term)
   if term >= 0 then
     if term > 0xFFFFFFFF then
@@ -214,12 +235,14 @@ function mod.pack_int(term)
   end
 end
 
+-- @spec pack_string(String): Iodata
 function mod.pack_string(term)
   local len = #term
 
-  return "G"..mod.pack_int(len)..term
+  return {"G", mod.pack_int(len), term}
 end
 
+-- @spec pack_array(Table, depth?: Integer): Iodata
 function mod.pack_array(term, depth)
   depth = depth or 0
   local len = #term
@@ -228,21 +251,23 @@ function mod.pack_array(term, depth)
   for i, item in ipairs(term) do
     elements[i] = mod.pack(item, depth + 1)
   end
-  return "A"..mod.pack_int(len)..table.concat(elements)
+  return {"A", mod.pack_int(len), elements}
 end
 
+-- @spec pack_map(Table, depth?: Integer): Iodata
 function mod.pack_map(term, depth)
   depth = depth or 0
   local elements = {}
   local i = 0
   for key, item in pairs(term) do
     i = i + 1
-    elements[i] = mod.pack(key, depth + 1)..mod.pack(item, depth + 1)
+    elements[i] = {mod.pack(key, depth + 1), mod.pack(item, depth + 1)}
   end
 
-  return "M"..mod.pack_int(i)..table.concat(elements)
+  return {"M", mod.pack_int(i), elements}
 end
 
+-- @spec pack_boolean(Boolean): Iodata
 function mod.pack_boolean(term)
   if term then
     return "Y"
@@ -251,10 +276,25 @@ function mod.pack_boolean(term)
   end
 end
 
+-- @spec pack_nil(Any): Iodata
 function mod.pack_nil(_)
   return "0"
 end
 
+-- @spec pack_table(Table, depth?: Integer): Iodata
+function mod.pack_table(term, depth)
+  local len = 0
+  for _key, _item in pairs(term) do
+    len = len + 1
+  end
+  if #term == len then
+    return mod.pack_array(term, depth + 1)
+  else
+    return mod.pack_map(term, depth + 1)
+  end
+end
+
+-- @spec pack(Any, Table, depth?: Integer): Iodata
 function mod.pack(term, options, depth)
   depth = depth or 0
   options = options or {}
@@ -269,15 +309,7 @@ function mod.pack(term, options, depth)
   elseif ty == "string" then
     return mod.pack_string(term)
   elseif ty == "table" then
-    local len = 0
-    for _key, _item in pairs(term) do
-      len = len + 1
-    end
-    if #term == len then
-      return mod.pack_array(term, depth + 1)
-    else
-      return mod.pack_map(term, depth + 1)
-    end
+    return mod.pack_table(term, depth)
   elseif ty == "boolean" then
     return mod.pack_boolean(term)
   elseif ty == "nil" then
@@ -470,12 +502,15 @@ function mod.unpack(blob)
   end
 end
 
--- @spec ascii_pack(term: Any, options: Table): String
-foundation.com.ascii_pack = mod.pack
+-- @spec ascii_pack(term: Any, options: Table): Iodata
+function foundation.com.ascii_pack(term, options)
+  return iodata_to_string(mod.pack(term, options))
+end
+
 -- @spec ascii_unpack(String): Any
 foundation.com.ascii_unpack = mod.unpack
 
--- @spec ascii_file_pack(Stream): (Integer, String | nil)
+-- @spec ascii_file_pack(Stream, Any, options: Table, depth?: Integer): (Integer, String | nil)
 function foundation.com.ascii_file_pack(stream, term, options, depth)
   local value = foundation.com.ascii_pack(term, options, depth)
   local success, err = stream:write(value)
@@ -597,3 +632,74 @@ end
 function foundation.com.ascii_file_unpack(stream)
   return mod.ascii_file_unpack(stream)
 end
+
+-- @namespace foundation.com.apak
+
+-- @alias pack_float = foundation_ascii_pack.pack_float
+-- @alias pack_nint4 = foundation_ascii_pack.pack_nint4
+-- @alias pack_nint8 = foundation_ascii_pack.pack_nint8
+-- @alias pack_nint16 = foundation_ascii_pack.pack_nint16
+-- @alias pack_nint32 = foundation_ascii_pack.pack_nint32
+-- @alias pack_nint64 = foundation_ascii_pack.pack_nint64
+-- @alias pack_pint4 = foundation_ascii_pack.pack_pint4
+-- @alias pack_pint8 = foundation_ascii_pack.pack_pint8
+-- @alias pack_pint16 = foundation_ascii_pack.pack_pint16
+-- @alias pack_pint32 = foundation_ascii_pack.pack_pint32
+-- @alias pack_pint64 = foundation_ascii_pack.pack_pint64
+-- @alias pack_int4 = foundation_ascii_pack.pack_int4
+-- @alias pack_int8 = foundation_ascii_pack.pack_int8
+-- @alias pack_int16 = foundation_ascii_pack.pack_int16
+-- @alias pack_int32 = foundation_ascii_pack.pack_int32
+-- @alias pack_int64 = foundation_ascii_pack.pack_int64
+-- @alias pack_int = foundation_ascii_pack.pack_int
+-- @alias pack_string = foundation_ascii_pack.pack_string
+-- @alias pack_array = foundation_ascii_pack.pack_array
+-- @alias pack_map = foundation_ascii_pack.pack_map
+-- @alias pack_boolean = foundation_ascii_pack.pack_boolean
+-- @alias pack_nil = foundation_ascii_pack.pack_nil
+-- @alias pack = foundation_ascii_pack.pack
+
+-- @alias unpack_float = foundation_ascii_pack.unpack_float
+-- @alias unpack_int = foundation_ascii_pack.unpack_int
+-- @alias unpack_string = foundation_ascii_pack.unpack_string
+-- @alias unpack_array = foundation_ascii_pack.unpack_array
+-- @alias unpack_map = foundation_ascii_pack.unpack_map
+-- @alias unpack_boolean = foundation_ascii_pack.unpack_boolean
+-- @alias unpack_nil = foundation_ascii_pack.unpack_nil
+-- @alias unpack = foundation_ascii_pack.unpack
+
+foundation.com.apak = {
+  pack_float = mod.pack_float,
+  pack_nint4 = mod.pack_nint4,
+  pack_nint8 = mod.pack_nint8,
+  pack_nint16 = mod.pack_nint16,
+  pack_nint32 = mod.pack_nint32,
+  pack_nint64 = mod.pack_nint64,
+  pack_pint4 = mod.pack_pint4,
+  pack_pint8 = mod.pack_pint8,
+  pack_pint16 = mod.pack_pint16,
+  pack_pint32 = mod.pack_pint32,
+  pack_pint64 = mod.pack_pint64,
+  pack_int4 = mod.pack_int4,
+  pack_int8 = mod.pack_int8,
+  pack_int16 = mod.pack_int16,
+  pack_int32 = mod.pack_int32,
+  pack_int64 = mod.pack_int64,
+  pack_int = mod.pack_int,
+  pack_string = mod.pack_string,
+  pack_array = mod.pack_array,
+  pack_map = mod.pack_map,
+  pack_table = mod.pack_table,
+  pack_boolean = mod.pack_boolean,
+  pack_nil = mod.pack_nil,
+  pack = mod.pack,
+
+  unpack_float = mod.unpack_float,
+  unpack_int = mod.unpack_int,
+  unpack_string = mod.unpack_string,
+  unpack_array = mod.unpack_array,
+  unpack_map = mod.unpack_map,
+  unpack_boolean = mod.unpack_boolean,
+  unpack_nil = mod.unpack_nil,
+  unpack = mod.unpack,
+}
