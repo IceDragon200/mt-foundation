@@ -37,15 +37,15 @@ case:describe("ItemStack/0..1", function (t2)
   end)
 end)
 
-case:describe(".serialize/1", function (t2)
-  t2:test("can serialize an empty list ("..ITERATIONS.." times)", function (t3)
+case:describe(".dump_list/1", function (t2)
+  t2:test("can dump an empty list ("..ITERATIONS.." times)", function (t3)
     local list = {}
     for _ = 1,ITERATIONS do
-      mod.serialize(list)
+      mod.dump_list(list)
     end
   end)
 
-  t2:test("can serialize a list of 4 item stacks ("..ITERATIONS.." times)", function (t3)
+  t2:test("can dump a list of 4 item stacks ("..ITERATIONS.." times)", function (t3)
     local list = {
       ItemStack({
         name = "yatm_core:hammer_iron",
@@ -67,23 +67,23 @@ case:describe(".serialize/1", function (t2)
     }
 
     for _ = 1,ITERATIONS do
-      mod.serialize(list)
+      mod.dump_list(list)
     end
   end)
 end)
 
-case:describe(".deserialize_list/1", function (t2)
-  t2:test("can deserialize an empty list ("..ITERATIONS.." times)", function (t3)
+case:describe(".load_list/1", function (t2)
+  t2:test("can load an empty list ("..ITERATIONS.." times)", function (t3)
     local list = {}
 
-    local dumped = mod.serialize(list)
+    local dumped = mod.dump_list(list)
 
     for _ = 1,ITERATIONS do
-      mod.deserialize_list(dumped, {})
+      mod.load_list(dumped, {})
     end
   end)
 
-  t2:test("can deserialize a 4 item stack list ("..ITERATIONS.." times)", function (t3)
+  t2:test("can load a 4 item stack list ("..ITERATIONS.." times)", function (t3)
     local list = {
       ItemStack({
         name = "yatm_core:hammer_iron",
@@ -104,10 +104,10 @@ case:describe(".deserialize_list/1", function (t2)
       }),
     }
 
-    local dumped = mod.serialize(list)
+    local dumped = mod.dump_list(list)
 
     for _ = 1,ITERATIONS do
-      mod.deserialize_list(dumped, {})
+      mod.load_list(dumped, {})
     end
   end)
 end)

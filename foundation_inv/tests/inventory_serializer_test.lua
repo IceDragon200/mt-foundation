@@ -3,8 +3,8 @@ local InventorySerializer = assert(foundation.com.InventorySerializer)
 
 local case = Luna:new("foundation.com.InventorySerializer")
 
-case:describe(".serialize/1", function (t2)
-  t2:test("can serialize a list of item stacks", function (t3)
+case:describe(".dump_list/1", function (t2)
+  t2:test("can dump a list of item stacks", function (t3)
     local list = {
       ItemStack({
         name = "yatm_core:hammer_iron",
@@ -24,7 +24,7 @@ case:describe(".serialize/1", function (t2)
         count = 0,
       }),
     }
-    local dumped = InventorySerializer.serialize(list)
+    local dumped = InventorySerializer.dump_list(list)
     t3:assert_eq(dumped.size, 4)
     t3:assert(dumped.data, "expected dumped data")
     t3:assert(dumped.data[1], "expected to have element 1")
@@ -49,8 +49,8 @@ case:describe(".serialize/1", function (t2)
   end)
 end)
 
-case:describe(".deserialize_list/1", function (t2)
-  t2:test("can deserialize a serialized list of item stacks", function (t3)
+case:describe(".load_list/1", function (t2)
+  t2:test("can load a serialized list of item stacks", function (t3)
     local list = {
       ItemStack({
         name = "yatm_core:hammer_iron",
@@ -71,8 +71,8 @@ case:describe(".deserialize_list/1", function (t2)
       }),
     }
 
-    local dumped = InventorySerializer.serialize(list)
-    local new_list = InventorySerializer.deserialize_list(dumped, {})
+    local dumped = InventorySerializer.dump_list(list)
+    local new_list = InventorySerializer.load_list(dumped, {})
 
     t3:assert(new_list[1])
     t3:assert(new_list[2])
@@ -93,8 +93,6 @@ case:describe(".deserialize_list/1", function (t2)
     t3:assert_eq(new_list[2]:get_wear(), 0)
     t3:assert_eq(new_list[3]:get_wear(), 0)
     t3:assert_eq(new_list[4]:get_wear(), 0)
-
-    print(dump(new_list))
   end)
 end)
 

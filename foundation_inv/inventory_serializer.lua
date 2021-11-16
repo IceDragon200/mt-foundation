@@ -1,26 +1,35 @@
+--
+-- Inventory Serializer is a basic transformation module, by taking any
+-- list of item stacks and turning them into POLTs (Plain Old Lua Tables), that
+-- can be safely serialized.
+-- Since the dumped items are almost 1:1 with their original, the format is not
+-- optimized for larger inventories.
+-- Try InventoryPacker instead for a smaller serialized footprint.
+--
+
 -- @namespace foundation.com.InventorySerializer
 --
--- @type SerializedItemStack: {
+-- @type DumpedItemStack: {
 --   name: String,
 --   count: Integer,
 --   wear: Integer,
 --   meta: Table,
 -- }
 --
--- @type SerializedInventory: {
+-- @type DumpedInventory: {
 --   size: Integer,
---   data: SerializedItemStack,
+--   data: DumpedItemStack,
 -- }
 local is_blank = assert(foundation.com.is_blank)
 
-local serialize
-local deserialize_list
+local dump_list
+local load_list
 
--- @spec description(SerializedInventory): SerializedItemStack
-local function description(serialized_list)
-  local count = serialized_list.size
+-- @spec description(DumpedInventory): DumpedItemStack
+local function description(dumped_list)
+  local count = dumped_list.size
   local used = 0
-  for key,item_stack in pairs(serialized_list.data) do
+  for key,item_stack in pairs(dumped_list.data) do
     if not is_blank(item_stack.name) and item_stack.count > 0 then
       used = used + 1
     end
@@ -28,8 +37,8 @@ local function description(serialized_list)
   return used .. " / " .. count
 end
 
--- @spec serialize_item_stack(ItemStack): SerializedItemStack
-local function serialize_item_stack(item_stack)
+-- @spec dump_item_stack(ItemStack): DumpedItemStack
+local function dump_item_stack(item_stack)
   local item_name = item_stack:get_name()
   local count = item_stack:get_count()
   local wear = item_stack:get_wear()
@@ -38,7 +47,7 @@ local function serialize_item_stack(item_stack)
 
   if meta.inventory then
     for name,list in pairs(meta.inventory) do
-      inventory[name] = serialize(list)
+      inventory[name] = dump_list(list)
     end
   end
 
@@ -52,8 +61,8 @@ local function serialize_item_stack(item_stack)
   }
 end
 
--- @spec serialize(ItemStack[]): SerializedInventory
-local function serialize(list)
+-- @spec dump_list(ItemStack[]): DumpedInventory
+function dump_list(list)
   local result = {
     size = 0,
     data = {},
@@ -62,15 +71,15 @@ local function serialize(list)
   if list then
     result.size = #list
     for key,item_stack in pairs(list) do
-      result.data[key] = serialize_item_stack(item_stack)
+      result.data[key] = dump_item_stack(item_stack)
     end
   end
 
   return result
 end
 
--- @spec deserialize_item_stack(SerializedItemStack): ItemStack
-local function deserialize_item_stack(source_stack)
+-- @spec load_item_stack(DumpedItemStack): ItemStack
+local function load_item_stack(source_stack)
   local item_stack = ItemStack({
     name = source_stack.name,
     count = source_stack.count,
@@ -85,8 +94,8 @@ local function deserialize_item_stack(source_stack)
   for key,value in pairs(source_stack.meta) do
     if key == "inventory" then
       inventory = {}
-      for name,serialized_list in pairs(source_stack.meta.inventory) do
-        inventory[name] = deserialize_list(serialized_list, {})
+      for name, dumped_list in pairs(source_stack.meta.inventory) do
+        inventory[name] = load_list(dumped_list, {})
       end
       new_meta[key] = inventory
     else
@@ -99,16 +108,17 @@ local function deserialize_item_stack(source_stack)
   return item_stack
 end
 
--- Deserializes a serialized inventory list from serialize/1
+-- Loads a dumped inventory list from dump_list/1
 --
-  -- @spec deserialize_list(SerializedInventory, target_list: ItemStack[]): ItemStack[]
-function deserialize_list(dumped, target_list)
+-- @spec load_list(DumpedInventory, target_list: ItemStack[]): ItemStack[]
+function load_list(dumped, target_list)
   assert(dumped, "expected dumped inventory list")
   assert(target_list, "expected a target inventory list")
 
+  local stack
   for i = 1,dumped.size do
-    local stack = dumped.data[i]
-    target_list[i] = deserialize_item_stack(stack)
+    stack = dumped.data[i]
+    target_list[i] = load_item_stack(stack)
   end
 
   return target_list
@@ -116,8 +126,8 @@ end
 
 foundation.com.InventorySerializer = {
   description = description,
-  serialize_item_stack = serialize_item_stack,
-  serialize = serialize,
-  deserialize_item_stack = deserialize_item_stack,
-  deserialize_list = deserialize_list,
+  dump_item_stack = dump_item_stack,
+  dump_list = dump_list,
+  load_item_stack = load_item_stack,
+  load_list = load_list,
 }
