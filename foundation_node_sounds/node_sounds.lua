@@ -7,6 +7,7 @@ local table_merge = assert(foundation.com.table_merge)
 local NodeSoundsRegistry = foundation.com.Class:extends("NodeSoundsRegistry")
 local ic = NodeSoundsRegistry.instance_class
 
+-- @spec #initialize(): void
 function ic:initialize()
   self.registered = {}
 end
@@ -14,7 +15,7 @@ end
 --
 -- Clear the registry
 --
--- @spec :clear() :: self
+-- @spec #clear(): self
 function ic:clear()
   self.registered = {}
   return self
@@ -28,7 +29,7 @@ end
 --
 -- Register a base node sound set
 --
--- @spec :register(name: String, SoundSet) :: self
+-- @spec #register(name: String, SoundSet): self
 function ic:register(name, sound_set)
   self.registered[name] = {
     extends = sound_set.extends or {},
@@ -42,7 +43,7 @@ end
 -- Returns true if the specified node name set exists in the registry,
 -- false otherwise.
 --
--- @spec :is_registered(name: String) :: boolean
+-- @spec #is_registered(name: String): boolean
 function ic:is_registered(name)
   return self.registered[name] ~= nil
 end
@@ -50,7 +51,7 @@ end
 --
 -- Retrieve a soundset by name
 --
--- @spec :get(name: String) :: SoundSet |nil
+-- @spec #get(name: String): SoundSet |nil
 function ic:get(name)
   return self.registered[name]
 end
@@ -59,7 +60,7 @@ end
 -- Retrieve a soundset by name
 -- Will error if the soundset does not exist
 --
--- @spec :fetch(name: String!) :: SoundSet
+-- @spec #fetch(name: String!): SoundSet
 function ic:fetch(name)
   local sound_set = self:get(name)
   if sound_set then
@@ -72,7 +73,7 @@ end
 --
 -- Build a node sounds table by name and optionally a custom soundset over it.
 --
--- @spec :build(name: String!, sound_set: SoundSet | nil) :: NodeSounds
+-- @spec #build(name: String!, sound_set: SoundSet | nil): NodeSounds
 function ic:build(name, sound_set)
   sound_set = sound_set or {}
   sound_set.extends = sound_set.extends or {}
@@ -96,4 +97,3 @@ function ic:_build_sound_set(sound_set)
 end
 
 foundation.com.NodeSoundsRegistry = NodeSoundsRegistry
-foundation.com.node_sounds = NodeSoundsRegistry:new()
