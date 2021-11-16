@@ -2,7 +2,7 @@
 -- Foundation Struct
 --
 -- Adds wrapper classes for some basic structures
-local mod = foundation.new_module("foundation_struct", "1.2.0")
+local mod = foundation.new_module("foundation_struct", "1.3.0")
 
 mod:require("struct/list.lua")
 mod:require("struct/linked_list.lua")

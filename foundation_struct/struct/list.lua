@@ -410,6 +410,13 @@ function ic:size()
   return self.m_cursor
 end
 
+-- Reports true if the list contains no elements, false otherwise
+--
+-- @spec #is_empty(): Boolean
+function ic:is_empty()
+  return self.m_cursor < 1
+end
+
 -- Tries to put the item in a selected list at position.
 -- Returns true if the item was placed, false otherwise.
 --
