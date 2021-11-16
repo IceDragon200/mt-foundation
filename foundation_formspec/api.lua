@@ -49,9 +49,9 @@ local function to_text(item)
   return minetest.formspec_escape(tostring(item))
 end
 
--- @spec calc_inventory_offset(size): Integer
+-- @spec calc_inventory_offset(size: Integer): Integer
 function api.calc_inventory_offset(size)
-  return size + LIST_SPACING * 2 * math.max(size - 1, 0)
+  return size + LIST_SPACING * math.max(size, 0)
 end
 
 -- Calculates the size[] that a form needs to be to contain the given inventory
@@ -62,9 +62,6 @@ end
 -- @spec calc_form_inventory_size(cols: Integer, rows: Integer): Vector2
 function api.calc_form_inventory_size(cols, rows)
   return vector2.new(
-    -- all that really needs to be compensated is the spacing
-    -- cells + spacing * 2 * max(cells - 1, 0)
-    -- the `* 2` on spacing is to compensate for the bi-directional
     cols + LIST_SPACING * math.max(cols - 1, 0),
     rows + LIST_SPACING * math.max(rows - 1, 0)
   )
