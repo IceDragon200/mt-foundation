@@ -1,18 +1,35 @@
 -- @namespace foundation.com
 
-function foundation.com.itemstack_is_blank(stack)
-  if stack then
-    -- return foundation.com.is_blank(stack:get_name()) or stack:get_count() == 0
-    return stack:is_empty()
-  else
+-- @spec itemstack_deep_equals(ItemStack, ItemStack): Boolean
+function foundation.com.itemstack_deep_equals(a, b)
+  if a == b then
     return true
   end
+
+  if a and b then
+    return a:get_name() == b:get_name() and
+           a:get_count() == b:get_count() and
+           a:get_wear() == b:get_wear() and
+           a:get_meta():equals(b:get_meta())
+  end
+
+  return false
 end
 
+-- @spec itemstack_is_blank(ItemStack): Boolean
+function foundation.com.itemstack_is_blank(stack)
+  if stack then
+    return stack:is_empty()
+  end
+  return true
+end
+
+-- @spec itemstack_copy(ItemStack): ItemStack
 function foundation.com.itemstack_copy(stack)
   return stack:peek_item(stack:get_count())
 end
 
+-- @spec itemstack_get_itemdef(ItemStack): Table
 function foundation.com.itemstack_get_itemdef(stack)
   if not foundation.com.itemstack_is_blank(stack) then
     local name = stack:get_name()

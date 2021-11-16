@@ -1,3 +1,13 @@
+# 1.14.0
+
+__Added Functions__
+
+* `foundation.com.itemstack_deep_equals/2` - compares 2 itemstacks and their meta
+
+__Modifier Functions__
+
+* `foundation.com.iodata_to_string/1` - uses a modified internal implementation to utilize a table for concat
+
 # 1.13.0
 
 __Added Functions__
