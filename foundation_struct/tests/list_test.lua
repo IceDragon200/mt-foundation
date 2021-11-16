@@ -148,6 +148,18 @@ case:describe("#reverse/0", function (t2)
   end)
 end)
 
+case:describe("#flatten_iodata/0", function (t2)
+  t2:test("can flatten a list for iodata", function (t3)
+    local list = m:new({ "a", "b", m:new({"c", "d"}), {"e", "f", "g"} })
+
+    list:flatten_iodata()
+
+    t3:assert_eq(7, list:size())
+
+    t3:assert_table_eq({ "a", "b", "c", "d", "e", "f", "g" }, list:data())
+  end)
+end)
+
 case:describe("#push/1+", function (t2)
   t2:test("can push multiple values unto the list", function (t3)
     local list = m:new()

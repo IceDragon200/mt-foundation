@@ -134,6 +134,35 @@ function ic:reverse()
   return self
 end
 
+-- Specialized flatten function to produce a iodata ready list (for #join/0+)
+--
+-- @spec #flatten_iodata(): self
+function ic:flatten_iodata()
+  if self.m_cursor > 0 then
+    local index = 0
+    local data = self.m_data
+    local len = self.m_cursor
+    local val
+    local ty
+
+    self.m_data = {}
+    self.m_cursor = 0
+
+    for x = 1,len do
+      val = data[x]
+      ty = type(val)
+
+      if ty == "table" then
+        self:flat_concat(val)
+      else
+        self:push(val)
+      end
+    end
+  end
+
+  return self
+end
+
 -- Clears all data in the list, this will replace the internal table with an
 -- empty one, it is safe to call #data/0 before to retrieve the table.
 --
@@ -156,6 +185,50 @@ function ic:push(...)
     self.m_data[self.m_cursor] = item
   end
   return self
+end
+
+function ic:_flat_concat_list(other)
+  if other.m_cursor > 0 then
+    local item
+    for i = 1,other.m_cursor do
+      item = other.m_data[i]
+
+      if type(item) == "table" then
+        self:flat_concat(item)
+      else
+        self.m_cursor = self.m_cursor + 1
+        self.m_data[self.m_cursor] = item
+      end
+    end
+  end
+  return self
+end
+
+-- Concatenates one list into the target list, but all elements will be flattened
+--
+-- @spec #flat_concat(Table | List): self
+function ic:flat_concat(other)
+  if Class.is_object(other) then
+    if other:is_instance_of(List) then
+      return self:_flat_concat_list(other)
+    elseif other.to_list then
+      return self:_flat_concat_list(other:to_list())
+    else
+      error("unexpected object")
+    end
+  elseif type(other) == "table" then
+    for _,item in ipairs(other) do
+      if type(item) == "table" then
+        self:flat_concat(item)
+      else
+        self.m_cursor = self.m_cursor + 1
+        self.m_data[self.m_cursor] = item
+      end
+    end
+    return self
+  else
+    error("unexpected value")
+  end
 end
 
 -- Concatenates one list into the target list.
@@ -347,6 +420,13 @@ function ic:put_at(pos, item)
     return true
   end
   return false
+end
+
+-- Joins all elements in the list into a string
+--
+-- @spec #join(separator: String): String
+function ic:join(separator)
+  return table.concat(self.m_data, separator)
 end
 
 -- Retrieve item at position
