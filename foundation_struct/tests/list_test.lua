@@ -284,6 +284,20 @@ case:describe("#delete_at/1", function (t2)
   end)
 end)
 
+case:describe("#is_empty/0", function (t2)
+  t2:test("can correctly determine if a list is empty", function (t3)
+    local list = m:new()
+
+    t3:assert(list:is_empty())
+  end)
+
+  t2:test("can correctly determine a list is not empty", function (t3)
+    local list = m:new({ 1, 2, 3 })
+
+    t3:refute(list:is_empty())
+  end)
+end)
+
 case:describe("#put_at/2", function (t2)
   t2:test("can place a value in the list that is within range", function (t3)
     local list = m:new({ "a", "b", "c" })
