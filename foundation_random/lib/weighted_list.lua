@@ -83,7 +83,7 @@ end
 --
 -- Retrieve a list of random items
 --
--- @spec #random_list(Integer) :: Any[]
+-- @spec #random_list(Integer): Any[]
 function ic:random_list(count)
   local t = {}
   for i = 1,count do
