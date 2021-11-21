@@ -24,9 +24,11 @@ function Tweener.new(object, from, to, easer)
   local easer_fun = Tweener.get_easer(easer)
   assert(easer_fun, "expected an easer function")
   return function (t)
+    local b
+    local d
     for key,a in pairs(from) do
-      local b = to[key]
-      local d = b - a
+      b = to[key]
+      d = b - a
       object[key] = a + d * easer_fun(t)
     end
   end
