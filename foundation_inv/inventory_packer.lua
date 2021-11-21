@@ -1,3 +1,4 @@
+-- @namespace foundation.com.InventoryPacker
 local List = assert(foundation.com.List)
 
 local apak = foundation.com.apak
@@ -217,6 +218,7 @@ if apak then
     return list:flatten_iodata():join()
   end
 
+  -- @spec ascii_pack_list(ItemStack[]): String
   function ascii_pack_list(list)
     return ascii_pack_list_state(pack_list(list))
   end
@@ -224,6 +226,7 @@ if apak then
   local ascii_file_unpack = assert(foundation.com.ascii_file_unpack)
   local StringBuffer = assert(foundation.com.StringBuffer)
 
+  -- @spec ascii_unpack_list_state(String): InventoryPackerState
   function ascii_unpack_list_state(blob)
     local buffer = StringBuffer:new(blob, 'r')
     local state = build_pack_state()
@@ -267,6 +270,7 @@ if apak then
     return state
   end
 
+  -- @spec ascii_unpack_list_state(String): ItemStack[]
   function ascii_unpack_list(blob)
     return unpack_list(ascii_unpack_list_state(blob))
   end

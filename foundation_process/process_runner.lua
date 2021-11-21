@@ -1,3 +1,5 @@
+-- @namespace foundation.com
+
 --
 -- The ProcessRunner is a registry and hosting class for coroutine processes.
 --
@@ -30,6 +32,7 @@
 --       end
 --     end)
 --
+-- @class ProcessRunner
 local ProcessRunner = foundation.com.Class:extends("foundation.com.ProcessRunner")
 local ic = ProcessRunner.instance_class
 
@@ -64,6 +67,7 @@ local function push_to_mailbox(process, message)
   process.mailbox_end = node
 end
 
+-- @spec #initialize(): void
 function ic:initialize()
   self.monotonic_time = 0
   self.g_id = 0
@@ -75,7 +79,7 @@ end
 
 -- Retrieves a processes' mailbox (for debugging purposes)
 --
--- @spec :get_mailbox(PID) :: [Message]
+-- @spec #get_mailbox(PID): [Message]
 function ic:get_mailbox(pid)
   local process = self.processes[pid]
 
@@ -97,7 +101,7 @@ end
 
 -- Spawns a new process
 --
--- @spec :spawn(ProcessCallback) :: PID
+-- @spec #spawn(ProcessCallback): PID
 function ic:spawn(callback)
   self.g_id = self.g_id + 1
   local pid = self.g_id
@@ -129,7 +133,7 @@ end
 
 -- Terminates a process by id, no notifications are sent out
 --
--- @spec :kill(PID) :: self
+-- @spec #kill(PID): self
 function ic:kill(pid)
   self.processes[pid] = nil
   return self
@@ -137,7 +141,7 @@ end
 
 -- Terminates every process, without notifying anyone or anything
 --
--- @spec :kill_all() :: self
+-- @spec #kill_all(): self
 function ic:kill_all()
   self.processes = {}
   return self
@@ -146,7 +150,7 @@ end
 -- Sends the exit message to the process
 -- The process can then handle this message itself
 --
--- @spec :send_exit(PID, reason::Any) :: (queued_to_valid_process::Boolean)
+-- @spec #send_exit(PID, reason: Any): (queued_to_valid_process: Boolean)
 function ic:send_exit(pid, reason)
   local process = self.processes[pid]
 
@@ -159,7 +163,7 @@ end
 
 -- Determines if the specified process is alive
 --
--- @spec :is_alive(PID) :: Boolean
+-- @spec #is_alive(PID): Boolean
 function ic:is_alive(pid)
   local process = self.processes[pid]
   if process then
@@ -170,7 +174,7 @@ end
 
 -- Send a message to process
 --
--- @spec :send(PID, Any) :: (queued_to_valid_process::Boolean)
+-- @spec #send(PID, Any): (queued_to_valid_process: Boolean)
 function ic:send(pid, message)
   local process = self.processes[pid]
   if process then
@@ -182,7 +186,7 @@ end
 
 -- Send a message to a process after some time has passed
 --
--- @spec :send_after(PID, Any, Timeout) :: self
+-- @spec #send_after(PID, Any, Timeout): self
 function ic:send_after(pid, message, timeout)
   local node = {
     pid = pid,
@@ -203,6 +207,7 @@ function ic:send_after(pid, message, timeout)
   return self
 end
 
+-- @spec #update(delta: Float): void
 function ic:update(delta)
   self.monotonic_time = self.monotonic_time + delta
 
@@ -227,6 +232,8 @@ function ic:update(delta)
   end
 
   local success, act_or_error, arg
+  local message
+
   for pid, process in pairs(self.processes) do
     self.active_process = process
 
@@ -246,7 +253,7 @@ function ic:update(delta)
           process.state = 'main'
           success, act_or_error, arg = coroutine.resume(process.co, false)
         else
-          local message = pop_from_mailbox(process)
+          message = pop_from_mailbox(process)
 
           if message then
             process.state = 'main'
@@ -305,28 +312,28 @@ end
 
 -- Should be called from inside a process to put it to sleep for a period
 --
--- @spec :sleep(timeout: Integer)
+-- @spec #sleep(timeout: Integer): Any
 function ic:sleep(timeout)
   return coroutine.yield('sleep', timeout)
 end
 
 -- Mark the process as waiting for a message (either an exit or 'send')
 --
--- @spec :receive(timeout: Integer) :: (success::Boolean, {type::String, message::Any})
+-- @spec #receive(timeout: Integer): (success: Boolean, { type: String, message: Any })
 function ic:receive(timeout)
   return coroutine.yield('receive', timeout)
 end
 
 -- Return control to the process runner, nothing special happens
 --
--- @spec :yield()
+-- @spec #yield(): Any
 function ic:yield()
   return coroutine.yield('yield')
 end
 
 -- Notify the process runner that the process would like to exit
 --
--- @spec :exit(reason)
+-- @spec #exit(reason: Any): Any
 function ic:exit(reason)
   return coroutine.yield('exit', reason)
 end

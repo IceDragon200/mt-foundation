@@ -1,15 +1,26 @@
 -- @namespace foundation.com.schematic_helpers
+local table_equals = assert(foundation.com.table_equals)
+
 foundation.com.schematic_helpers = {}
 
 --
 -- @type YSliceSchematic: {
---   size = Vector3,
---   data = {
---     { name = String, param1 = Integer, param2 = Integer, prob = Integer, force_place = Boolean }
---   },
---   yslice_prob = {
---     { ypos = Integer, prob = Integer }
---   }
+--   size: Vector3,
+--   data: [
+--     {
+--       name: String,
+--       param1: Integer,
+--       param2: Integer,
+--       prob: Integer,
+--       force_place: Boolean
+--     }
+--   ],
+--   yslice_prob: [
+--     {
+--       ypos: Integer,
+--       prob: Integer
+--     }
+--   ]
 -- }
 --
 
@@ -48,40 +59,7 @@ end
 -- you don't have to calculate the size upfront as that can be calculated at the end,
 -- so you can build to your hearts content and then cry about the data usage afterwards.
 --
-local Builder = {}
-Builder.instance_class = {}
-
-local function table_merge(...)
-  local result = {}
-  for _,t in ipairs({...}) do
-    for key,value in pairs(t) do
-      result[key] = value
-    end
-  end
-  return result
-end
-
-local function table_equals(a, b)
-  local merged = table_merge(a, b)
-  for key,_ in pairs(merged) do
-    if a[key] ~= b[key] then
-      return false
-    end
-  end
-  return true
-end
-
---
--- Create a new Builder instance
---
--- @spec .new(): Builder
-function Builder:new(...)
-  local obj = {}
-  setmetatable(obj, { __index = Builder.instance_class })
-  obj:initialize(...)
-  return obj
-end
-
+local Builder = foundation.com.Class:extends("foundation_mt.Builder")
 local ic = Builder.instance_class
 
 --

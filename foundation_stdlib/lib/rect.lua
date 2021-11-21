@@ -214,7 +214,7 @@ end
 --
 -- @since "1.10.0"
 -- @mutative
--- @spec align(rect: Rect, x?: -1..1, y?: -1..1, container: Rect): Rect
+-- @spec align(rect: Rect, x?: Integer/2, y?: Integer/2, container: Rect): Rect
 function Rect.align(rect, x, y, container)
   if x then
     if x < 0 then

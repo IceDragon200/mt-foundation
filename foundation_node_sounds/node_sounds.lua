@@ -2,8 +2,11 @@
 -- The node sounds registry allows registering, well node sounds,
 -- these sounds are a table that can extend another node sound set.
 --
+
+-- @namespace foundation.com
 local table_merge = assert(foundation.com.table_merge)
 
+-- @class NodeSoundsRegistry
 local NodeSoundsRegistry = foundation.com.Class:extends("NodeSoundsRegistry")
 local ic = NodeSoundsRegistry.instance_class
 
@@ -21,9 +24,14 @@ function ic:clear()
   return self
 end
 
--- @type SoundSet :: {
---   extends = [name: String, ...],
---   sounds = NodeSounds -- see minetest's node sound thingy
+-- See minetest's node sounds for details on NodeSounds
+--
+-- @type SoundSet: {
+--   extends: {
+--     name: String,
+--     ...
+--   },
+--   sounds: NodeSounds
 -- }
 
 --
@@ -60,7 +68,7 @@ end
 -- Retrieve a soundset by name
 -- Will error if the soundset does not exist
 --
--- @spec #fetch(name: String!): SoundSet
+-- @spec #fetch(name: String): SoundSet
 function ic:fetch(name)
   local sound_set = self:get(name)
   if sound_set then
@@ -73,7 +81,7 @@ end
 --
 -- Build a node sounds table by name and optionally a custom soundset over it.
 --
--- @spec #build(name: String!, sound_set: SoundSet | nil): NodeSounds
+-- @spec #build(name: String, sound_set: SoundSet | nil): NodeSounds
 function ic:build(name, sound_set)
   sound_set = sound_set or {}
   sound_set.extends = sound_set.extends or {}

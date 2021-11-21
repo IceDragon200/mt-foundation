@@ -2,9 +2,9 @@
 
 local Color = {}
 
--- @type Byte :: 0..255
+-- @type Byte: Integer/8
 --
--- @type Color :: {
+-- @type Color: {
 --   r: Byte,
 --   g: Byte,
 --   b: Byte,

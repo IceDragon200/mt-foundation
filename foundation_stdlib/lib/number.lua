@@ -137,7 +137,8 @@ function foundation.com.number_lerp(a, b, t)
   return a + (b - a) * t
 end
 
--- @dev.note not sure what the correct name is for this function
+-- TODO: not sure what the correct name is for this function
+--
 -- @spec number_moveto(a: Number, b: Number, amt: Number): Number
 function foundation.com.number_moveto(a, b, amt)
   if a < b then

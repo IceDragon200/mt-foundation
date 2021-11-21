@@ -15,7 +15,7 @@ local c = Form.instance_class
 
 -- Initialize a new UI container, kind is either "form" or "container"
 --
--- @spec initialize(kind: String)
+-- @spec initialize(kind: String): void
 function c:initialize(kind)
   self.kind = kind or "form"
   self.name = ""

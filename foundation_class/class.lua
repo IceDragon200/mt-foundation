@@ -1,3 +1,6 @@
+-- @namespace foundation.com
+
+-- @class Class
 local Class = {
   _super = nil,
   _is_class = true,

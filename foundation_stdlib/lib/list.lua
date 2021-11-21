@@ -13,7 +13,7 @@ end
 -- Usage:
 --    list_crawford_base32_le_rolling_encode_table(4, int32, 2, int16, 6, int48) -- => Table
 --
--- @spec list_crawford_base32_le_rolling_encode_table((int_len: Integer, int: Integer | String)...): Table
+-- @spec list_crawford_base32_le_rolling_encode_table(...(int_len: Integer, int: Integer | String)): Table
 function foundation.com.list_crawford_base32_le_rolling_encode_table(...)
   local items = {...}
   local len = #items

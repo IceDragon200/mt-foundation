@@ -3,6 +3,10 @@
 local Class = foundation.com.Class
 local table_copy = assert(foundation.com.table_copy)
 
+-- @type ListCastable<T>: {
+--   #to_list: Function/0 => T,
+-- }
+
 -- @class List<T>
 local List = Class:extends("foundation.com.List")
 local ic = List.instance_class
@@ -234,7 +238,7 @@ end
 -- Concatenates one list into the target list.
 --
 -- @since "1.1.0"
--- @spec #concat(other: List<T> | Table | {#to_list<T>}): self
+-- @spec #concat(other: List<T> | Table | ListCastable<T>): self
 function ic:concat(other)
   if Class.is_object(other) then
     if other:is_instance_of(List) then

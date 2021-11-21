@@ -1,6 +1,9 @@
 --
 -- Token Buffer is a utility class for parsing tokens
 -- That is, list-like tables with the first element being the name of the token
+
+-- @namespace foundation.com
+
 local table_copy = assert(foundation.com.table_copy)
 local list_slice = assert(foundation.com.list_slice)
 
@@ -34,6 +37,7 @@ local function match_tokens(tokens, start, stop, token_matchers)
   return matched
 end
 
+-- @class TokenBuffer
 local TokenBuffer = foundation.com.Class:extends("TokenBuffer")
 local ic = TokenBuffer.instance_class
 
@@ -111,7 +115,7 @@ function ic:peek(count)
   return list_slice(self.m_data, self.m_cursor, count)
 end
 
--- @doc Returns a list of the matched tokens, or nil if no match
+-- Returns a list of the matched tokens, or nil if no match
 --
 -- @spec #scan(...token_names: [String]): [Token] | nil
 function ic:scan(...)
@@ -239,7 +243,7 @@ function ic:next_token()
   return nil
 end
 
--- @doc Checks if all the given token names match the current tokens
+-- Checks if all the given token names match the current tokens
 --
 -- @spec #match_tokens(...tokens: [String]): Boolean
 function ic:match_tokens(...)

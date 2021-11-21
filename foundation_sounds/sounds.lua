@@ -23,7 +23,7 @@ end
 
 -- @spec #register(name: String,
 --                 filename: String,
---                 default_params: Table) :: self
+--                 default_params: Table): self
 function ic:register(name, filename, default_params)
   default_params = default_params or {}
   self.registered[name] = {
@@ -44,7 +44,7 @@ end
 
 --
 --
--- @spec #play(name: String, params: Table) :: (boolean, SoundHandle)
+-- @spec #play(name: String, params: Table): (Boolean, SoundHandle)
 function ic:play(name, params)
   local entry = self.registered[name]
   if entry then
