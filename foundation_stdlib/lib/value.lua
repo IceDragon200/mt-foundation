@@ -14,6 +14,8 @@ local is_blank = foundation.com.is_blank
 
 --
 -- Takes a list of arguments, and returns the first non-blank one
+--
+-- @spec first_present(...Any): Any
 function foundation.com.first_present(...)
   for _, value in ipairs({...}) do
     if not is_blank(value) then
@@ -25,7 +27,7 @@ end
 
 --
 --
--- @spec deep_equals(Value, Value) :: boolean
+-- @spec deep_equals(Value, Value): Boolean
 local function deep_equals(a, b, depth)
   depth = depth or 0
   if depth > 20 then

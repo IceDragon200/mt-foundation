@@ -22,7 +22,7 @@ end
 
 -- Removes any non-hex characters
 --
--- @spec string_hex_clean(String) :: String
+-- @spec string_hex_clean(String): String
 function foundation.com.string_hex_clean(str)
   local result = {}
   local bytes = {string.byte(str, 1, -1)}
@@ -44,7 +44,7 @@ end
 
 -- Decode a hexpair string as a plain byte
 --
--- @spec string_hex_pair_to_byte(String) :: Integer
+-- @spec string_hex_pair_to_byte(String): Integer
 -- @example string_hex_pair_to_byte("FF") -- => 255
 function foundation.com.string_hex_pair_to_byte(pair)
   local hinibble = string.byte(pair, 1) or 0

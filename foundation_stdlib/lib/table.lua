@@ -50,7 +50,7 @@ end
 
 -- Determines if the expected value is a key of the given table.
 --
--- @spec table_key_of(Table<T, _V>, expected: T): Boolean()
+-- @spec table_key_of(Table<T, _V>, expected: T): Boolean
 function foundation.com.table_key_of(t, expected)
   for key,value in pairs(t) do
     if value == expected then

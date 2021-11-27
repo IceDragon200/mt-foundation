@@ -1,12 +1,16 @@
 --
 --
 --
-local Rect = foundation.com.Rect
-local List = foundation.com.List
+local Rect = assert(foundation.com.Rect)
+local List = assert(foundation.com.List)
 
+-- @namespace foundation.com.formspec
+
+-- @class Layout
 local Layout = foundation.com.Class:extends("foundation.com.formspec.Layout")
 local ic = Layout.instance_class
 
+-- @spec #initialize(): void
 function ic:initialize()
   self.m_boxes = List:new()
 end

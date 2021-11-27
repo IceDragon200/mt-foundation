@@ -1,3 +1,4 @@
+-- @namespace foudation_kdl.KDL.Decoder
 local KDL = foundation_kdl.KDL
 
 local List = assert(foundation.com.List)
@@ -8,7 +9,6 @@ local string_trim_leading = assert(foundation.com.string_trim_leading)
 local NULL = {}
 local SLASHDASH = {}
 
---
 local Decoder = {}
 
 local function term_to_binary_int(term)

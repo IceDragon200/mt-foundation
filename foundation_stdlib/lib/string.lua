@@ -163,12 +163,13 @@ end
 
 -- Returns a substring starting from the tail of the string
 --
--- @spec string_rsub(String, Integer) :: String
+-- @spec string_rsub(String, Integer): String
 function foundation.com.string_rsub(str, len)
   local i = #str - len + 1
   return string.sub(str, i)
 end
 
+-- @spec string_split(String, String): [String]
 function foundation.com.string_split(str, pattern)
   if str == "" then
     return {}

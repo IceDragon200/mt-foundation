@@ -540,17 +540,18 @@ function Directions.axis_to_facedir_rotation(axis)
 end
 
 --
--- Directions.facedir_from_axis_and_rotation(axis :: DIR6, rotation :: DIR4)
---
+-- @spec facedir_from_axis_and_rotation(axis: DIR6, rotation: DIR4): Integer
 function Directions.facedir_from_axis_and_rotation(axis, rotation)
   local base = Directions.axis_to_facedir(axis)
   return base + Directions.axis_to_facedir_rotation(rotation)
 end
 
+-- @spec inspect_axis(axis: Integer): String
 function Directions.inspect_axis(axis)
   return Directions.DIR_TO_STRING[axis]
 end
 
+-- @spec inspect_axis_and_rotation(axis: Integer, rotation: Integer): String
 function Directions.inspect_axis_and_rotation(axis, rotation)
   return Directions.DIR_TO_STRING[axis] .. " rotated to " .. Directions.DIR_TO_STRING[rotation]
 end

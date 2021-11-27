@@ -1,13 +1,15 @@
 -- @namespace foundation.com.Tweener
 
+-- @type EaserFunction: function(Number) => Number
+
 local Tweener = {}
 
+-- @spec get_easer(easer: String | Function): Function
 function Tweener.get_easer(easer)
-  local easer_fun = easer
   if type(easer) == "string" then
-    easer_fun = foundation.com.Easers[easer]
+    return assert(foundation.com.Easers[easer])
   end
-  return easer_fun
+  return easer
 end
 
 -- Returns a tween application function, calling it will make changes
@@ -19,7 +21,7 @@ end
 -- @spec new(object: Table,
 --           from: Table,
 --           to: Table,
---           easer: String | Function): function(Float) => void
+--           easer: String | EaserFunction): function(Float) => void
 function Tweener.new(object, from, to, easer)
   local easer_fun = Tweener.get_easer(easer)
   assert(easer_fun, "expected an easer function")

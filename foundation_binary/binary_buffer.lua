@@ -21,6 +21,7 @@ local function next_block_size(size)
   return (blocks + 1) * BLOCK_SIZE
 end
 
+-- @spec #initialize(size_or_data: Integer | String, mode: String): void
 function ic:initialize(initial_size_or_data, mode)
   local size, allocated_size, data
   if type(initial_size_or_data) == 'number' then
@@ -40,11 +41,13 @@ function ic:initialize(initial_size_or_data, mode)
   self:open(mode)
 end
 
+-- @spec #blob(len: Integer): String
 function ic:blob(len)
   len = len or self.m_size
   return ffi.string(self.m_data, len)
 end
 
+-- @spec #resize(Integer): self
 function ic:resize(new_size)
   local old_allocated_size = self.m_allocated_size
   local old_data = self.m_data
@@ -62,10 +65,12 @@ function ic:resize_to_next_block()
   return self:resize(next_block_size(self.m_allocated_size))
 end
 
+-- @spec #close(): void
 function ic:close()
   self.m_mode = nil
 end
 
+-- @spec #open(mode: String): void
 function ic:open(mode)
   self.m_cursor = 1
   self.m_mode = mode
@@ -75,10 +80,12 @@ function ic:open(mode)
   end
 end
 
+-- @spec #tell(): Integer
 function ic:tell()
   return self.m_cursor
 end
 
+-- @spec #seek(new_pos: Integer): self
 function ic:seek(new_pos)
   self.m_cursor = new_pos
   return self

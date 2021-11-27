@@ -2,44 +2,49 @@
 
 local ByteBuf = assert(foundation.com.ByteBuf)
 
+-- @class BinSchema
 local BinSchema = foundation.com.Class:extends("BinSchema")
 local ic = BinSchema.instance_class
 
---[[
-@type IType.t :: {
-  write(self, file, data) :: (bytes_written :: non_neg_integer, error)
-  read(self, file) :: (any, bytes_read :: non_neg_integer)
-}
+--
+-- @type IType: {
+--   write: function(self, Stream, data: Any) => (bytes_written: Integer, Error),
+--   read: function(self, Stream) => (any, bytes_read: Integer)
+-- }
+--
 
-@type scalar_type ::
-  "u8" |
-  "u16" |
-  "u24" |
-  "u32" |
-  "i8" |
-  "i16" |
-  "i24" |
-  "i32" |
-  "f16" |
-  "f24" |
-  "f32" |
-  "f64" |
-  "u8bool" |
-  "u8string" |
-  "u16string" |
-  "u24string" |
-  "u32string"
+-- Scalar Types:
+--   "u8" |
+--   "u16" |
+--   "u24" |
+--   "u32" |
+--   "i8" |
+--   "i16" |
+--   "i24" |
+--   "i32" |
+--   "f16" |
+--   "f24" |
+--   "f32" |
+--   "f64" |
+--   "u8bool" |
+--   "u8string" |
+--   "u16string" |
+--   "u24string" |
+--   "u32string"
+-- @type ScalarTypeName: String
+--
 
-@type element_type :: scalar_type | IType.t
-@type Definition :: [
-  non_neg_integer | -- Padding
-  {name :: String, "*array", element_type} | -- Variable length array
-  {name :: String, "array", element_type, length :: non_neg_integer} | -- Fixed length array
-  {name :: String, "map", key_type, value_type} | -- Map
-  {name :: String, element_type} | -- Any other type
-]
-]]
--- @spec #initialize(name: String, Definition): void
+-- @type ElementType: ScalarTypeName | IType.t
+
+-- Schema Definition:
+--   Integer | -- Padding
+--   [name: String, "*array", ElementType} | -- Variable length array
+--   [name: String, "array", ElementType, length: Integer} | -- Fixed length array
+--   [name: String, "map", key_type, value_type} | -- Map
+--   [name: String, ElementType} | -- Any other type
+-- @type SchemaDefinition: Any[]
+
+-- @spec #initialize(name: String, SchemaDefinition): void
 function ic:initialize(name, definition)
   ic._super.initialize(self)
   assert(definition, "expected a definition list")
