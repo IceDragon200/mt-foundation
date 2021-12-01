@@ -1,6 +1,8 @@
 --
 -- ULID
 -- https://github.com/ulid/spec
+--
+
 -- @namespace foundation.com.ULID
 local integer_le_encode = assert(foundation.com.integer_le_encode)
 local integer_be_encode = assert(foundation.com.integer_be_encode)
@@ -36,7 +38,8 @@ end
 -- @spec format_string(
 --         time48: Integer,
 --         random_a48: Integer | String,
---         random_b32: Integer | String): String
+--         random_b32: Integer | String
+--       ): String
 local function format_string(time48, random_a48, random_b32)
   local result = list_crawford_base32_le_rolling_encode_table(
     6, time48, 6, random_a48, 4, random_b32
