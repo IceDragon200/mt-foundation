@@ -1,5 +1,15 @@
 -- @namespace foundation.com
 
+-- Disables modifications on the specified table for creating read-only tables.
+--
+-- @spec table_freeze(Table): Table
+function foundation.com.table_freeze(a)
+  assert(type(a) == "table", "expected a table")
+  setmetatable(a, getmetatable(a) or {})
+  getmetatable(a).__newindex = {}
+  return a
+end
+
 -- Not table.concat (which is really just a join)
 -- This is concat like any other sane language, it really should be used on
 -- array/list like tables and not map like ones.

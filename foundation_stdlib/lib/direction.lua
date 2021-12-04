@@ -1,77 +1,145 @@
 -- @namespace foundation.com.Directions
 
+local table_freeze = assert(foundation.com.table_freeze)
+
+local Vector3 = assert(foundation.com.Vector3)
 local Directions = {}
 
 -- This uses a bit flag map, for quick use with binary-styled representations
 -- It does make face values a pain though
 -- UD WSEN
+
+-- @type DirectionCode: Integer
+
+-- @type DirectionCodeMap: {
+--   [dir_code: DirectionCode]: DirectionCode
+-- }
+
+-- @const D_NONE: DirectionCode
 Directions.D_NONE = 0 -- no direction
+-- @const D_NORTH: DirectionCode
 Directions.D_NORTH = 1 -- +Z
+-- @const D_EAST: DirectionCode
 Directions.D_EAST = 2 -- +X
+-- @const D_SOUTH: DirectionCode
 Directions.D_SOUTH = 4 -- -Z
+-- @const D_WEST: DirectionCode
 Directions.D_WEST = 8 -- -X
+-- @const D_DOWN: DirectionCode
 Directions.D_DOWN = 16 -- -Y
+-- @const D_UP: DirectionCode
 Directions.D_UP = 32 -- +Y
 
 -- In case one needs the 4 cardinal directions for whatever reason
-Directions.DIR4 = {
+-- @const DIR4: DirectionCode[]
+Directions.DIR4 = table_freeze({
   Directions.D_NORTH,
   Directions.D_EAST,
   Directions.D_SOUTH,
   Directions.D_WEST,
-}
+})
 
-Directions.DIR6 = {
+-- @const DIR6: DirectionCode[]
+Directions.DIR6 = table_freeze({
   Directions.D_NORTH,
   Directions.D_EAST,
   Directions.D_SOUTH,
   Directions.D_WEST,
   Directions.D_DOWN,
   Directions.D_UP,
-}
+})
 
 -- Vectors, repsenting the directions
-Directions.V3_NORTH = vector.new(0, 0, 1)
-Directions.V3_EAST = vector.new(1, 0, 0)
-Directions.V3_SOUTH = vector.new(0, 0, -1)
-Directions.V3_WEST = vector.new(-1, 0, 0)
-Directions.V3_DOWN = vector.new(0, -1, 0)
-Directions.V3_UP = vector.new(0, 1, 0)
+
+-- North face normal
+-- @const V3_NORTH: Vector3
+Directions.V3_NORTH = table_freeze(Vector3.new(0, 0, 1))
+-- East face normal
+-- @const V3_EAST: Vector3
+Directions.V3_EAST = table_freeze(Vector3.new(1, 0, 0))
+-- South face normal
+-- @const V3_SOUTH: Vector3
+Directions.V3_SOUTH = table_freeze(Vector3.new(0, 0, -1))
+-- West face normal
+-- @const V3_WEST: Vector3
+Directions.V3_WEST = table_freeze(Vector3.new(-1, 0, 0))
+-- Down face normal
+-- @const V3_DOWN: Vector3
+Directions.V3_DOWN = table_freeze(Vector3.new(0, -1, 0))
+-- Up face normal
+-- @const V3_UP: Vector3
+Directions.V3_UP = table_freeze(Vector3.new(0, 1, 0))
+
+-- @const DIR_TO_HEADING: {
+--   [dir_code: DirectionCode]: Float
+-- }
+Directions.DIR_TO_HEADING = table_freeze({
+  [Directions.D_NORTH] = 0.0,
+  [Directions.D_EAST] = math.pi / 2,
+  [Directions.D_SOUTH] = math.pi,
+  [Directions.D_WEST] = (math.pi / 2) * 3,
+})
+
+-- @const ROT_TO_HEADING: {
+--   [rotation: Integer]: Float
+-- }
+Directions.ROT_TO_HEADING = table_freeze({
+  [0] = Directions.DIR_TO_HEADING[Directions.D_NORTH],
+  [1] = Directions.DIR_TO_HEADING[Directions.D_EAST],
+  [2] = Directions.DIR_TO_HEADING[Directions.D_SOUTH],
+  [3] = Directions.DIR_TO_HEADING[Directions.D_WEST],
+})
 
 -- A helper table for converting the D_* constants to their vectors
-Directions.DIR6_TO_VEC3 = {
+--
+-- @const DIR6_TO_VEC3: {
+--   [dir_code: DirectionCode]: Vector3
+-- }
+Directions.DIR6_TO_VEC3 = table_freeze({
   [Directions.D_NORTH] = Directions.V3_NORTH,
   [Directions.D_EAST] = Directions.V3_EAST,
   [Directions.D_SOUTH] = Directions.V3_SOUTH,
   [Directions.D_WEST] = Directions.V3_WEST,
   [Directions.D_DOWN] = Directions.V3_DOWN,
   [Directions.D_UP] = Directions.V3_UP,
-}
+})
 
-Directions.DIR4_TO_VEC3 = {
+-- @const DIR4_TO_VEC3: {
+--   [dir_code: DirectionCode]: Vector3
+-- }
+Directions.DIR4_TO_VEC3 = table_freeze({
   [Directions.D_NORTH] = Directions.V3_NORTH,
   [Directions.D_EAST] = Directions.V3_EAST,
   [Directions.D_SOUTH] = Directions.V3_SOUTH,
   [Directions.D_WEST] = Directions.V3_WEST,
-}
+})
 
 -- Clockwise and Anti-Clockwise tables
-Directions.DIR4_CW_ROTATION = {
+-- @const DIR4_CW_ROTATION: {
+--   [dir_code: DirectionCode]: DirectionCode
+-- }
+Directions.DIR4_CW_ROTATION = table_freeze({
   [Directions.D_NORTH] = Directions.D_EAST,
   [Directions.D_EAST] = Directions.D_SOUTH,
   [Directions.D_SOUTH] = Directions.D_WEST,
   [Directions.D_WEST] = Directions.D_NORTH,
-}
+})
 
-Directions.DIR4_ACW_ROTATION = {
+-- @const DIR4_ACW_ROTATION: {
+--   [dir_code: DirectionCode]: DirectionCode
+-- }
+Directions.DIR4_ACW_ROTATION = table_freeze({
   [Directions.D_NORTH] = Directions.D_WEST,
   [Directions.D_EAST] = Directions.D_NORTH,
   [Directions.D_SOUTH] = Directions.D_EAST,
   [Directions.D_WEST] = Directions.D_SOUTH,
-}
+})
 
 -- A helper table for converting the D_* constants to strings
-Directions.DIR_TO_STRING = {
+-- @const DIR_TO_STRING: {
+--   [dir_code: DirectionCode]: String
+-- }
+Directions.DIR_TO_STRING = table_freeze({
   [Directions.D_NONE] = "NONE",
   [Directions.D_NORTH] = "NORTH",
   [Directions.D_EAST] = "EAST",
@@ -79,9 +147,12 @@ Directions.DIR_TO_STRING = {
   [Directions.D_WEST] = "WEST",
   [Directions.D_DOWN] = "DOWN",
   [Directions.D_UP] = "UP",
-}
+})
 
-Directions.DIR_TO_STRING1 = {
+-- @const DIR_TO_STRING1: {
+--   [dir_code: DirectionCode]: String
+-- }
+Directions.DIR_TO_STRING1 = table_freeze({
   [Directions.D_NONE] = "0",
   [Directions.D_NORTH] = "N",
   [Directions.D_EAST] = "E",
@@ -89,15 +160,22 @@ Directions.DIR_TO_STRING1 = {
   [Directions.D_WEST] = "W",
   [Directions.D_DOWN] = "D",
   [Directions.D_UP] = "U",
-}
+})
 
+-- @const STRING1_TO_DIR: {
+--   [code: String]: DirectionCode
+-- }
 Directions.STRING1_TO_DIR = {}
 for dir, str in pairs(Directions.DIR_TO_STRING1) do
   Directions.STRING1_TO_DIR[str] = dir
 end
+Directions.STRING1_TO_DIR = table_freeze(Directions.STRING1_TO_DIR)
 
 -- And the inversions
-Directions.INVERTED_DIR6 = {
+-- @const INVERTED_DIR6: {
+--   [dir_code: DirectionCode]: DirectionCode
+-- }
+Directions.INVERTED_DIR6 = table_freeze({
   [Directions.D_NONE] = Directions.D_NONE,
   [Directions.D_SOUTH] = Directions.D_NORTH,
   [Directions.D_WEST] = Directions.D_EAST,
@@ -105,15 +183,19 @@ Directions.INVERTED_DIR6 = {
   [Directions.D_EAST] = Directions.D_WEST,
   [Directions.D_UP] = Directions.D_DOWN,
   [Directions.D_DOWN] = Directions.D_UP,
-}
-Directions.INVERTED_DIR6_TO_VEC3 = {
+})
+
+-- @const INVERTED_DIR6_TO_VEC3: {
+--   [dir_code: DirectionCode]: Vector3
+-- }
+Directions.INVERTED_DIR6_TO_VEC3 = table_freeze({
   [Directions.D_SOUTH] = Directions.V3_NORTH,
   [Directions.D_WEST] = Directions.V3_EAST,
   [Directions.D_NORTH] = Directions.V3_SOUTH,
   [Directions.D_EAST] = Directions.V3_WEST,
   [Directions.D_UP] = Directions.V3_DOWN,
   [Directions.D_DOWN] = Directions.V3_UP,
-}
+})
 
 -- Facedir Axis
 Directions.FD_AXIS_Yp = 0
@@ -126,34 +208,34 @@ Directions.FD_AXIS_Zp = 4
 Directions.FD_AXIS_Zm = 8
 
 -- Axis Index to Axis facedir offsets
-Directions.FD_AXIS = {
+Directions.FD_AXIS = table_freeze({
   [0] = Directions.FD_AXIS_Yp,
   [1] = Directions.FD_AXIS_Zp,
   [2] = Directions.FD_AXIS_Zm,
   [3] = Directions.FD_AXIS_Xp,
   [4] = Directions.FD_AXIS_Xm,
   [5] = Directions.FD_AXIS_Ym,
-}
+})
 
 -- Axis index to D_* constant
-Directions.AXIS = {
+Directions.AXIS = table_freeze({
   [0] = Directions.D_UP,
   [1] = Directions.D_NORTH,
   [2] = Directions.D_SOUTH,
   [3] = Directions.D_EAST,
   [4] = Directions.D_WEST,
   [5] = Directions.D_DOWN,
-}
+})
 
-local fm = function(u, n, s, e, w, d)
-  return {
+local function fm(u, n, s, e, w, d)
+  return table_freeze({
     [Directions.D_UP] = u,
     [Directions.D_NORTH] = n,
     [Directions.D_SOUTH] = s,
     [Directions.D_EAST] = e,
     [Directions.D_WEST] = w,
     [Directions.D_DOWN] = d,
-  }
+  })
 end
 
 local U = Directions.D_UP    -- Y+
@@ -165,9 +247,15 @@ local D = Directions.D_DOWN  -- Y-
 
 -- Never again, f*** this seriously.
 -- Updated 2019-10-30, changed it a bit
-Directions.FACEDIR_TO_LOCAL_FACE = {
+
+-- Transforms the facedir to the node's local face.
+--
+-- @const FACEDIR_TO_LOCAL_FACE: {
+--   [facedir: Integer]: DirectionCodeMap
+-- }
+Directions.FACEDIR_TO_LOCAL_FACE = table_freeze({
   -- Yp
-  [0]  = fm(U, N, S, E, W, D),
+  [0]  = fm(U, N, S, E, W, D), -- neutral face
   [1]  = fm(U, W, E, N, S, D),
   [2]  = fm(U, S, N, W, E, D),
   [3]  = fm(U, E, W, S, N, D),
@@ -196,8 +284,13 @@ Directions.FACEDIR_TO_LOCAL_FACE = {
   [21] = fm(D, W, E, S, N, U),
   [22] = fm(D, S, N, E, W, U),
   [23] = fm(D, E, W, N, S, U),
-}
+})
 
+-- Transforms the world facing to the local
+--
+-- @const FACEDIR_TO_FACES: {
+--   [facedir: Integer]: DirectionCodeMap
+-- }
 Directions.FACEDIR_TO_FACES = {}
 
 for facedir, map in pairs(Directions.FACEDIR_TO_LOCAL_FACE) do
@@ -208,6 +301,7 @@ for facedir, map in pairs(Directions.FACEDIR_TO_LOCAL_FACE) do
   end
 end
 
+-- @spec dir_to_string(DirectionCode): String
 function Directions.dir_to_string(dir)
   return Directions.DIR_TO_STRING[dir]
 end
@@ -219,6 +313,7 @@ end
   I.e the first initial of the string, it just so happens that NONE is 0 instead of N (which is used for NORTH)
 
 ]]
+-- @spec dir_to_code(DirectionCode): String
 function Directions.dir_to_code(dir)
   return Directions.DIR_TO_STRING1[dir]
 end
@@ -232,10 +327,12 @@ end
   * `table` :: a table containing each new face mapped using Directions.D_*
 
 ]]
+-- @spec facedir_to_faces(Facedir): DirectionCodeMap
 function Directions.facedir_to_faces(facedir)
   return Directions.FACEDIR_TO_FACES[facedir % 32]
 end
 
+-- @spec facedir_to_face(Facedir, base_face: DirectionCode): DirectionCode
 function Directions.facedir_to_face(facedir, base_face)
   assert(base_face, "expected a face")
   assert(facedir, "expected a facedir")
@@ -247,10 +344,12 @@ function Directions.facedir_to_face(facedir, base_face)
   end
 end
 
+-- @spec facedir_to_local_faces(Facedir): DirectionCodeMap
 function Directions.facedir_to_local_faces(facedir)
   return Directions.FACEDIR_TO_LOCAL_FACE[facedir % 32]
 end
 
+-- @spec facedir_to_local_face(Facedir, base_face: DirectionCode): DirectionCode
 function Directions.facedir_to_local_face(facedir, base_face)
   assert(base_face, "expected a face")
   assert(facedir, "expected a facedir")
@@ -269,6 +368,7 @@ end
 --  return axis, facedir % 4
 --end
 
+-- @spec facedir_to_fd_axis_and_fd_rotation(facedir: Integer): (axis: Integer, rotation: Integer)
 function Directions.facedir_to_fd_axis_and_fd_rotation(facedir)
   local fd_axis = math.floor((facedir % 32) / 4)
   local fd_rotation = (facedir % 4)
@@ -363,6 +463,7 @@ function Directions.facedir_wallmount_after_place_node(pos, _placer, _itemstack,
   minetest.swap_node(pos, node)
 end
 
+-- @spec rotate_position_by_facedir(Vector3, from_facedir: Facedir, to_facedir: Facedir): Vector3
 function Directions.rotate_position_by_facedir(p, from_facedir, to_facedir)
   if from_facedir == to_facedir then
     return p
@@ -387,9 +488,10 @@ function Directions.rotate_position_by_facedir(p, from_facedir, to_facedir)
   }
 end
 
---[[
-Determines what direction the `looker` is from the `target`
-]]
+-- Determines what direction the `looker` is from the `target`
+--
+-- @spec cardinal_direction_from(axis: DirectionCode, target: Vector3, looker: Vector3):
+--   DirectionCode
 function Directions.cardinal_direction_from(axis, target, looker)
   local normal = {
     x = looker.x - target.x,
@@ -509,6 +611,7 @@ function Directions.cardinal_direction_from(axis, target, looker)
   return Directions.D_NONE
 end
 
+-- @spec axis_to_facedir(axis: DirectionCode): Integer
 function Directions.axis_to_facedir(axis)
   if axis == Directions.D_UP then
     return Directions.FD_AXIS_Yp
@@ -526,6 +629,7 @@ function Directions.axis_to_facedir(axis)
   return 0
 end
 
+-- @spec axis_to_facedir_rotation(axis: DirectionCode): Integer
 function Directions.axis_to_facedir_rotation(axis)
   if axis == Directions.D_NORTH then
     return 0

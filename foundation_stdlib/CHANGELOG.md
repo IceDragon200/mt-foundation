@@ -1,10 +1,16 @@
+# 1.15.0
+
+__Added Functions__
+
+* `foundation.com.table_freeze/1` - disables assignments on the specified table
+
 # 1.14.0
 
 __Added Functions__
 
 * `foundation.com.itemstack_deep_equals/2` - compares 2 itemstacks and their meta
 
-__Modifier Functions__
+__Modified Functions__
 
 * `foundation.com.iodata_to_string/1` - uses a modified internal implementation to utilize a table for concat
 
