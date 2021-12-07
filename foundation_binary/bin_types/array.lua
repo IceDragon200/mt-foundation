@@ -1,6 +1,8 @@
-local ByteBuf = assert(foundation.com.ByteBuf)
+-- @namespace foundation.com.binary_types
+local ByteBuf = assert(foundation.com.ByteBuf.little)
 local ScalarTypes = assert(foundation.com.binary_types.Scalars)
 
+-- @class Array
 local Array = foundation.com.Class:extends("Array")
 local ic = Array.instance_class
 
@@ -21,7 +23,7 @@ function ic:write(file, data)
     len = self.len
   else
     len = #data
-    bytes_written, err = ByteBuf.w_u32(file, self.len)
+    bytes_written, err = ByteBuf:w_u32(file, self.len)
     all_bytes_written = all_bytes_written + bytes_written
     if err then
       return all_bytes_written, err
@@ -47,7 +49,7 @@ function ic:read(file)
   if self.len >= 0 then
     len = self.len
   else
-    local v, bytes_read = ByteBuf.r_u32(file)
+    local v, bytes_read = ByteBuf:r_u32(file)
     all_bytes_read = all_bytes_read + bytes_read
     len = v
   end

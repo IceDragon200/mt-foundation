@@ -1,8 +1,5 @@
 -- @namespace foundation.com
 
---
--- Binary Buffer - similar interface as StringBuf but using an FFI allocated uchar array
---
 if not foundation_binary.ffi then
   foundation.com.error("foundation.com.BinaryBuffer is unavailable as it requires LuaJIT's FFI module")
   return
@@ -10,6 +7,9 @@ end
 
 local ffi = assert(foundation_binary.ffi)
 
+--
+-- Binary Buffer - similar interface as StringBuf but using an FFI allocated uchar array
+--
 -- @class BinaryBuffer
 local BinaryBuffer = foundation.com.Class:extends('BinaryBuffer')
 local ic = BinaryBuffer.instance_class
@@ -98,6 +98,7 @@ function ic:calc_read_length(len)
   return len, remaining_len
 end
 
+-- @spec #read(len?: Integer): (blob: String, bytes_read: Integer)
 function ic:read(len)
   local len, remlen = self:calc_read_length(len)
   local pos = self.m_cursor - 1
@@ -115,6 +116,7 @@ function ic:read(len)
   end
 end
 
+-- @spec #write(blob: String): (was_written: Boolean, err: Error)
 function ic:write(blob)
   assert(self.m_mode == 'w' or self.m_mode == 'rw', 'must be opened for writing')
   blob = tostring(blob)

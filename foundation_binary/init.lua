@@ -1,4 +1,4 @@
-local mod = foundation.new_module("foundation_binary", "1.0.1")
+local mod = foundation.new_module("foundation_binary", "2.0.0")
 
 local insec = minetest.request_insecure_environment()
 if insec then
@@ -16,7 +16,9 @@ mod:require("bin_schema.lua")
 mod:require("bin_types.lua")
 mod:require("binary_buffer.lua")
 
-mod:require("tests.lua")
+if foundation.com.Luna then
+  mod:require("tests.lua")
+end
 
 foundation_binary.ffi = nil
 foundation_binary.native_bit = nil

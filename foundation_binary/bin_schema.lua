@@ -1,6 +1,6 @@
 -- @namespace foundation.com
 
-local ByteBuf = assert(foundation.com.ByteBuf)
+local ByteBuf = assert(foundation.com.ByteBuf.little)
 
 -- @class BinSchema
 local BinSchema = foundation.com.Class:extends("BinSchema")
@@ -116,7 +116,7 @@ function ic:write(stream, data)
   return foundation.com.list_reduce(self.m_definition, 0, function (block, all_bytes_written)
     if block.type == 0 then
       for _ = 1,block.length do
-        local bytes_written, err = ByteBuf.w_u8(stream, 0)
+        local bytes_written, err = ByteBuf:w_u8(stream, 0)
         all_bytes_written = all_bytes_written + bytes_written
         if err then
           error(err)
@@ -139,7 +139,7 @@ function ic:read(stream, target)
   target = target or {}
   return target, foundation.com.list_reduce(self.m_definition, 0, function (block, all_bytes_read)
     if block.type == 0 then
-      local _, bytes_read = ByteBuf.read(stream, block.length)
+      local _, bytes_read = ByteBuf:read(stream, block.length)
       all_bytes_read = all_bytes_read + bytes_read
     else
       --print("debug", "BinSchema", self.m_name, "reading field", block.name, "at pos", stream:tell())

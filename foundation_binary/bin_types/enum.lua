@@ -1,4 +1,3 @@
-local ByteBuf = assert(foundation.com.ByteBuf)
 local Scalars = assert(foundation.com.binary_types.Scalars)
 local Enum = foundation.com.Class:extends("Enum")
 local ic = Enum.instance_class

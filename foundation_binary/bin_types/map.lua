@@ -1,6 +1,8 @@
-local ByteBuf = assert(foundation.com.ByteBuf)
+-- @namespace foundation.com.binary_types
+local ByteBuf = assert(foundation.com.ByteBuf.little)
 local Scalars = assert(foundation.com.binary_types.Scalars)
 
+-- @class Map
 local Map = foundation.com.Class:extends("Map")
 local ic = Map.instance_class
 
@@ -18,7 +20,7 @@ function ic:write(file, data)
   local bytes_written = 0
   local err
 
-  bytes_written, err = ByteBuf.w_u32(file, len)
+  bytes_written, err = ByteBuf:w_u32(file, len)
   all_bytes_written = all_bytes_written + bytes_written
   if err then
     return all_bytes_written, err
@@ -39,7 +41,7 @@ function ic:write(file, data)
 end
 
 function ic:read(file)
-  local len, all_bytes_read = ByteBuf.r_u32(file)
+  local len, all_bytes_read = ByteBuf:r_u32(file)
   if len then
     local result = {}
     local key

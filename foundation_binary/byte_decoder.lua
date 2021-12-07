@@ -14,8 +14,10 @@ local INT_MAX = {
   [8] = math.floor(math.pow(2, 64)),
 }
 
+-- @namespace foundation.com.ByteDecoder
 local ByteDecoder = {}
 
+-- @spec &d_iv(String, len: Integer): (result: Integer, len: Integer)
 function ByteDecoder:d_iv(bytes, len)
   local result = 0
 
@@ -68,6 +70,7 @@ function ByteDecoder:d_i8(bytes)
   return self:d_iv(bytes, 1)
 end
 
+-- @spec &d_uv(String, len: Integer): (result: Integer, len: Integer)
 function ByteDecoder:d_uv(bytes, len)
   local result = 0
 
