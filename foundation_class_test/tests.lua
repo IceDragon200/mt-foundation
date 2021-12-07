@@ -2,7 +2,7 @@ local Class = assert(foundation.com.Class)
 
 local case = foundation.com.Luna:new("foundation.com.Class")
 
-case:describe(":extends/1", function (t2)
+case:describe("&extends/1", function (t2)
   t2:test("creates a new class from base class", function (t3)
     local a = Class:extends("test.a")
   end)
@@ -16,6 +16,29 @@ case:describe(":extends/1", function (t2)
     t3:assert_table_eq({ b, a, Class }, b:ancestors())
     t3:assert_table_eq({ a, Class }, a:ancestors())
     t3:assert_table_eq({ Class }, Class:ancestors())
+  end)
+
+  t2:test("can inherit functions from parent", function (t3)
+    local a = Class:extends("test.a")
+
+    function a.instance_class:abc()
+      return 1
+    end
+
+    local b = a:extends("test.b")
+
+    function b.instance_class:fgh()
+      return 2
+    end
+
+    local aints = a:new()
+    local bints = b:new()
+
+    t3:assert(aints.abc, "expected a to have abc method")
+    t3:refute(aints.fgh, "expected a to not have fgh method")
+
+    t3:assert(bints.abc, "expected b to have abc method")
+    t3:assert(bints.fgh, "expected b to have fgh method")
   end)
 end)
 
