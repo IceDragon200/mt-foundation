@@ -9,6 +9,7 @@ local ascii_pack_list
 local ascii_unpack_list
 local ascii_pack_list_state
 local ascii_unpack_list_state
+local has_ascii_pack = false
 
 local function build_pack_state()
   return {
@@ -137,6 +138,7 @@ function unpack_list(state)
 end
 
 if apak then
+  has_ascii_pack = true
   local ascii_pack = assert(apak.pack)
   local pack_array = assert(apak.pack_array)
   local pack_int = assert(apak.pack_int)
@@ -279,6 +281,7 @@ end
 foundation.com.InventoryPacker = {
   pack_list = pack_list,
   unpack_list = unpack_list,
+  has_ascii_pack = has_ascii_pack,
   ascii_pack_list = ascii_pack_list,
   ascii_unpack_list = ascii_unpack_list,
   ascii_pack_list_state = ascii_pack_list_state,

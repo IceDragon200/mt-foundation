@@ -4,4 +4,7 @@
 local mod = foundation.new_module("foundation_kdl", "0.0.0")
 
 mod:require("kdl.lua")
-mod:require("tests.lua")
+
+if foundation.com.Luna then
+  mod:require("tests.lua")
+end

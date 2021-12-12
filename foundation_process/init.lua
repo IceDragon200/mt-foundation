@@ -5,4 +5,6 @@ local mod = foundation.new_module("foundation_process", "1.0.0")
 
 mod:require("process_runner.lua")
 
-mod:require("tests.lua")
+if foundation.com.Luna then
+  mod:require("tests.lua")
+end

@@ -39,27 +39,29 @@ case:describe("(un)pack_list/1", function (t2)
   end)
 end)
 
-case:describe("ascii_(un)pack_list/1", function (t2)
-  t2:test("can pack an empty inventory list", function (t3)
-    local list = {}
+if InventoryPacker.has_ascii_pack then
+  case:describe("ascii_(un)pack_list/1", function (t2)
+    t2:test("can pack an empty inventory list", function (t3)
+      local list = {}
 
-    local blob = InventoryPacker.ascii_pack_list(list)
+      local blob = InventoryPacker.ascii_pack_list(list)
 
-    t3:assert_table_eq({}, InventoryPacker.ascii_unpack_list(blob))
+      t3:assert_table_eq({}, InventoryPacker.ascii_unpack_list(blob))
+    end)
+
+    t2:test("can pack a list with some items", function (t3)
+      local state = InventoryPacker.pack_list(TEST_LIST)
+
+      local new_list = InventoryPacker.unpack_list(state)
+
+      t3:assert_eq(#new_list, #TEST_LIST)
+      t3:assert(itemstack_deep_equals(new_list[1], TEST_LIST[1]))
+      t3:assert(itemstack_deep_equals(new_list[2], TEST_LIST[2]))
+      t3:assert(itemstack_deep_equals(new_list[3], TEST_LIST[3]))
+      t3:assert(itemstack_deep_equals(new_list[4], TEST_LIST[4]))
+    end)
   end)
-
-  t2:test("can pack a list with some items", function (t3)
-    local state = InventoryPacker.pack_list(TEST_LIST)
-
-    local new_list = InventoryPacker.unpack_list(state)
-
-    t3:assert_eq(#new_list, #TEST_LIST)
-    t3:assert(itemstack_deep_equals(new_list[1], TEST_LIST[1]))
-    t3:assert(itemstack_deep_equals(new_list[2], TEST_LIST[2]))
-    t3:assert(itemstack_deep_equals(new_list[3], TEST_LIST[3]))
-    t3:assert(itemstack_deep_equals(new_list[4], TEST_LIST[4]))
-  end)
-end)
+end
 
 case:execute()
 case:display_stats()
