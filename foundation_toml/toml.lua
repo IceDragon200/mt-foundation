@@ -31,7 +31,7 @@ local function format_prefix(prefix)
 end
 
 function TOML.encode_iodata(object, prefix, result)
-  local result = result or {}
+  result = result or {}
 
   local other_objects = {}
   -- in order to have some assertable data, keys are sorted

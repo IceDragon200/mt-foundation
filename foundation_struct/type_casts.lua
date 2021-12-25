@@ -3,8 +3,10 @@
 local List = foundation.com.List
 local LinkedList = foundation.com.List
 
+local ic
+
 -- @class List
-local ic = List.instance_class
+ic = List.instance_class
 local list_next = List.list_next
 
 function ic:to_linked_list()
@@ -18,7 +20,7 @@ function ic:to_linked_list()
 end
 
 -- @class LinkedList
-local ic = List.instance_class
+ic = List.instance_class
 
 function ic:to_list()
   local item

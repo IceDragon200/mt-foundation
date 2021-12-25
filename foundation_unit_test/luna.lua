@@ -158,7 +158,7 @@ end
 
 local NullReporter = {}
 function NullReporter:report(...)
-  --
+  assert(...)
   return self
 end
 
@@ -246,6 +246,7 @@ function ic:assert(truth_value, message)
 end
 
 function ic:neat_dump(value)
+  assert(self)
   local ty = type(value)
   if ty == "string" then
     return ty .. "(" .. #value .. "); \"" .. string_hex_escape(value) .. "\""

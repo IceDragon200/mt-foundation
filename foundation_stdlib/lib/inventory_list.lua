@@ -52,7 +52,10 @@ function InventoryList.merge_stack(list, stack)
   return list, stack
 end
 
--- @spec extract_stack(list: ItemStack[], stack_or_size: ItemStack | Integer): (ItemStack[], ItemStack)
+-- @spec extract_stack(
+--   list: ItemStack[],
+--   stack_or_size: ItemStack | Integer
+-- ): (ItemStack[], ItemStack)
 function InventoryList.extract_stack(list, stack_or_size)
   assert(list, "expected an inventory list")
   local taken = nil

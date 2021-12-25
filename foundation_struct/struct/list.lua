@@ -143,7 +143,6 @@ end
 -- @spec #flatten_iodata(): self
 function ic:flatten_iodata()
   if self.m_cursor > 0 then
-    local index = 0
     local data = self.m_data
     local len = self.m_cursor
     local val
@@ -387,9 +386,7 @@ function ic:pop_at(pos)
       local len = self.m_cursor
       self.m_cursor = self.m_cursor - 1
       for x = 1,len do
-        if x == pos then
-          --
-        else
+        if x ~= pos then
           i = i + 1
           self.m_data[i] = data[x]
         end

@@ -60,7 +60,8 @@ globals = {
           Color = {},
           Cuboid = {},
           Directions = {},
-          Easers = {},
+          Easers = {
+          },
           Groups = {
             fields = {
               has_group = {},
@@ -270,6 +271,7 @@ globals = {
           table_drop = {},
           table_equals = {},
           table_flatten = {},
+          table_freeze = {},
           table_includes_value = {},
           table_intersperse = {},
           table_key_of = {},

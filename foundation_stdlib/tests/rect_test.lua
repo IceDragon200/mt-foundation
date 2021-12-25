@@ -92,11 +92,14 @@ case:describe("contract/3", function (t2)
 end)
 
 case:describe("expand/2", function (t2)
-  t2:test("shifts the position and increases the size of the rect (given only 1 size)", function (t3)
-    local r = m.new(3, 5, 7, 9)
+  t2:test(
+    "shifts the position and increases the size of the rect (given only 1 size)",
+    function (t3)
+      local r = m.new(3, 5, 7, 9)
 
-    t3:assert_table_eq({ x = 2, y = 4, w = 9, h = 11 }, m.expand(r, 1))
-  end)
+      t3:assert_table_eq({ x = 2, y = 4, w = 9, h = 11 }, m.expand(r, 1))
+    end
+  )
 end)
 
 case:describe("expand/3", function (t2)
@@ -191,7 +194,10 @@ case:describe("align/4", function (t2)
 
     for y_align, y in pairs({ [-1] = y_m1, [0] = y_0, [1] = y_p1 }) do
       for x_align, x in pairs({ [-1] = x_m1, [0] = x_0, [1] = x_p1 }) do
-        t3:assert_table_eq({ x = x, y = y, w = 7, h = 6 }, m.align(child, x_align, y_align, container))
+        t3:assert_table_eq(
+          { x = x, y = y, w = 7, h = 6 },
+          m.align(child, x_align, y_align, container)
+        )
       end
     end
   end)
@@ -416,21 +422,24 @@ case:describe("contains/2", function (t2)
     t3:refute(m.contains(parent, child2))
   end)
 
-  t2:test("will report false if the other rect interects but doesn't completely fit in the parent", function (t3)
-    local parent = m.new(2, 3, 20, 15)
+  t2:test(
+    "will report false if the other rect interects but doesn't completely fit in the parent",
+    function (t3)
+      local parent = m.new(2, 3, 20, 15)
 
-    local child0 = m.new(1, 2, 22, 17) -- expanded
-    local child1 = m.new(3, 4, 5, 15) -- h overflow
-    local child2 = m.new(3, 4, 20, 10) -- w overflow
-    local child3 = m.new(2, 2, 5, 12) -- y underflow
-    local child4 = m.new(1, 3, 5, 12) -- x underflow
+      local child0 = m.new(1, 2, 22, 17) -- expanded
+      local child1 = m.new(3, 4, 5, 15) -- h overflow
+      local child2 = m.new(3, 4, 20, 10) -- w overflow
+      local child3 = m.new(2, 2, 5, 12) -- y underflow
+      local child4 = m.new(1, 3, 5, 12) -- x underflow
 
-    t3:refute(m.contains(parent, child0))
-    t3:refute(m.contains(parent, child1))
-    t3:refute(m.contains(parent, child2))
-    t3:refute(m.contains(parent, child3))
-    t3:refute(m.contains(parent, child4))
-  end)
+      t3:refute(m.contains(parent, child0))
+      t3:refute(m.contains(parent, child1))
+      t3:refute(m.contains(parent, child2))
+      t3:refute(m.contains(parent, child3))
+      t3:refute(m.contains(parent, child4))
+    end
+  )
 end)
 
 case:describe("intersects/2", function (t2)
@@ -450,21 +459,24 @@ case:describe("intersects/2", function (t2)
     t3:refute(m.intersects(parent, child2))
   end)
 
-  t2:test("will report true if the other rect overlaps but doesn't completely fit in the parent", function (t3)
-    local parent = m.new(2, 3, 20, 15)
+  t2:test(
+    "will return true if the other rect overlaps but doesn't completely fit in the parent",
+    function (t3)
+      local parent = m.new(2, 3, 20, 15)
 
-    local child0 = m.new(1, 2, 22, 17) -- expanded
-    local child1 = m.new(3, 4, 5, 15) -- h overflow
-    local child2 = m.new(3, 4, 20, 10) -- w overflow
-    local child3 = m.new(2, 2, 5, 12) -- y underflow
-    local child4 = m.new(1, 3, 5, 12) -- x underflow
+      local child0 = m.new(1, 2, 22, 17) -- expanded
+      local child1 = m.new(3, 4, 5, 15) -- h overflow
+      local child2 = m.new(3, 4, 20, 10) -- w overflow
+      local child3 = m.new(2, 2, 5, 12) -- y underflow
+      local child4 = m.new(1, 3, 5, 12) -- x underflow
 
-    t3:assert(m.intersects(parent, child0))
-    t3:assert(m.intersects(parent, child1))
-    t3:assert(m.intersects(parent, child2))
-    t3:assert(m.intersects(parent, child3))
-    t3:assert(m.intersects(parent, child4))
-  end)
+      t3:assert(m.intersects(parent, child0))
+      t3:assert(m.intersects(parent, child1))
+      t3:assert(m.intersects(parent, child2))
+      t3:assert(m.intersects(parent, child3))
+      t3:assert(m.intersects(parent, child4))
+    end
+  )
 end)
 
 case:describe("merge/1+", function (t2)

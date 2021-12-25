@@ -49,7 +49,7 @@ case:describe("format_pretty_time/1", function (t2)
     local result = m.format_pretty_time(3 * 60 * 60 + 60 * 5 + 32)
     t3:assert_eq(result, "03:05:32")
 
-    local result = m.format_pretty_time(12 * 60 * 60 + 60 * 11 + 9)
+    result = m.format_pretty_time(12 * 60 * 60 + 60 * 11 + 9)
     t3:assert_eq(result, "12:11:09")
   end)
 
@@ -57,10 +57,10 @@ case:describe("format_pretty_time/1", function (t2)
     local result = m.format_pretty_time(60 * 5 + 7)
     t3:assert_eq(result, "05:07")
 
-    local result = m.format_pretty_time(60 * 5 + 32)
+    result = m.format_pretty_time(60 * 5 + 32)
     t3:assert_eq(result, "05:32")
 
-    local result = m.format_pretty_time(60 * 32 + 32)
+    result = m.format_pretty_time(60 * 32 + 32)
     t3:assert_eq(result, "32:32")
   end)
 
@@ -68,7 +68,7 @@ case:describe("format_pretty_time/1", function (t2)
     local result = m.format_pretty_time(32)
     t3:assert_eq(result, "32")
 
-    local result = m.format_pretty_time(5)
+    result = m.format_pretty_time(5)
     t3:assert_eq(result, "05")
   end)
 end)
