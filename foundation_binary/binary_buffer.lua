@@ -1,7 +1,7 @@
 -- @namespace foundation.com
 
 if not foundation_binary.ffi then
-  foundation.com.error("foundation.com.BinaryBuffer is unavailable as it requires LuaJIT's FFI module")
+  minetest.log("error", "foundation.com.BinaryBuffer is unavailable as it requires LuaJIT's FFI module")
   return
 end
 
