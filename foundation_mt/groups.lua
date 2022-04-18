@@ -49,7 +49,7 @@ end
 --
 -- @spec has_group(object: Any, name: String, optional_rank?: Integer): Boolean
 function Groups.has_group(object, name, optional_rank)
-  if object.groups then
+  if object and object.groups then
     local value = object.groups[name]
     if value then
       if optional_rank then
