@@ -137,10 +137,11 @@ function foundation.com.number_lerp(a, b, t)
   return a + (b - a) * t
 end
 
--- TODO: not sure what the correct name is for this function
+-- Interpolate between 2 numbers by a fixed amount.
+-- see `number_lerp` for linear interpolation.
 --
--- @spec number_moveto(a: Number, b: Number, amt: Number): Number
-function foundation.com.number_moveto(a, b, amt)
+-- @spec number_interpolate(a: Number, b: Number, amt: Number): Number
+function foundation.com.number_interpolate(a, b, amt)
   if a < b then
     return math.min(a + amt, b)
   elseif a > b then
@@ -148,3 +149,8 @@ function foundation.com.number_moveto(a, b, amt)
   end
   return a
 end
+
+-- Deprecated, please use number_interpolate instead.
+--
+-- @alias number_moveto = number_interpolate
+foundation.com.number_moveto = foundation.com.number_interpolate

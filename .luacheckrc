@@ -226,6 +226,7 @@ globals = {
           number_round = {},
           number_lerp = {},
           number_moveto = {},
+          number_interpolate = {},
           --- string
           binary_splice = {},
           byte_to_hexpair = {},
