@@ -1,3 +1,17 @@
+# 1.16.0
+
+__Added Functions__
+
+* `foundation.com.number_interpolate` to replace number_moveto
+
+__Alias Functions__
+
+* `foundation.com.number_moveto = foundation.com.number_interpolate` provided for compatability, will be removed a future date.
+
+__Deprecated Functions__
+
+* `foundation.com.number_moveto` please use `foundation.com.number_interpolate` instead
+
 # 1.15.0
 
 __Added Functions__
