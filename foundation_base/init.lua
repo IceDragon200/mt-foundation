@@ -74,28 +74,46 @@ function FoundationModule:require(basename)
 end
 
 --
--- Creates or retrieves an existing mod's module
--- The modpath is automatically set on call
+-- Creates a new module without setting it globally
 --
--- @spec new_module(name: String, default: Table): FoundationModule
-function foundation.new_module(name, version, default)
+-- @since 0.3.0
+-- @spec new_private_module(name: String, version: String, default: Table)
+function foundation.new_private_module(name, version, default)
   assert(name, "expected a name")
   assert(version, "expected a version")
-  local mod = rawget(_G, name) or default or {}
+
+  local mod = default or {}
   mod._name = name
   mod._is_foundation_module = true
   mod.VERSION = version
   mod.S = minetest.get_translator(name)
   mod.modpath = minetest.get_modpath(minetest.get_current_modname())
   mod.loaded_files = {}
-  rawset(_G, name, mod)
   setmetatable(mod, { __index = FoundationModule })
+
   print("New Foundation Module: " .. mod._name .. " " .. mod.VERSION)
   return mod
 end
 
 --
--- Determines if specified module exists
+-- Creates or retrieves an existing mod's module
+-- The modpath is automatically set on call
+--
+-- @spec new_module(name: String, default: Table): FoundationModule
+function foundation.new_module(name, version, default)
+  local mod = foundation.new_private_module(
+    name,
+    version,
+    rawget(_G, name) or default
+  )
+
+  rawset(_G, name, mod)
+
+  return mod
+end
+
+--
+-- Determines if specified module exists (public-only)
 --
 -- @spec is_module_present(name: String, optional_version: String): Boolean
 function foundation.is_module_present(name, optional_version)
@@ -112,7 +130,7 @@ function foundation.is_module_present(name, optional_version)
 end
 
 -- Bootstrap itself
-foundation.new_module("foundation", "0.2.0", foundation)
+foundation.new_module("foundation", "0.3.0", foundation)
 
 -- hardcoded for now, trigger the self tests
 foundation.self_test = true
@@ -124,6 +142,6 @@ dofile(foundation.modpath .. "/version.lua")
 
 if foundation.self_test then
   assert(foundation.is_module_present("foundation"), "expected foundation itself to be present")
-  assert(foundation.is_module_present("foundation", "0.2.0"), "expected it's own version to match")
+  assert(foundation.is_module_present("foundation", "0.2.0"), "expected its own version to match")
 end
 
