@@ -48,6 +48,18 @@ function ic:register(name, sound_set)
 end
 
 --
+-- Register a base node sound set (if it doesn't already exist)
+--
+-- @spec #register_new(name: String, SoundSet): self
+function ic:register_new(name, sound_set)
+  if not self.registered[name] then
+    return self:register(name, sound_set)
+  end
+
+  return self
+end
+
+--
 -- Returns true if the specified node name set exists in the registry,
 -- false otherwise.
 --
