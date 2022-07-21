@@ -196,6 +196,37 @@ case:describe("is_table_empty/1", function (t2)
   end)
 end)
 
+case:describe("table_sample/1", function (t2)
+  t2:test("returns nil if no elements are in table", function (t3)
+    t3:refute(m.table_sample({}))
+  end)
+
+  t2:test("returns a random key-value pair even if only 1 element is in the table", function (t3)
+    local t = {a = 1}
+
+    local k, v = m.table_sample(t)
+
+    t3:assert_eq(k, "a")
+    t3:assert_eq(v, "1")
+  end)
+
+  t2:test("returns a random element in table", function (t3)
+    local t = {
+      a = 1,
+      b = 2,
+      c = 3,
+      d = 4,
+      e = 5,
+    }
+
+    for _ = 1,5 do
+      local k, v = m.table_sample(t)
+
+      t3:assert_eq(t[k], v)
+    end
+  end)
+end)
+
 case:execute()
 case:display_stats()
 case:maybe_error()

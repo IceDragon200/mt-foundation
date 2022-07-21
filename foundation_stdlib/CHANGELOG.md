@@ -1,3 +1,9 @@
+# 1.17.0
+
+__Added Functions__
+
+* `foundation.com.table_sample` returns a random key-value pair in the given table
+
 # 1.16.0
 
 __Added Functions__

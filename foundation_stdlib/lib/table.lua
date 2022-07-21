@@ -313,3 +313,17 @@ end
 function foundation.com.table_flatten(t)
   return flatten_reducer({}, 1, t, 0)
 end
+
+-- Returns a random key-value pair
+--
+-- @spec table_sample(Table): Table
+function foundation.com.table_sample(t)
+  if next(t) then
+    local keys = foundation.com.table_keys(t)
+    local len = #keys
+    local key = keys[math.random(len)]
+
+    return key, t[key]
+  end
+  return nil, nil
+end
