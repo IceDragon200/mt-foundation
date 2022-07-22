@@ -4,6 +4,8 @@
 local WeightedList = foundation.com.Class:extends("WeightedList")
 local ic = assert(WeightedList.instance_class)
 
+--
+-- @spec #initialize(): void
 function ic:initialize()
   self.weights = {}
   self.weight_at_index = {}
@@ -41,30 +43,48 @@ function ic:get_item_within_weight(weight)
     return nil
   end
 
-  local index = math.floor(self.size / 2)
-  local iterations = 0
+  local index = 1
+  local prev_weight = 0
+  local current_weight
 
-  while true do
-    if iterations > self.size then
-      error("stalled")
-    end
+  while index <= self.size do
+    current_weight = self.weight_at_index[index]
 
-    local current_weight = self.weight_at_index[index]
-    local prev_weight = self.weight_at_index[index - 1] or 0
-
-    if weight > current_weight then
-      -- currently behind
-      index = index + math.floor((self.size - index + 1) / 2)
-    elseif weight < prev_weight then
-      -- currently ahead
-      index = math.floor(index / 2)
-    elseif weight > prev_weight and weight <= current_weight then
-      -- within range
+    if weight >= prev_weight and weight <= current_weight then
       return self.data[index]
+    else
+      index = index + 1
     end
-
-    iterations = iterations + 1
   end
+
+  -- Binary search
+  -- local index = math.floor(self.size / 2)
+  -- local iterations = 0
+
+  -- local current_weight
+  -- local prev_weight
+
+  -- while true do
+  --   if iterations > self.size then
+  --     error("stalled: index=" .. index)
+  --   end
+
+  --   current_weight = self.weight_at_index[index]
+  --   prev_weight = self.weight_at_index[index - 1] or 0
+
+  --   if weight > current_weight then
+  --     -- currently behind
+  --     index = index + math.floor((self.size - index + 1) / 2)
+  --   elseif weight < prev_weight then
+  --     -- currently ahead
+  --     index = math.floor(index / 2)
+  --   else
+  --     -- within range
+  --     return self.data[index]
+  --   end
+
+  --   iterations = iterations + 1
+  -- end
 end
 
 --
