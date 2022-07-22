@@ -207,7 +207,7 @@ case:describe("table_sample/1", function (t2)
     local k, v = m.table_sample(t)
 
     t3:assert_eq(k, "a")
-    t3:assert_eq(v, "1")
+    t3:assert_eq(v, 1)
   end)
 
   t2:test("returns a random element in table", function (t3)
