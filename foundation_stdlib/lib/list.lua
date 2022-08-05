@@ -3,17 +3,20 @@ local CROCKFORD_BASE32_ENCODE_TABLE = assert(foundation.com.CROCKFORD_BASE32_ENC
 
 local POW2 = {}
 
-for x = 0,8 do
+for x = 0,31 do
   POW2[x] = math.pow(2, x * 8)
 end
 
--- Encodes a list of integers or strings as crawford base32, the list should contain interspersed values
+-- Encodes a list of integers or strings as crawford base32, the list should contain interspersed
+-- values
 -- That is the odd numbered parameters should be the integer length, followed by the integer
 --
 -- Usage:
 --    list_crawford_base32_le_rolling_encode_table(4, int32, 2, int16, 6, int48) -- => Table
 --
--- @spec list_crawford_base32_le_rolling_encode_table(...(int_len: Integer, int: Integer | String)): Table
+-- @spec list_crawford_base32_le_rolling_encode_table(
+--   ...(int_len: Integer, int: Integer | String)
+-- ): Table
 function foundation.com.list_crawford_base32_le_rolling_encode_table(...)
   local items = {...}
   local len = #items
@@ -103,6 +106,7 @@ end
 
 local list_slice = foundation.com.list_slice
 
+-- @spec list_last(Table, count: Integer): Any
 function foundation.com.list_last(t, count)
   if count then
     count = math.min(#t, count)
@@ -112,6 +116,7 @@ function foundation.com.list_last(t, count)
   end
 end
 
+-- @spec list_reverse(list: Table): Table
 function foundation.com.list_reverse(list)
   -- https://forums.coronalabs.com/topic/61784-function-for-reversing-table-order/
   local j = #list
@@ -124,6 +129,7 @@ function foundation.com.list_reverse(list)
   return list
 end
 
+-- @spec list_reduce(list: Table, acc: Any, fun: Function/2): Any
 function foundation.com.list_reduce(list, acc, fun)
   local should_break
   for _, v in ipairs(list) do
@@ -149,12 +155,16 @@ function foundation.com.list_map(list, fun)
 end
 
 -- Selects and returns a random value in the specified list
-function foundation.com.list_sample(l)
-  local c = #l
-  return l[math.random(c)]
+--
+-- @spec list_sample(list: Table): Any
+function foundation.com.list_sample(list)
+  local c = #list
+  return list[math.random(c)]
 end
 
 -- Retrieves the next value after the specified 'current'
+--
+-- @spec list_get_next(list: Table, current: Any): Any
 function foundation.com.list_get_next(list, current)
   -- returns the next element in a list given the current value,
   -- if the current is nil,
@@ -181,6 +191,7 @@ end
 -- Not to be confused with table.concat,
 -- which is actually a 'join' in other languages.
 --
+-- @spec list_concat(...Table): Table
 function foundation.com.list_concat(...)
   local result = {}
   local i = 1
@@ -196,10 +207,11 @@ end
 --
 -- Returns a new list with only unique values
 --
-function foundation.com.list_uniq(l)
+-- @spec list_uniq(list: Table): Table
+function foundation.com.list_uniq(list)
   local seen = {}
   local result = {}
-  for _,e in ipairs(l) do
+  for _,e in ipairs(list) do
     if not seen[e] then
       seen[e] = true
       table.insert(result, e)
@@ -208,7 +220,7 @@ function foundation.com.list_uniq(l)
   return result
 end
 
--- @spec list_split(Table, alen: Integer): (Table, Table)
+-- @spec list_split(list: Table, alen: Integer): (Table, Table)
 function foundation.com.list_split(list, alen)
   local head = {}
   local tail = {}

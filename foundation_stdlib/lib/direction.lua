@@ -306,13 +306,12 @@ function Directions.dir_to_string(dir)
   return Directions.DIR_TO_STRING[dir]
 end
 
---[[
-
-  Code is a short 1 byte string that represents the direction.
-
-  I.e the first initial of the string, it just so happens that NONE is 0 instead of N (which is used for NORTH)
-
-]]
+--
+-- Code is a short 1 byte string that represents the direction.
+--
+-- I.e the first initial of the string, it just so happens that NONE is 0 instead of N
+-- (which is used for NORTH).
+--
 -- @spec dir_to_code(DirectionCode): String
 function Directions.dir_to_code(dir)
   return Directions.DIR_TO_STRING1[dir]
@@ -420,15 +419,6 @@ function Directions.new_accessible_dirs()
     [Directions.D_UP] = true,
   }
 end
-
--- done with it, let the gc reclaim it
-fm = nil
-N = nil
-E = nil
-S = nil
-W = nil
-D = nil
-U = nil
 
 function Directions.vdir_to_wallmounted_facedir(dir)
   if dir.x > 0 then

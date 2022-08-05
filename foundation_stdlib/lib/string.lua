@@ -11,6 +11,8 @@ local ref_id = 0
 -- Helper function for generating a sequential reference value
 -- guaranteed to be unique for the current session, but not unique across
 -- instances.
+--
+-- @spec make_string_ref(String): String
 function foundation.com.make_string_ref(domain)
   domain = domain or ""
   ref_id = ref_id + 1
@@ -28,12 +30,14 @@ function foundation.com.make_string_ref(domain)
   return table.concat(res)
 end
 
+-- @spec string_empty(str: String): Boolean
 function foundation.com.string_empty(str)
   -- check if the first byte is nil, if it is, the string is empty
   -- not sure if this is cheaper than just checking the length though
   return string.byte(str, 1) == nil
 end
 
+-- @spec string_unescape(str: String): String
 function foundation.com.string_unescape(str)
   local result = {}
   local bytes = {string.byte(str, 1, -1)}
@@ -72,6 +76,7 @@ function foundation.com.string_unescape(str)
   return table.concat(result)
 end
 
+-- @spec string_sub_join(str: String, cols: Integer, joiner: String): String
 function foundation.com.string_sub_join(str, cols, joiner)
   local result = {}
   local remaining = str
@@ -85,6 +90,7 @@ function foundation.com.string_sub_join(str, cols, joiner)
   return table.concat(result, joiner)
 end
 
+-- @spec string_remove_spaces(String): String
 function foundation.com.string_remove_spaces(str)
   local result = {}
   local bytes = {string.byte(str, 1, -1)}
@@ -113,14 +119,17 @@ function foundation.com.string_remove_spaces(str)
   return table.concat(result)
 end
 
+-- @spec string_starts_with(str: String, expected: String): Boolean
 function foundation.com.string_starts_with(str, expected)
   return expected == "" or string.sub(str, 1, #expected) == expected
 end
 
+-- @spec string_ends_with(str: String, expected: String): Boolean
 function foundation.com.string_ends_with(str, expected)
   return expected == "" or string.sub(str, -#expected) == expected
 end
 
+-- @spec string_trim_leading(str: String, expected: String): String
 function foundation.com.string_trim_leading(str, expected)
   if string.sub(str, 1, #expected) == expected then
     return string.sub(str, 1 + #expected, -1)
@@ -129,6 +138,7 @@ function foundation.com.string_trim_leading(str, expected)
   end
 end
 
+-- @spec string_trim_trailing(str: String, expected: String): String
 function foundation.com.string_trim_trailing(str, expected)
   if string.sub(str, -#expected) == expected then
     return string.sub(str, 1, -(1 + #expected) )
@@ -137,6 +147,7 @@ function foundation.com.string_trim_trailing(str, expected)
   end
 end
 
+-- @spec string_pad_leading(str: String, count: Integer, padding: String): String
 function foundation.com.string_pad_leading(str, count, padding)
   str = tostring(str)
   if padding == "" then
@@ -149,6 +160,7 @@ function foundation.com.string_pad_leading(str, count, padding)
   return result
 end
 
+-- @spec string_pad_trailing(str: String, count: Integer, padding: String): String
 function foundation.com.string_pad_trailing(str, count, padding)
   str = tostring(str)
   if padding == "" then
@@ -183,7 +195,6 @@ function foundation.com.string_split(str, pattern)
     end
   else
     local remaining = str
-    local _pattern_length = #pattern
     local i = 1
     local part
     local head
@@ -206,6 +217,7 @@ function foundation.com.string_split(str, pattern)
   return result
 end
 
+-- @spec binary_splice(target: String, start: Integer, byte_count: Integer, bin: String): String
 function foundation.com.binary_splice(target, start, byte_count, bin)
   local head = string.sub(target, 1, start - 1)
   local tail = string.sub(target, start + byte_count)

@@ -136,7 +136,10 @@ function foundation.com.table_deep_merge(...)
     for i = 1,len do
       t = select(i, ...)
       for key,value in pairs(t) do
-        if type(result[key]) == "table" and type(value) == "table" and not result[key][1] and not value[1] then
+        if type(result[key]) == "table" and
+           type(value) == "table" and
+           not result[key][1] and
+           not value[1] then
           result[key] = foundation.com.table_deep_merge(result[key], value)
         else
           result[key] = value

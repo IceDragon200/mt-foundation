@@ -4,6 +4,7 @@
 function foundation.com.string_dec_encode(str, spacer)
   local result = {}
   local bytes = {string.byte(str, 1, -1)}
+  local len = #bytes
 
   local j = 1
 
@@ -28,7 +29,12 @@ function foundation.com.string_dec_encode(str, spacer)
   return table.concat(result)
 end
 
--- @spec handle_escaped_dec(i: Integer, j: Integer, bytes: Integer[], result: Table<Integer, String>): (Integer, Integer)
+-- @spec handle_escaped_dec(
+--   i: Integer,
+--   j: Integer,
+--   bytes: Integer[],
+--   result: Table<Integer, String>
+-- ): (Integer, Integer)
 function foundation.com.handle_escaped_dec(i, j, bytes, result)
   local d3 = bytes[i + 1] - 48
   local d2 = bytes[i + 2] - 48

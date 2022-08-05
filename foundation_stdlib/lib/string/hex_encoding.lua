@@ -184,10 +184,14 @@ end
 
 minetest.log("info", "maybe setting lua string_hex functions")
 -- @spec string_hex_decode(String): String
-foundation.com.string_hex_decode = foundation.com.string_hex_decode or foundation.com.lua_string_hex_decode
+foundation.com.string_hex_decode =
+  foundation.com.string_hex_decode or foundation.com.lua_string_hex_decode
 -- @spec string_hex_encode(String): String
-foundation.com.string_hex_encode = foundation.com.string_hex_encode or foundation.com.lua_string_hex_encode
+foundation.com.string_hex_encode =
+  foundation.com.string_hex_encode or foundation.com.lua_string_hex_encode
 -- @spec string_hex_escape(String): String
-foundation.com.string_hex_escape = foundation.com.string_hex_escape or foundation.com.lua_string_hex_escape
+foundation.com.string_hex_escape =
+  foundation.com.string_hex_escape or foundation.com.lua_string_hex_escape
 -- @spec string_hex_unescape(String): String
-foundation.com.string_hex_unescape = foundation.com.string_hex_unescape or foundation.com.lua_string_hex_unescape
+foundation.com.string_hex_unescape =
+  foundation.com.string_hex_unescape or foundation.com.lua_string_hex_unescape

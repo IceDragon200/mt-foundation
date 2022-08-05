@@ -77,17 +77,32 @@ end
 
 -- @spec to_node_box(Cuboid): Array<Number>[6]
 function Cuboid.to_node_box(cuboid)
-  return {cuboid.x, cuboid.y, cuboid.z, cuboid.x + cuboid.w, cuboid.y + cuboid.h, cuboid.z + cuboid.d}
+  return {
+    cuboid.x,
+    cuboid.y,
+    cuboid.z,
+    cuboid.x + cuboid.w,
+    cuboid.y + cuboid.h,
+    cuboid.z + cuboid.d
+  }
 end
 
+-- @mutative
 -- @spec fast_node_box(Cuboid, scale: Float): Array<Number>[6]
 function Cuboid.fast_node_box(cuboid, scale)
   local result = Cuboid.scale(cuboid, scale or Cuboid.SIXTEENTH)
   result = Cuboid.translate(result, -0.5, -0.5, -0.5)
-  return Cuboid.to_node_box(cuboid)
+  return Cuboid.to_node_box(result)
 end
 
--- @spec new_fast_node_box(x: Number, y: Number, z: Number, w: Number, h: Number, d: Number): Array<Number>[6]
+-- @spec new_fast_node_box(
+--   x: Number,
+--   y: Number,
+--   z: Number,
+--   w: Number,
+--   h: Number,
+--   d: Number
+-- ): Array<Number>[6]
 function Cuboid.new_fast_node_box(...)
   return Cuboid.fast_node_box(Cuboid.new(...))
 end

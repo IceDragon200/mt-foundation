@@ -1,3 +1,7 @@
+# 1.17.1
+
+* Fixed some linter warnings
+
 # 1.17.0
 
 __Added Functions__

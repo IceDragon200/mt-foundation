@@ -70,8 +70,8 @@ end
 
 -- @spec path_join(a: String, b: String): String
 function foundation.com.path_join(a, b)
-  local a = foundation.com.string_trim_trailing(a, SEPARATOR)
-  local b = foundation.com.string_trim_leading(b, SEPARATOR)
+  a = foundation.com.string_trim_trailing(a, SEPARATOR)
+  b = foundation.com.string_trim_leading(b, SEPARATOR)
 
   return a .. SEPARATOR .. b
 end

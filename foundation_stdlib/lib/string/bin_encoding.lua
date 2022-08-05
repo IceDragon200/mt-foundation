@@ -4,6 +4,7 @@
 function foundation.com.string_bin_encode(str, spacer)
   local result = {}
   local bytes = {string.byte(str, 1, -1)}
+  local len = #bytes
 
   local j = 1
 
