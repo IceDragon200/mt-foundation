@@ -1,3 +1,8 @@
+# 1.17.2
+
+* `foundation.com.Symbol&alloc_symbol/1` now checks symbol name is a string
+* Added `foundation.com.InventoryList.new/1` function for creating an inventory list
+
 # 1.17.1
 
 * Fixed some linter warnings
