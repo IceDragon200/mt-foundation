@@ -16,10 +16,6 @@ local function string_starts_with(str, expected)
   return expected == "" or string.sub(str, 1, #expected) == expected
 end
 
-local function string_ends_with(str, expected)
-  return expected == "" or string.sub(str, -#expected) == expected
-end
-
 local function string_trim_leading_space(str)
   while #str > 0 do
     if string.sub(str, 1, 1) == " " then

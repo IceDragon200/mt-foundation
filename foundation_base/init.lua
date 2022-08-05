@@ -24,8 +24,8 @@ local function string_trim_trailing(str, expected)
 end
 
 local function path_join(a, b)
-  local a = string_trim_trailing(a, "/")
-  local b = string_trim_leading(b, "/")
+  a = string_trim_trailing(a, "/")
+  b = string_trim_leading(b, "/")
 
   return a .. "/" .. b
 end
@@ -130,7 +130,7 @@ function foundation.is_module_present(name, optional_version)
 end
 
 -- Bootstrap itself
-foundation.new_module("foundation", "0.3.0", foundation)
+foundation.new_module("foundation", "0.3.1", foundation)
 
 -- hardcoded for now, trigger the self tests
 foundation.self_test = true
@@ -142,6 +142,6 @@ dofile(foundation.modpath .. "/version.lua")
 
 if foundation.self_test then
   assert(foundation.is_module_present("foundation"), "expected foundation itself to be present")
-  assert(foundation.is_module_present("foundation", "0.3.0"), "expected its own version to match")
+  assert(foundation.is_module_present("foundation", "0.3.1"), "expected its own version to match")
 end
 
