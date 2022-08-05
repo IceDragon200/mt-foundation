@@ -38,19 +38,11 @@ local function nibble_to_hex(byte)
   return NUM_TO_HEX[nibble]
 end
 
-local function hex_to_nibble(hex)
-  return tonumber(hex, 16) -- good news we can cheat!
-end
-
 local function byte_to_hex(byte)
   local hi = math.floor(byte / 16)
   local lo = byte % 16
 
   return {NUM_TO_HEX[hi], NUM_TO_HEX[lo]}
-end
-
-local function hex_to_byte(hex2)
-  return tonumber(hex2, 16)
 end
 
 local function vint_to_hex(length, int)
@@ -294,7 +286,7 @@ function mod.pack_table(term, depth)
   end
 end
 
--- @spec pack(Any, Table, depth?: Integer): Iodata
+-- @spec pack(term: Any, options: Table, depth?: Integer): Iodata
 function mod.pack(term, options, depth)
   depth = depth or 0
   options = options or {}
@@ -401,7 +393,8 @@ function mod.unpack_string(term)
 
   if ty == "G" then
     term = string.sub(term, 2)
-    local len, term = mod.unpack_int(term)
+    local len
+    len, term = mod.unpack_int(term)
 
     local str = string.sub(term, 1, len)
 
@@ -416,7 +409,8 @@ function mod.unpack_array(term)
 
   if ty == "A" then
     term = string.sub(term, 2)
-    local len, term = mod.unpack_int(term)
+    local len
+    len, term = mod.unpack_int(term)
 
     local array = {}
 
@@ -439,7 +433,8 @@ function mod.unpack_map(term)
 
   if ty == "M" then
     term = string.sub(term, 2)
-    local len, term = mod.unpack_int(term)
+    local len
+    len, term = mod.unpack_int(term)
 
     local map = {}
 
