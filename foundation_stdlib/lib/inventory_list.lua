@@ -8,6 +8,20 @@ local itemstack_maybe_merge = assert(foundation.com.itemstack_maybe_merge)
 
 local InventoryList = {}
 
+--
+--
+--
+-- @spec new(count: Integer): ItemStack[]
+function InventoryList.new(count)
+  local result = {}
+
+  for i = 1,count do
+    result[i] = ItemStack()
+  end
+
+  return result
+end
+
 -- Determines if the given inventory list should be considered empty
 --
 -- @spec is_empty(ItemStack[]): Boolean
