@@ -21,7 +21,7 @@ end
 
 function ic:write_integer(file, data)
   local all_bytes_written = 0
-  local bytes_written = 0
+  local bytes_written
   local err
 
   bytes_written, err = ByteBuf:write(file, "I")
@@ -36,7 +36,7 @@ end
 
 function ic:write_float(file, data)
   local all_bytes_written = 0
-  local bytes_written = 0
+  local bytes_written
   local err
 
   bytes_written, err = ByteBuf:write(file, "f")
@@ -52,7 +52,7 @@ end
 function ic:write_string(file, data)
   -- String
   local all_bytes_written = 0
-  local bytes_written = 0
+  local bytes_written
   local err
 
   bytes_written, err = ByteBuf:write(file, "Q")
@@ -82,8 +82,8 @@ end
 
 function ic:write_table(file, data)
   local all_bytes_written = 0
-  local bytes_written = 0
-  local err = ''
+  local bytes_written
+  local err
 
   -- Write value identifier
   bytes_written, err = ByteBuf:write(file, "T")

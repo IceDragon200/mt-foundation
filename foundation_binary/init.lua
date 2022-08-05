@@ -1,4 +1,4 @@
-local mod = foundation.new_module("foundation_binary", "2.0.0")
+local mod = foundation.new_module("foundation_binary", "2.0.1")
 
 local insec = minetest.request_insecure_environment()
 if insec then
