@@ -1,12 +1,18 @@
 max_line_length = 100
 
+-- unused args do not matter
+unused_args = false
+
 globals = {
   -- globals
   dump = {},
   -- namespaces
   foundation = {
     fields = {
+      modpath = {},
+      self_test = {},
       new_module = {},
+      new_private_module = {},
       com = {
         fields = {
           -- Modules
@@ -61,6 +67,9 @@ globals = {
           Cuboid = {},
           Directions = {},
           Easers = {
+            fields = {
+              ["*"] = {},
+            },
           },
           Groups = {
             fields = {
@@ -119,7 +128,9 @@ globals = {
             },
           },
           Version = {
-            test = {},
+            fields = {
+              test = {},
+            },
           },
           Waves = {},
           WeightedList = {
@@ -171,6 +182,22 @@ globals = {
           ascii_unpack = {},
           ascii_file_pack = {},
           ascii_file_unpack = {},
+          apak = {},
+          --- binary_types
+          BinSchema = {},
+          ByteBuf = {},
+          binary_types = {
+            fields = {
+              Array = {},
+              BitFlags = {},
+              Bytes = {},
+              Enum = {},
+              Map = {},
+              Scalars = {
+                fields = {},
+              },
+            },
+          },
           --- encoding_tables
           HEX_TABLE = {},
           HEX_TO_DEC = {},
@@ -185,6 +212,7 @@ globals = {
           iodata_to_string = {},
           --- item_stack
           itemstack_copy = {},
+          itemstack_deep_equals = {},
           itemstack_get_itemdef = {},
           itemstack_has_group = {},
           itemstack_inspect = {},
@@ -207,6 +235,7 @@ globals = {
           list_sample = {},
           list_slice = {},
           list_uniq = {},
+          list_split = {},
           --- meta_ref
           metaref_merge_fields_from_table = {},
           metaref_dec_float = {},
@@ -283,6 +312,7 @@ globals = {
           table_reduce = {},
           table_take = {},
           table_values = {},
+          table_sample = {},
           --- time
           time_network_frames = {},
           time_network_seconds = {},
@@ -317,16 +347,28 @@ globals = {
   minetest = {
     fields = {
       -- properties
-      registered_items = {},
+      registered_items = {
+        fields = {},
+      },
+      registered_nodes = {
+        fields = {},
+      },
       -- functions
-      log = {},
-      get_us_time = {},
-      get_node = {},
-      swap_node = {},
-      hash_node_position = {},
-      get_position_from_hash = {},
-      register_node = {},
       get_current_modname = {},
+      get_modepath = {},
+      get_node = {},
+      get_node_timer = {},
+      get_position_from_hash = {},
+      get_translator = {},
+      get_us_time = {},
+      get_worldpath = {},
+      hash_node_position = {},
+      log = {},
+      mkdir = {},
+      register_craftitem = {},
+      register_node = {},
+      register_tool = {},
+      swap_node = {},
     },
   },
   vector = {
@@ -339,8 +381,8 @@ globals = {
   },
 }
 
-files["foundation_ascii_pack/**.lua"] = { globals = {"foundation_ascii_pack"} }
-files["foundation_binary/**.lua"] = { globals = {"foundation_binary"} }
-files["foundation_native/**.lua"] = { globals = {"foundation_native"} }
-files["foundation_stdlib/**.lua"] = { globals = {"foundation_stdlib"} }
-files["foundation_struct/**.lua"] = { globals = {"foundation_struct"} }
+files["foundation_ascii_pack/**/*.lua"] = { globals = {"foundation_ascii_pack"} }
+files["foundation_binary/**/*.lua"] = { globals = {"foundation_binary"} }
+files["foundation_native/**/*.lua"] = { globals = {"foundation_native"} }
+files["foundation_stdlib/**/*.lua"] = { globals = {"foundation_stdlib"} }
+files["foundation_struct/**/*.lua"] = { globals = {"foundation_struct"} }
