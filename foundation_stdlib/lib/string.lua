@@ -30,6 +30,9 @@ function foundation.com.make_string_ref(domain)
   return table.concat(res)
 end
 
+--
+-- Determines if the given string is empty, that is it has no characters.
+--
 -- @spec string_empty(str: String): Boolean
 function foundation.com.string_empty(str)
   -- check if the first byte is nil, if it is, the string is empty

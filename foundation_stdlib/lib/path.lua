@@ -3,6 +3,7 @@ local string_split = assert(foundation.com.string_split)
 
 local SEPARATOR = "/"
 
+-- @spec path_components(a: String): String[]
 function foundation.com.path_components(a)
   if a == "" then
     return {}

@@ -24,6 +24,14 @@ local PREFIXES = {
   --{"yocto", "y", 0.000000000000000000000001},
 }
 
+--
+-- Attempts to pretty format the given value, usually a number
+-- Usage:
+--
+--    foundation.com.format_pretty_unit(10, 's') -- => 10s
+--    foundation.com.format_pretty_unit(10000, 'l') -- => 10kl
+--
+-- @spec format_pretty_unit(value: Number, unit?: String): String
 function foundation.com.format_pretty_unit(value, unit)
   unit = unit or ""
   local result = tostring(value)
@@ -46,6 +54,10 @@ local function pad_number(number, len)
   return str
 end
 
+--
+-- Pretty formats the given integer as a timestamp, usually used for durations
+--
+-- @spec format_pretty_time(value: String): String
 function foundation.com.format_pretty_time(value)
   value = math.floor(value)
   local hours = math.floor(value / 60 / 60)

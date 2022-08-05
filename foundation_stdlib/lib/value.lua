@@ -1,5 +1,6 @@
 -- @namespace foundation.com
 
+-- @spec is_blank(value: Any): Boolean
 function foundation.com.is_blank(value)
   if value == nil then
     return true
