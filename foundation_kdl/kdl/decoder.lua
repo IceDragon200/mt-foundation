@@ -185,7 +185,7 @@ local function term_to_number(term)
     end
   end
 
-  return ty, assert(tonumber(table.concat(result), 10) * sign), 'plain'
+  return ty, assert(tonumber(table.concat(result)) * sign), 'plain'
 end
 
 local function term_to_value(term)
