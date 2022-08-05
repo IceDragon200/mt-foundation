@@ -1,3 +1,7 @@
+# 1.2.0
+
+* `#from_table/1` now correctly checks the type of values being set, and will return true on failure
+
 # 1.1.0
 
 * Corrected behaviour of `#set_string/2` when given an empty string

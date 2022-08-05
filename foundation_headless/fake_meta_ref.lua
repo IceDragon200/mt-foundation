@@ -98,8 +98,18 @@ end
 -- @spec #from_table(Table): Boolean
 function c:from_table(value)
   if type(value) == "table" then
-    -- TODO: lint the values in the table
-    self.data = value
+    local result = {}
+    local ty
+    for key, value in pairs(value) do
+      ty = type(value)
+
+      if ty == "string" or ty == "number" or ty == "boolean" then
+        result[key] = value
+      else
+        return false
+      end
+    end
+    self.data = result
     return true
   end
   self.data = {}
