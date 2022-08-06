@@ -9,6 +9,55 @@ local ic = Trace.instance_class
 
 local g_span_id = 0
 
+-- @spec &sum_traces(traces: Trace[], acc: Trace[]): Table
+function Trace:sum_traces(traces, acc)
+  acc = acc or {}
+
+  local map = {}
+  for i,trace in ipairs(acc) do
+    map[trace.name] = trace
+  end
+
+  for _,trace in ipairs(traces) do
+    if not map[trace.name] then
+      map[trace.name] = self:new(trace.name)
+    end
+    local entry = map[trace.name]
+
+    if entry.d then
+      entry.d = entry.d + trace.d
+    else
+      entry.d = trace.d
+    end
+
+    if entry.s then
+      if trace.s < entry.s then
+        entry.s = trace.s
+      end
+    else
+      entry.s = trace.s
+    end
+
+    if entry.e then
+      if trace.e < entry.e then
+        entry.e = trace.e
+      end
+    else
+      entry.e = trace.e
+    end
+
+    entry.spans = self:sum_traces(trace.spans, entry.spans)
+  end
+
+  local result = {}
+  local i = 0
+  for _,trace in pairs(map) do
+    i = i + 1
+    result[i] = trace
+  end
+  return result
+end
+
 -- @spec #initialize(name: String): void
 function ic:initialize(name)
   g_span_id = g_span_id + 1
