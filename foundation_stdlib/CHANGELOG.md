@@ -1,3 +1,7 @@
+# 1.18.0
+
+* `foundation.com.format_pretty_unit/3` now available, this version of format_pretty_unit will now accept a prefix table.
+
 # 1.17.2
 
 * `foundation.com.Symbol&alloc_symbol/1` now checks symbol name is a string

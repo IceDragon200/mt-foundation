@@ -1,41 +1,62 @@
 -- @namespace foundation.com
 
-local PREFIXES = {
-  --{"yotta", "Y", 1000000000000000000000000},
-  --{"zetta", "Z", 1000000000000000000000},
-  --{"exa", "E", 1000000000000000000},
-  --{"peta", "P", 1000000000000000},
+-- @const ALL_PREFIXES: Prefix[]
+foundation.com.ALL_PREFIXES = {
+  {"yotta", "Y", 1000000000000000000000000},
+  {"zetta", "Z", 1000000000000000000000},
+  {"exa", "E", 1000000000000000000},
+  {"peta", "P", 1000000000000000},
   {"tera", "T", 1000000000000},
   {"giga", "G", 1000000000},
   {"mega", "M", 1000000},
   {"kilo", "k", 1000},
-  --{"hecto", "h", 100},
-  --{"deca", "da", 10},
+  {"hecto", "h", 100},
+  {"deca", "da", 10},
   {"", "", 1},
-  --{"deci", "d", 0.1},
-  --{"centi", "c", 0.01},
+  {"deci", "d", 0.1},
+  {"centi", "c", 0.01},
   {"milli", "m", 0.001},
   {"micro", "μ", 0.000001},
   {"nano", "n", 0.000000001},
-  --{"pico", "p", 0.000000000001},
-  --{"femto", "f", 0.000000000000001},
-  --{"atto", "a", 0.000000000000000001},
-  --{"zepto", "z", 0.000000000000000000001},
-  --{"yocto", "y", 0.000000000000000000000001},
+  {"pico", "p", 0.000000000001},
+  {"femto", "f", 0.000000000000001},
+  {"atto", "a", 0.000000000000000001},
+  {"zepto", "z", 0.000000000000000000001},
+  {"yocto", "y", 0.000000000000000000000001},
+}
+
+-- @const COMMON_PREFIXES: Prefix[]
+foundation.com.COMMON_PREFIXES = {
+  {"tera", "T", 1000000000000},
+  {"giga", "G", 1000000000},
+  {"mega", "M", 1000000},
+  {"kilo", "k", 1000},
+  {"", "", 1},
+  {"milli", "m", 0.001},
+  {"micro", "μ", 0.000001},
+  {"nano", "n", 0.000000001},
+  {"pico", "p", 0.000000000001},
 }
 
 --
--- Attempts to pretty format the given value, usually a number
+-- Attempts to pretty format the given value, usually a number.
+-- prefixes allows overwriting the prefix table tha should be used
+--
 -- Usage:
 --
 --    foundation.com.format_pretty_unit(10, 's') -- => 10s
 --    foundation.com.format_pretty_unit(10000, 'l') -- => 10kl
 --
--- @spec format_pretty_unit(value: Number, unit?: String): String
-function foundation.com.format_pretty_unit(value, unit)
+-- @spec format_pretty_unit(
+--   value: Number,
+--   unit?: String,
+--   prefixes?: Prefix[]
+-- ): String
+function foundation.com.format_pretty_unit(value, unit, prefixes)
+  prefixes = prefixes or foundation.com.COMMON_PREFIXES
   unit = unit or ""
   local result = tostring(value)
-  for _,row in ipairs(PREFIXES) do
+  for _,row in ipairs(prefixes) do
     -- until the unit is less than the value
     if row[3] < value then
       result = string.format("%.2f", value / row[3]) .. row[2]
