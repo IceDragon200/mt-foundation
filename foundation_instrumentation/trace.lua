@@ -1,4 +1,5 @@
 -- @namespace foundation.com
+local format_pretty_unit = assert(foundation.com.format_pretty_unit)
 
 --
 -- A limited implementation of OpenTrace for benchmarking code paths
@@ -100,6 +101,11 @@ end
 -- @spec #format_traces(prefix: String, acc: String[]): String[]
 function ic:format_traces(prefix, acc)
   acc = acc or {}
+  local d = '_'
+
+  if self.d then
+    d = format_pretty_unit(self.d / 1000000, "sec")
+  end
 
   prefix = prefix or ''
   table.insert(acc, prefix)
@@ -107,8 +113,8 @@ function ic:format_traces(prefix, acc)
   table.insert(acc, ": ")
   table.insert(acc, self.name)
   table.insert(acc, " (")
-  table.insert(acc, self.d or '_')
-  table.insert(acc, " µsec)\n")
+  table.insert(acc, d)
+  table.insert(acc, ")\n")
 
   local subprefix = prefix .. "  "
   for _, span in ipairs(self.spans) do
