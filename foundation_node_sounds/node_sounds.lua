@@ -10,8 +10,9 @@ local table_merge = assert(foundation.com.table_merge)
 local NodeSoundsRegistry = foundation.com.Class:extends("NodeSoundsRegistry")
 local ic = NodeSoundsRegistry.instance_class
 
--- @spec #initialize(): void
-function ic:initialize()
+-- @spec #initialize(name: String): void
+function ic:initialize(name)
+  self.name = assert(name, "a name is required for node sound registries")
   self.registered = {}
 end
 
@@ -86,7 +87,7 @@ function ic:fetch(name)
   if sound_set then
     return sound_set
   else
-    error("expected sound_set name='" .. name .. "' to exist")
+    error(self.name .. ": expected sound_set name='" .. name .. "' to exist")
   end
 end
 
