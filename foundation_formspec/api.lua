@@ -129,6 +129,20 @@ function api.container_end()
   return "container_end[]"
 end
 
+--
+-- Params:
+-- * `orientation` [String] - "vertical" or "horizontal"
+--
+-- @spec scroll_container(
+--   x: Number,
+--   y: Number,
+--   w: Number,
+--   h: Number,
+--   scrollbar_id: String,
+--   orientation: String,
+--   scroll_factor: Number,
+--   callback?: Function/0
+-- ): String
 function api.scroll_container(x, y, w, h, scollbar_id, orientation, scroll_factor, callback)
   scroll_factor = scroll_factor or 0.1
 
@@ -201,6 +215,17 @@ function api.tooltip_element(gui_element_name, tooltip_text, bgcolor, fontcolor)
   return "tooltip["..args.."]"
 end
 
+--
+--
+-- @spec tooltip_area(
+--   x: Number,
+--   y: Number,
+--   w: Number,
+--   h: Number,
+--   tooltip_text: String,
+--   bgcolor?: Color,
+--   frontcolor?: Color
+-- ): String
 function api.tooltip_area(x, y, w, h, tooltip_text, bgcolor, fontcolor)
   local args = x..","..y..";"..w..","..h..";"..to_text(tooltip_text)
 
@@ -429,7 +454,17 @@ function api.textlist(x, y, w, h, name, listitems, selected_index, is_transparen
   return "textlist["..args.."]"
 end
 
--- @spec tabheader(x: Integer, y: Integer, w?: Integer, h?: Integer, name: String, captions: [String], current_tab_index: Integer, is_transparent: Boolean, draw_border: Boolean): String
+-- @spec tabheader(
+--   x: Integer,
+--   y: Integer,
+--   w?: Integer,
+--   h?: Integer,
+--   name: String,
+--   captions: [String],
+--   current_tab_index: Integer,
+--   is_transparent: Boolean,
+--   draw_border: Boolean
+-- ): String
 function api.tabheader(x, y, w, h, name, captions, current_tab_index, is_transparent, draw_border)
   local args = x..","..y
 
@@ -461,6 +496,7 @@ function api.tabheader(x, y, w, h, name, captions, current_tab_index, is_transpa
   return "tabheader["..args.."]"
 end
 
+-- @spec box(x: Number, y: Number, w: Number, h: Number, color: Color): String
 function api.box(x, y, w, h, color)
   local args = x..","..y..
     ";"..w..","..h
