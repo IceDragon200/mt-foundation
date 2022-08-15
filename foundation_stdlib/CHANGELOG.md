@@ -1,3 +1,9 @@
+# 1.19.0
+
+* Added `foundation.com.Color.NAMED` table contains all named colors according to minetest's lua_api.txt
+* Added `foundation.com.Color.from_colorstring` because for some reason minetest didn't have one?
+* Added `foundation.com.string_hex_nibble_to_byte`
+
 # 1.18.0
 
 * `foundation.com.format_pretty_unit/3` now available, this version of format_pretty_unit will now accept a prefix table.

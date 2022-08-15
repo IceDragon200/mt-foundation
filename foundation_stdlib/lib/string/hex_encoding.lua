@@ -42,6 +42,15 @@ function foundation.com.string_hex_clean(str)
   return table.concat(result)
 end
 
+-- Decode a hex nibble string as a plain byte
+--
+-- @spec string_hex_nibble_to_byte(String): Integer
+-- @example string_hex_nibble_to_byte("F") -- => 255
+function foundation.com.string_hex_nibble_to_byte(hex)
+  local nibble = string.byte(hex, 1) or 0
+  return HEX_BYTE_TO_DEC[nibble]
+end
+
 -- Decode a hexpair string as a plain byte
 --
 -- @spec string_hex_pair_to_byte(String): Integer

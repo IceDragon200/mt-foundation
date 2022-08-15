@@ -6,6 +6,10 @@ mod:require("lib/string/dec_encoding.lua")
 mod:require("lib/string/hex_encoding.lua")
 mod:require("lib/string/oct_encoding.lua")
 
+local byte_to_hexpair = assert(foundation.com.byte_to_hexpair)
+local handle_escaped_hex = assert(foundation.com.handle_escaped_hex)
+local handle_escaped_dec = assert(foundation.com.handle_escaped_dec)
+
 local ref_id = 0
 
 -- Helper function for generating a sequential reference value
@@ -21,7 +25,7 @@ function foundation.com.make_string_ref(domain)
   local id = current_ref_id
   local res = {}
   for i = 1,16 do
-    res[i+1] = foundation.com.byte_to_hexpair(id % 256)
+    res[i+1] = byte_to_hexpair(id % 256)
     id = math.floor(id / 256)
   end
 
@@ -56,11 +60,11 @@ function foundation.com.string_unescape(str)
     if byte == 92 then
       -- 120 x
       if bytes[i + 1] == 120 then
-        i, j = foundation.com.handle_escaped_hex(i, j, bytes, result)
+        i, j = handle_escaped_hex(i, j, bytes, result)
       -- 48 0   57 9
       elseif bytes[i + 1] >= 48 and bytes[i + 1] <= 57 then
         -- decimal escaped
-        i, j = foundation.com.handle_escaped_dec(i, j, bytes, result)
+        i, j = handle_escaped_dec(i, j, bytes, result)
       -- 92 \
       elseif bytes[i + 1] == 92 then
         result[j] = "\\"
