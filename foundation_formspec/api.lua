@@ -54,6 +54,11 @@ function api.calc_inventory_offset(size)
   return size + LIST_SPACING * math.max(size, 0)
 end
 
+-- @spec calc_inventory_size(size: Integer): Integer
+function api.calc_inventory_size(size)
+  return size + LIST_SPACING * math.max(size - 1, 0)
+end
+
 -- Calculates the size[] that a form needs to be to contain the given inventory
 -- The inventory is specified by its size (cols and rows) a vector2 is returned
 -- where x is the width of the form and y is the height.
