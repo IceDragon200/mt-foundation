@@ -1,3 +1,11 @@
+# 1.20.0
+
+* Added `foundation.com.Color.blend_overlay/2`
+* Added `foundation.com.Color.blend_hard_light/2`
+* Added `foundation.com.Color.blend_multiply/2`
+* Added `foundation.com.Color.to_grayscale_value/1`
+* Added `foundation.com.Color.to_grayscale/1`
+
 # 1.19.0
 
 * Added `foundation.com.Color.NAMED` table contains all named colors according to minetest's lua_api.txt

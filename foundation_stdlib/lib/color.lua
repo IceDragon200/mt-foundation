@@ -23,6 +23,10 @@ local Color = {
 --   a: Byte,
 -- }
 
+local function color_channel_clamp(a)
+  return math.max(math.min(math.floor(a), 255), 0)
+end
+
 --
 -- @spec new(r: Byte, g: Byte, b: Byte, a?: Byte): Color
 function Color.new(r, g, b, a)
@@ -42,9 +46,9 @@ end
 -- @spec add(Color, Color): Color
 function Color.add(a, b)
   return {
-    r = math.min((a.r * a.a / 255) + (b.r * b.a / 255), 255),
-    g = math.min((a.g * a.a / 255) + (b.g * b.a / 255), 255),
-    b = math.min((a.b * a.a / 255) + (b.b * b.a / 255), 255),
+    r = color_channel_clamp((a.r * a.a / 255) + (b.r * b.a / 255), 255),
+    g = color_channel_clamp((a.g * a.a / 255) + (b.g * b.a / 255), 255),
+    b = color_channel_clamp((a.b * a.a / 255) + (b.b * b.a / 255), 255),
     a = 255,
   }
 end
@@ -52,9 +56,9 @@ end
 -- @spec sub(Color, Color): Color
 function Color.sub(a, b)
   return {
-    r = math.max((a.r * a.a / 255) - (b.r * b.a / 255), 0),
-    g = math.max((a.g * a.a / 255) - (b.g * b.a / 255), 0),
-    b = math.max((a.b * a.a / 255) - (b.b * b.a / 255), 0),
+    r = color_channel_clamp((a.r * a.a / 255) - (b.r * b.a / 255), 0),
+    g = color_channel_clamp((a.g * a.a / 255) - (b.g * b.a / 255), 0),
+    b = color_channel_clamp((a.b * a.a / 255) - (b.b * b.a / 255), 0),
     a = 255,
   }
 end
@@ -62,10 +66,84 @@ end
 -- @spec mult(Color, Color): Color
 function Color.mult(a, b)
   return {
-    r = (a.r * a.a / 255) * (b.r * b.a / 255) / 255,
-    g = (a.g * a.a / 255) * (b.g * b.a / 255) / 255,
-    b = (a.b * a.a / 255) * (b.b * b.a / 255) / 255,
+    r = color_channel_clamp((a.r * a.a / 255) * (b.r * b.a / 255) / 255),
+    g = color_channel_clamp((a.g * a.a / 255) * (b.g * b.a / 255) / 255),
+    b = color_channel_clamp((a.b * a.a / 255) * (b.b * b.a / 255) / 255),
     a = 255,
+  }
+end
+
+local function channel_overlay(a, b)
+  local r
+  local n = a / 255.0
+  local n2 = b / 255.0
+
+  if n < 0.5 then
+    r = 2 * (n * n2)
+  else
+    r = 1 - 2 * (1 - n) * (1 - n2)
+  end
+
+  return color_channel_clamp(r * 255)
+end
+
+local function channel_hard_light(a, b)
+  local r
+  local n = a / 255.0
+  local n2 = b / 255.0
+
+  if n2 < 0.5 then
+    r = 2 * (n * n2)
+  else
+    r = 1 - 2 * (1 - n) * (1 - n2)
+  end
+
+  return color_channel_clamp(r * 255)
+end
+
+-- @spec blend_overlay(Color, Color): Color
+function Color.blend_overlay(a, b)
+  return {
+    r = channel_overlay(a.r, b.r),
+    g = channel_overlay(a.g, b.g),
+    b = channel_overlay(a.b, b.b),
+    a = color_channel_clamp(a.a * b.a / 255),
+  }
+end
+
+-- @spec blend_hard_light(Color, Color): Color
+function Color.blend_hard_light(a, b)
+  return {
+    r = channel_hard_light(a.r, b.r),
+    g = channel_hard_light(a.g, b.g),
+    b = channel_hard_light(a.b, b.b),
+    a = color_channel_clamp(a.a * b.a / 255),
+  }
+end
+
+-- @spec blend_multiply(Color, Color): Color
+function Color.blend_multiply(a, b)
+  return {
+    r = color_channel_clamp(a.r * b.r / 255),
+    g = color_channel_clamp(a.g * b.g / 255),
+    b = color_channel_clamp(a.b * b.b / 255),
+    a = color_channel_clamp(a.a * b.a / 255),
+  }
+end
+
+-- @spec to_grayscale_value(Color): Integer
+function Color.to_grayscale_value(color)
+  return color_channel_clamp(0.299 * color.r + 0.587 * color.g + 0.114 * color.b)
+end
+
+-- @spec to_grayscale(Color): Color
+function Color.to_grayscale(color)
+  local y = to_grayscale_value(color)
+  return {
+    r = y,
+    g = y,
+    b = y,
+    a = y,
   }
 end
 
