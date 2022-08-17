@@ -49,6 +49,20 @@ local function to_text(item)
   return minetest.formspec_escape(tostring(item))
 end
 
+local function maybe_rect_to_args(arg)
+  if type(arg) == "table" then
+    if arg.w and arg.h then
+      return arg.x .. "," .. arg.y .. "," .. arg.w .. "," .. arg.h
+    elseif arg.x and arg.y then
+      return arg.x .. "," .. arg.y
+    else
+      return arg.x
+    end
+  else
+    return arg
+  end
+end
+
 -- @spec calc_inventory_offset(size: Integer): Integer
 function api.calc_inventory_offset(size)
   return size + LIST_SPACING * math.max(size, 0)
@@ -244,8 +258,22 @@ function api.tooltip_area(x, y, w, h, tooltip_text, bgcolor, fontcolor)
   return "tooltip["..args.."]"
 end
 
-function api.image(x, y, w, h, texture_name)
-  return "image["..x..","..y..";"..w..","..h..";"..to_text(texture_name).."]"
+-- @spec image(
+--   x: Number,
+--   y: Number,
+--   w: Number,
+--   h: Number,
+--   texture_name: String,
+--   middle: Number | Rect
+-- ): String
+function api.image(x, y, w, h, texture_name, middle)
+  local args = x..","..y..";"..w..","..h..";"..to_text(texture_name)
+
+  if middle then
+    args = args .. ";" .. maybe_rect_to_args(middle)
+  end
+
+  return "image[" .. args .. "]"
 end
 
 function api.animated_image(x, y, w, h, name, texture_name, frame_count, frame_duration, frame_start)
@@ -302,9 +330,7 @@ function api.background9(x, y, w,  h, texture_name, auto_clip, middle)
   end
 
   if middle then
-    -- TODO: actually process the argument, it can be a number
-    --       or a table with x, x,y, or x,y,x2,y2
-    args = args..";"..middle
+    args = args..";"..maybe_rect_to_args(middle)
   end
   return "background9["..args.."]"
 end
