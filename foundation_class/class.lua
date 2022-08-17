@@ -1,4 +1,5 @@
 -- @namespace foundation.com
+local setmetatable = setmetatable
 
 -- @class Class
 local Class = {
