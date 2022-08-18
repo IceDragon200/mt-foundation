@@ -162,7 +162,6 @@ end
 
 -- @spec #get_field(MetaRef, basename: String, key: String): Any
 function m:get_field(meta, basename, key)
-  assert(meta, "expected a metaref")
   if self.schema[key] then
     local entry = self.schema[key]
     local field_name = (self.prefix or "") .. basename .. "_" .. key
