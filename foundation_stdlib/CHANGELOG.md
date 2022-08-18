@@ -1,3 +1,7 @@
+# 1.21.0
+
+* Added `foundation.com.list_sort/1`
+
 # 1.20.0
 
 * Added `foundation.com.Color.blend_overlay/2`

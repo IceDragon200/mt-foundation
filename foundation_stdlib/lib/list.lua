@@ -245,3 +245,33 @@ function foundation.com.list_split(list, alen)
 
   return head, tail
 end
+
+--
+-- Sorts given list, I do not guarantee any performance, this is the easiest possible sort
+--
+-- @mutative
+-- @spec #list_sort(list: Table): Table
+function foundation.com.list_sort(list)
+  if next(list) then
+    local size = #list
+    local sorting = true
+    local retry = false
+    local a
+    local b
+
+    for i = 1,size do
+      a = list[i]
+      for j = i,size do
+        b = list[j]
+
+        if a > b then
+          list[i] = b
+          list[j] = a
+          a = b
+        end
+      end
+    end
+  end
+
+  return list
+end

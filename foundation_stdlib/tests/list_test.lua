@@ -112,6 +112,40 @@ case:describe("list_split/2", function (t2)
   end)
 end)
 
+case:describe("list_sort/1", function (t2)
+  t2:test("can sort a given table of numbers", function (t3)
+    local list = {0, 2, 1, 4, 3}
+
+    t3:assert_table_eq(subject.list_sort(list), {0, 1, 2, 3, 4})
+  end)
+
+  t2:test("can sort a given table of random numbers", function (t3)
+    local list = {}
+
+    for i = 1,10 do
+      list[i] = math.random(100)
+    end
+
+    list = subject.list_sort(list)
+
+    local a = list[1]
+
+    for i = 2,#list do
+      local b = list[i]
+
+      t3:assert(a <= b)
+
+      a = b
+    end
+  end)
+
+  t2:test("can sort a given table of strings", function (t3)
+    local list = {"a", "c", "b", "e", "d"}
+
+    t3:assert_table_eq(subject.list_sort(list), {"a", "b", "c", "d", "e"})
+  end)
+end)
+
 case:execute()
 case:display_stats()
 case:maybe_error()
