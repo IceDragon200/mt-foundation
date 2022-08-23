@@ -1,3 +1,8 @@
+# `1.2.0`
+
+* `assert/1+` returns value that was passed in to mimic lua's assert
+* `refute/1+` returns value that was passed in to mimic lua's assert
+
 # `1.1.0`
 
 * Exposed Reporter module `foundation.com.Luna.DefaultReporter`

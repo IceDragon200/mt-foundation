@@ -243,6 +243,8 @@ function ic:assert(truth_value, message)
     self.stats.assertions_failed = self.stats.assertions_failed + 1
     error("assertion failed: " .. format_message(message))
   end
+
+  return truth_value
 end
 
 function ic:neat_dump(value)
@@ -308,7 +310,8 @@ function ic:refute(truth_value, message)
   message = message or function ()
     return ("expected " .. self:neat_dump(truth_value) .. " to be falsy")
   end
-  return self:assert(not truth_value, message)
+  self:assert(not truth_value, message)
+  return truth_value
 end
 
 function ic:refute_eq(a, b, message)
