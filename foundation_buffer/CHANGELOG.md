@@ -1,3 +1,7 @@
+# 2.2.0
+
+* Added `foundation.com.FileBuffer` a wrapper class around a lua file handle
+
 # 2.1.0
 
 * Added `foundation.com.StringBuffer#peek_utf8_codepoint/0`

@@ -1,5 +1,6 @@
-local mod = foundation.new_module("foundation_buffer", "2.1.0")
+local mod = foundation.new_module("foundation_buffer", "2.2.0")
 
+mod:require("file_buffer.lua")
 mod:require("string_buffer.lua")
 mod:require("token_buffer.lua")
 
