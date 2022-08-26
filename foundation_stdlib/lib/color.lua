@@ -258,6 +258,25 @@ function Color.from_colorstring(colorstring)
   end
 end
 
+--
+-- Takes any value and may or may not return a valid color string.
+--
+-- @exception
+-- @spec maybe_to_colorstring(value: Any): String
+function Color.maybe_to_colorstring(value)
+  if type(value) == "string" then
+    return value
+  elseif type(value) == "table" then
+    if value.a then
+      return Color.to_string32(value)
+    else
+      return Color.to_string24(value)
+    end
+  else
+    error("unexpected color value=" .. dump(value))
+  end
+end
+
 -- https://www.w3.org/TR/css-color-4/#named-color
 Color.NAMED = {
   aliceblue =            Color.new(240, 248, 255),

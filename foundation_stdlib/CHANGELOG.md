@@ -1,3 +1,7 @@
+# 1.22.0
+
+* Added `foundation.com.Color.maybe_to_colorstring/1`
+
 # 1.21.0
 
 * Added `foundation.com.list_sort/1`
