@@ -51,6 +51,16 @@ function vector2.equals(a, b)
   return a.x == b.x and a.y == b.y
 end
 
+-- @spec distance(a: Vector2, b: Vector2): Float
+function vector2.distance(a, b)
+  local x = a.x - b.x
+  x = x * x
+  local y = a.y - b.y
+  y = y * y
+
+  return math.sqrt(x + y)
+end
+
 -- @spec floor(dest: Vector2, v2: Vector2): Vector2
 function vector2.floor(dest, v2)
   dest.x = math.floor(v2.x)
@@ -172,6 +182,18 @@ end
 -- @spec equals(a: Vector3, b: Vector3): Boolean
 function vector3.equals(a, b)
   return a.x == b.x and a.y == b.y and a.z == b.z
+end
+
+-- @spec distance(a: Vector3, b: Vector3): Float
+function vector3.distance(a, b)
+  local x = a.x - b.x
+  x = x * x
+  local y = a.y - b.y
+  y = y * y
+  local z = a.z - b.z
+  z = z * z
+
+  return math.sqrt(x + y + z)
 end
 
 -- @spec floor(Vector3, Vector3): Vector3
@@ -314,6 +336,20 @@ end
 -- @spec equals(a: Vector4, b: Vector4): Boolean
 function vector4.equals(a, b)
   return a.x == b.x and a.y == b.y and a.z == b.z and a.w == b.w
+end
+
+-- @spec distance(a: Vector4, b: Vector4): Float
+function vector4.distance(a, b)
+  local x = a.x - b.x
+  x = x * x
+  local y = a.y - b.y
+  y = y * y
+  local z = a.z - b.z
+  z = z * z
+  local w = a.w - b.w
+  w = w * w
+
+  return math.sqrt(x + y + z + w)
 end
 
 -- @spec floor(Vector4, Vector4): Vector4

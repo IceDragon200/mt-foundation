@@ -8,6 +8,15 @@
 * Added `foundation.com.metaref_int_list_push/3`
 * Added `foundation.com.metaref_int_list_clear/3`
 * Added `foundation.com.metaref_int_list_lazy_clear/3`
+* Added `foundation.com.metaref_string_list_to_table/3`
+* Added `foundation.com.metaref_string_list_pop/3`
+* Added `foundation.com.metaref_string_list_peek/3`
+* Added `foundation.com.metaref_string_list_push/3`
+* Added `foundation.com.metaref_string_list_clear/3`
+* Added `foundation.com.metaref_string_list_lazy_clear/3`
+* Added `foundation.com.Vector2.distance/2`
+* Added `foundation.com.Vector3.distance/2`
+* Added `foundation.com.Vector4.distance/2`
 
 # 1.22.0
 
