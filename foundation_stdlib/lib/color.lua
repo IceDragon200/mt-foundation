@@ -27,6 +27,34 @@ local function color_channel_clamp(a)
   return math.max(math.min(math.floor(a), 255), 0)
 end
 
+local function channel_overlay(a, b)
+  local r
+  local n = a / 255.0
+  local n2 = b / 255.0
+
+  if n < 0.5 then
+    r = 2 * (n * n2)
+  else
+    r = 1 - 2 * (1 - n) * (1 - n2)
+  end
+
+  return color_channel_clamp(r * 255)
+end
+
+local function channel_hard_light(a, b)
+  local r
+  local n = a / 255.0
+  local n2 = b / 255.0
+
+  if n2 < 0.5 then
+    r = 2 * (n * n2)
+  else
+    r = 1 - 2 * (1 - n) * (1 - n2)
+  end
+
+  return color_channel_clamp(r * 255)
+end
+
 --
 -- @spec new(r: Byte, g: Byte, b: Byte, a?: Byte): Color
 function Color.new(r, g, b, a)
@@ -40,6 +68,16 @@ function Color.copy(color)
     g = color.g,
     b = color.b,
     a = color.a,
+  }
+end
+
+-- @spec lerp(a: Color, b: Color, d: Number): Color
+function Color.lerp(a, b, d)
+  return {
+    r = color_channel_clamp(a.r + (b.r - a.r) * d),
+    g = color_channel_clamp(a.g + (b.g - a.g) * d),
+    b = color_channel_clamp(a.b + (b.b - a.b) * d),
+    a = color_channel_clamp(a.a + (b.a - a.a) * d),
   }
 end
 
@@ -71,34 +109,6 @@ function Color.mult(a, b)
     b = color_channel_clamp((a.b * a.a / 255) * (b.b * b.a / 255) / 255),
     a = 255,
   }
-end
-
-local function channel_overlay(a, b)
-  local r
-  local n = a / 255.0
-  local n2 = b / 255.0
-
-  if n < 0.5 then
-    r = 2 * (n * n2)
-  else
-    r = 1 - 2 * (1 - n) * (1 - n2)
-  end
-
-  return color_channel_clamp(r * 255)
-end
-
-local function channel_hard_light(a, b)
-  local r
-  local n = a / 255.0
-  local n2 = b / 255.0
-
-  if n2 < 0.5 then
-    r = 2 * (n * n2)
-  else
-    r = 1 - 2 * (1 - n) * (1 - n2)
-  end
-
-  return color_channel_clamp(r * 255)
 end
 
 -- @spec blend_overlay(Color, Color): Color
@@ -274,6 +284,18 @@ function Color.maybe_to_colorstring(value)
     end
   else
     error("unexpected color value=" .. dump(value))
+  end
+end
+
+-- @spec maybe_to_color(value: String | Table | Color): Color
+function Color.maybe_to_color(value)
+  if type(value) == "string" then
+    return Color.from_colorstring(value)
+  elseif type(value) == "table" then
+    assert(value.r and value.g and value.b and value.a)
+    return value
+  else
+    error("unexpected value=" .. dump(value))
   end
 end
 
