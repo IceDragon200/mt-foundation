@@ -100,11 +100,11 @@ function c:from_table(value)
   if type(value) == "table" then
     local result = {}
     local ty
-    for key, value in pairs(value) do
-      ty = type(value)
+    for key, val in pairs(value) do
+      ty = type(val)
 
       if ty == "string" or ty == "number" or ty == "boolean" then
-        result[key] = value
+        result[key] = val
       else
         return false
       end
