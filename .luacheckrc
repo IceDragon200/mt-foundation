@@ -178,10 +178,12 @@ globals = {
           },
           formspec = {
             fields = {
-              api = {},
+              Form = {},
               Layout = {},
+              api = {},
             },
           },
+          sounds = {},
           --
           -- Classes
           --
@@ -290,6 +292,28 @@ globals = {
           HEX_TABLE = {},
           HEX_TO_DEC = {
             fields = {
+              ["0"] = {},
+              ["1"] = {},
+              ["2"] = {},
+              ["3"] = {},
+              ["4"] = {},
+              ["5"] = {},
+              ["6"] = {},
+              ["7"] = {},
+              ["8"] = {},
+              ["9"] = {},
+              A = {},
+              B = {},
+              C = {},
+              D = {},
+              E = {},
+              F = {},
+              a = {},
+              b = {},
+              c = {},
+              d = {},
+              e = {},
+              f = {},
               ["?"] = {},
             },
           },
@@ -457,7 +481,8 @@ globals = {
           --- vector
           vector_to_string = {},
           --
-          sounds = {},
+          recover_hp = {},
+          get_inventory_drops = {},
         },
       },
       is_module_present = {},
@@ -467,13 +492,18 @@ globals = {
     fields = {
       -- properties
       registered_items = {
-        fields = {},
+        fields = {
+          ["?"] = {},
+        },
       },
       registered_nodes = {
-        fields = {},
+        fields = {
+          ["?"] = {},
+        },
       },
       -- functions
       request_insecure_environment = {},
+      formspec_escape = {},
       get_current_modname = {},
       get_modpath = {},
       get_item_group = {},
