@@ -21,7 +21,7 @@ function m:initialize(name, prefix, schema)
   self.schema = schema
 end
 
-function make_setter(entry, field_name)
+local function make_setter(entry, field_name)
   if entry.type == "string" then
     return function (self, meta, value)
       meta:set_string(field_name, value)
@@ -42,7 +42,7 @@ function make_setter(entry, field_name)
   end
 end
 
-function make_getter(entry, field_name)
+local function make_getter(entry, field_name)
   if entry.type == "string" then
     return function (self, meta)
       return meta:get_string(field_name)
@@ -92,11 +92,11 @@ function m:compile(basename)
     if entry.type == "schema" then
       local sub_schema = entry.schema:compile(field_name)
       schema["schema_" .. key] = sub_schema
-      schema[setter_name] = function (self, meta, value)
+      schema[setter_name] = function (myself, meta, value)
         sub_schema:set(meta, value)
-        return self
+        return myself
       end
-      schema[getter_name] = function (self, meta)
+      schema[getter_name] = function (myself, meta)
         return sub_schema:get()
       end
     else
@@ -105,20 +105,20 @@ function m:compile(basename)
     end
   end
 
-  function schema.set(self, meta, t)
+  function schema.set(myself, meta, t)
     for key,value in pairs(t) do
       local entry = schema.keys[key]
       if entry then
-        self[entry.setter_name](self, meta, value)
+        myself[entry.setter_name](myself, meta, value)
       end
     end
-    return self
+    return myself
   end
 
-  function schema.get(self, meta)
+  function schema.get(myself, meta)
     local result = {}
-    for key,entry in pairs(self.keys) do
-      result[key] = self[entry.getter_name](self, meta)
+    for key,entry in pairs(myself.keys) do
+      result[key] = myself[entry.getter_name](myself, meta)
     end
     return result
   end
