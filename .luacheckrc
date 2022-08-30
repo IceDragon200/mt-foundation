@@ -61,8 +61,18 @@ globals = {
               rshift = {},
             },
           },
-          utf8 = {},
-          ByteBuf = {},
+          utf8 = {
+            fields = {
+              next_codepoint = {},
+              next_codepoint_pos = {},
+            },
+          },
+          ByteBuf = {
+            fields = {
+              little = {},
+              big = {},
+            },
+          },
           Color = {},
           Cuboid = {},
           Directions = {},
@@ -77,6 +87,8 @@ globals = {
             },
           },
           InventoryList = {},
+          InventorySerializer = {},
+          InventoryPacker = {},
           Rect = {
             fields = {
               new = {},
@@ -86,6 +98,7 @@ globals = {
           SoundsRegistry = {},
           Symbols = {},
           TOML = {},
+          KDL = {},
           Tweener = {},
           ULID = {},
           Vector2 = {
@@ -141,7 +154,37 @@ globals = {
               new = {},
             },
           },
+          native_utils = {},
+          node_sounds = {},
+          ffi = {
+            fields = {
+              load = {},
+              cdef = {},
+              new = {},
+              copy = {},
+              string = {},
+            },
+          },
+          schematic_helpers = {
+            fields = {
+              from_y_slices = {},
+              build = {},
+              Builder = {
+                fields = {
+                  new = {},
+                },
+              },
+            },
+          },
+          formspec = {
+            fields = {
+              api = {},
+              Layout = {},
+            },
+          },
+          --
           -- Classes
+          --
           Luna = {
             fields = {
               instance_class = {},
@@ -169,11 +212,25 @@ globals = {
               new = {},
             },
           },
+          TokenBuffer = {},
+          RingBuffer = {
+            fields = {},
+          },
+          MetaSchema = {},
+          FakeMetaRef = {},
+          Trace = {},
           Class = {
             fields = {
               -- class methods
               extends = {},
               is_object = {},
+            },
+          },
+          ProcessRunner = {
+          },
+          NodeSoundsRegistry = {
+            fields = {
+              new = {},
             },
           },
           -- Functions
@@ -182,26 +239,65 @@ globals = {
           ascii_unpack = {},
           ascii_file_pack = {},
           ascii_file_unpack = {},
-          apak = {},
+          apak = {
+            fields = {
+              pack = {},
+              pack_array = {},
+              pack_int = {},
+              pack_nil = {},
+            },
+          },
           --- binary_types
           BinSchema = {},
-          ByteBuf = {},
+          BinaryBuffer = {},
+          StringBuffer = {},
+          FileBuffer = {},
+          ByteDecoder = {},
+          ByteEncoder = {
+            fields = {
+              LE = {},
+              BE = {},
+            },
+          },
           binary_types = {
             fields = {
-              Array = {},
+              Array = {
+                fields = {
+                  new = {},
+                },
+              },
               BitFlags = {},
               Bytes = {},
               Enum = {},
-              Map = {},
-              Scalars = {
-                fields = {},
+              Map = {
+                fields = {
+                  new = {},
+                },
               },
+              Scalars = {
+                fields = {
+                  ["?"] = {},
+                },
+              },
+              MarshallValue = {},
+              NaiveDateTime = {},
             },
           },
+          ---
+          ALL_PREFIXES = {},
+          COMMON_PREFIXES = {},
           --- encoding_tables
           HEX_TABLE = {},
-          HEX_TO_DEC = {},
-          HEX_BYTE_TO_DEC = {},
+          HEX_TO_DEC = {
+            fields = {
+              ["?"] = {},
+            },
+          },
+          HEX_BYTE_TO_DEC = {
+            fields = {
+              ["?"] = {},
+            },
+          },
           HEX_UPPERCASE_ENCODE_TABLE = {},
           --HEX_LOWERCASE_ENCODE_TABLE = {},
           CROCKFORD_BASE32_ENCODE_TABLE = {},
@@ -236,12 +332,27 @@ globals = {
           list_slice = {},
           list_uniq = {},
           list_split = {},
+          list_sort = {},
           --- meta_ref
           metaref_merge_fields_from_table = {},
           metaref_dec_float = {},
           metaref_dec_int = {},
           metaref_inc_float = {},
           metaref_inc_int = {},
+          metaref_int_list_to_table = {},
+          metaref_int_list_index_of = {},
+          metaref_int_list_pop = {},
+          metaref_int_list_peek = {},
+          metaref_int_list_push = {},
+          metaref_int_list_clear = {},
+          metaref_int_list_lazy_clear = {},
+          metaref_string_list_to_table = {},
+          metaref_string_list_index_of = {},
+          metaref_string_list_pop = {},
+          metaref_string_list_peek = {},
+          metaref_string_list_push = {},
+          metaref_string_list_clear = {},
+          metaref_string_list_lazy_clear = {},
           --- node_timer
           maybe_start_node_timer = {},
           --- number
@@ -263,6 +374,11 @@ globals = {
           lua_string_hex_encode = {},
           lua_string_hex_escape = {},
           lua_string_hex_unescape = {},
+          ffi_encoder = {},
+          ffi_string_hex_decode = {},
+          ffi_string_hex_encode = {},
+          ffi_string_hex_escape = {},
+          ffi_string_hex_unescape = {},
           handle_escaped_hex = {},
           handle_escaped_dec = {},
           make_string_ref = {},
@@ -279,6 +395,7 @@ globals = {
           string_hex_encode = {},
           string_hex_escape = {},
           string_hex_pair_to_byte = {},
+          string_hex_nibble_to_byte = {},
           string_hex_unescape = {},
           string_pad_leading = {},
           string_pad_trailing = {},
@@ -339,6 +456,8 @@ globals = {
           deep_equals = {},
           --- vector
           vector_to_string = {},
+          --
+          sounds = {},
         },
       },
       is_module_present = {},
@@ -354,8 +473,11 @@ globals = {
         fields = {},
       },
       -- functions
+      request_insecure_environment = {},
       get_current_modname = {},
-      get_modepath = {},
+      get_modpath = {},
+      get_item_group = {},
+      get_meta = {},
       get_node = {},
       get_node_timer = {},
       get_position_from_hash = {},
@@ -369,20 +491,43 @@ globals = {
       register_node = {},
       register_tool = {},
       swap_node = {},
+      sound_play = {},
     },
   },
   vector = {
     fields = {
       new = {},
+      add = {},
+      subtract = {},
     },
   },
   -- classes
   ItemStack = {
   },
+  SecureRandom = {
+  },
+  table = {
+    fields = {
+      copy = {},
+    },
+  },
+  string = {
+    fields = {
+      split = {},
+    },
+  },
 }
 
 files["foundation_ascii_pack/**/*.lua"] = { globals = {"foundation_ascii_pack"} }
 files["foundation_binary/**/*.lua"] = { globals = {"foundation_binary"} }
-files["foundation_native/**/*.lua"] = { globals = {"foundation_native"} }
+files["foundation_class/**/*.lua"] = { globals = {"foundation_class"} }
+files["foundation_inv/**/*.lua"] = { globals = {"foundation_inv"} }
+files["foundation_kdl/**/*.lua"] = { globals = {"foundation_kdl"} }
+files["foundation_native/**/*.lua"] = {
+  globals = {
+    "foundation_native",
+  }
+}
 files["foundation_stdlib/**/*.lua"] = { globals = {"foundation_stdlib"} }
 files["foundation_struct/**/*.lua"] = { globals = {"foundation_struct"} }
+files["foundation_random/**/*.lua"] = { globals = {"foundation_random"} }
