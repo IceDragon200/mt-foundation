@@ -32,6 +32,7 @@ case:describe("send/1", function (t2)
     local received_message
     local pid = pr:spawn(function (my_pid, my_pr)
       local success, msg = my_pr:receive()
+      t3:assert(success)
       received_message = msg
     end)
 
@@ -48,6 +49,7 @@ case:describe("send_exit/1", function (t2)
     local received_message
     local pid = pr:spawn(function (my_pid, my_pr)
       local success, msg = my_pr:receive()
+      t3:assert(success)
       received_message = msg
     end)
 
@@ -64,6 +66,7 @@ case:describe("send_after/1", function (t2)
 
     local pid = pr:spawn(function (my_pid, my_pr)
       local success, msg = my_pr:receive()
+      t3:assert(success)
       received_message = msg
     end)
 
@@ -80,10 +83,13 @@ end)
 case:describe("kill/1", function (t2)
   t2:test("immediately kill a process without notifying it", function (t3)
     local pr = ProcessRunner:new()
+    -- local received_message
 
     local pid = pr:spawn(function (my_pid, my_pr)
       local success, msg = my_pr:receive()
-      received_message = msg
+      t3:assert(success)
+      t3:assert(msg)
+      -- received_message = msg
     end)
 
     pr:kill(pid)

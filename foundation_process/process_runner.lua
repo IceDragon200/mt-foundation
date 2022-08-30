@@ -7,10 +7,11 @@
 -- there is no proper scheduler, and processes are expected to have very, very
 -- short execution times, otherwise you run into the wonderful lag.
 --
--- The process runner will re-run a process as long as it has messages in its mailbox and it is willing
--- to receive those messages.
+-- The process runner will re-run a process as long as it has messages in its mailbox and it is
+-- willing to receive those messages.
 --
--- Therefore it is possible to deadlock the process runner by sending a message to itself constantly.
+-- Therefore it is possible to deadlock the process runner by sending a message to itself
+-- constantly.
 --
 -- Usage:
 --     local pr = ProcessRunner:new()
@@ -238,9 +239,7 @@ function ic:update(delta)
     self.active_process = process
 
     if process.state == 'sleep' then
-      if process.sleep_until and process.sleep_until < self.monotonic_time then
-        -- keep sleeping
-      else
+      if not process.sleep_until or process.sleep_until >= self.monotonic_time then
         process.state = 'main'
       end
     end
