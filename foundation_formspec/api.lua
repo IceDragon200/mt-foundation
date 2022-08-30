@@ -4,6 +4,8 @@
 -- semi-colons or even brackets in larger formspecs.
 --
 
+local Color = assert(foundation.com.Color)
+
 -- @namespace foundation.com.formspec.api
 
 foundation.com.formspec = {}
@@ -26,7 +28,10 @@ end
 
 local function to_color(item)
   if type(item) == "table" then
-    -- TODO: find out what the expected format is for colours
+    if item.a then
+      return Color.to_string32(item)
+    end
+    return Color.to_string24(item)
   elseif type(item) == "function" then
     return item()
   else

@@ -238,7 +238,18 @@ function c:new_button(x, y, w, h, name, label)
   return button
 end
 
-function c:new_image_button(x, y, w, h, texture_name, name, label, no_clip, draw_border, pressed_texture_name)
+function c:new_image_button(
+  x,
+  y,
+  w,
+  h,
+  texture_name,
+  name,
+  label,
+  no_clip,
+  draw_border,
+  pressed_texture_name
+)
   local button = self:new_element("image_button")
   button:set_position(x, y)
   button:set_size(w, h)
@@ -372,14 +383,29 @@ function c:to_formspec(as_iodata)
     end
     table.insert(result, "]")
     -- position
-    table.insert(result, {"position[", tostring(self.position.x), ",", tostring(self.position.y), "]"})
+    table.insert(
+      result,
+      {
+        "position[", tostring(self.position.x), ",", tostring(self.position.y), "]"
+      }
+    )
     -- anchor
-    table.insert(result, {"anchor[", tostring(self.anchor.x), ",", tostring(self.anchor.y), "]"})
+    table.insert(
+      result,
+      {
+        "anchor[", tostring(self.anchor.x), ",", tostring(self.anchor.y), "]"
+      }
+    )
     if self.no_prepend then
       table.insert(result, "no_prepend[]")
     end
   elseif self.kind == "container" then
-    table.insert(result, {"container[", tostring(self.position.x), ",", tostring(self.position.y), "]"})
+    table.insert(
+      result,
+      {
+        "container[", tostring(self.position.x), ",", tostring(self.position.y), "]"
+      }
+    )
   elseif self.kind == "list" then
     table.insert(result, {
       "list[",
@@ -624,8 +650,9 @@ function c:to_formspec(as_iodata)
         if #item == 2 then
           table.insert(result, {item[1], item[2]})
         else
+          local escaped = minetest.formspec_escape(item.text)
           if item.color then
-            table.insert(result, {"#", item.color, item.text})
+            table.insert(result, {"#", item.color, escaped})
           else
             if string_starts_with(item.text, "#") then
               table.insert(result, {"#", escaped})
@@ -773,7 +800,7 @@ function c:to_formspec(as_iodata)
         table.insert(columns, column_type)
       end
     end
-    columns = table_intersperse(options, ";")
+    columns = table_intersperse(columns, ";")
     table.insert(result, columns)
     table.insert(result, "]")
   end
@@ -782,7 +809,7 @@ function c:to_formspec(as_iodata)
     table.insert(result, {
       "bgcolor[",
       tostring(self.background.color),";",
-      tostring(fullscreen_background),
+      tostring(self.fullscreen_background),
       "]",
     })
   end
@@ -802,4 +829,4 @@ function c:to_formspec(as_iodata)
   end
 end
 
-foundation.com.Form = Form
+foundation.com.formspec.Form = Form
