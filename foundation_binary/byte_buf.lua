@@ -131,13 +131,13 @@ do
   -- @spec #w_fv(Stream, exponent_bits: Integer, mantissa_bits: Integer, flt: Float):
   --   (Integer, error: String | nil)
   function ic:w_fv(stream, exponent_bits, mantissa_bits, flt)
-    local sign = 0
-    if flt < 0 then
-      sign = 1
-    end
+    -- local sign = 0
+    -- if flt < 0 then
+    --   sign = 1
+    -- end
 
     local int = math.floor(flt)
-    local flt = flt - int
+    flt = flt - int
 
     local mantissa_fract = 0
 
