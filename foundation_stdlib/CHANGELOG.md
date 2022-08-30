@@ -1,14 +1,20 @@
+# 1.23.1
+
+* luacheckrc fixups
+
 # 1.23.0
 
 * Added `foundation.com.Color.lerp/3`
 * Added `foundation.com.Color.maybe_to_color/1`
 * Added `foundation.com.metaref_int_list_to_table/3`
+* Added `foundation.com.metaref_int_list_index_of/3`
 * Added `foundation.com.metaref_int_list_pop/3`
 * Added `foundation.com.metaref_int_list_peek/3`
 * Added `foundation.com.metaref_int_list_push/3`
 * Added `foundation.com.metaref_int_list_clear/3`
 * Added `foundation.com.metaref_int_list_lazy_clear/3`
 * Added `foundation.com.metaref_string_list_to_table/3`
+* Added `foundation.com.metaref_string_list_index_of/3`
 * Added `foundation.com.metaref_string_list_pop/3`
 * Added `foundation.com.metaref_string_list_peek/3`
 * Added `foundation.com.metaref_string_list_push/3`

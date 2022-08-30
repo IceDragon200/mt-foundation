@@ -12,6 +12,10 @@ end
 local TEST_PREFIX = "test_list_"
 local MAX_SIZE = 10
 
+--
+-- Integer[]
+--
+
 case:describe("metaref_int_list_to_table/3", function (t2)
   t2:test("can return a int list (is empty)", function (t3)
     local meta = make_metaref()
@@ -35,6 +39,50 @@ case:describe("metaref_int_list_to_table/3", function (t2)
 
     t3:assert_table_eq(list, {1, 2, 3, 4, 5, 6})
     t3:assert_eq(count, 6)
+  end)
+end)
+
+case:describe("metaref_int_list_index_of/3", function (t2)
+  t2:test("can return a int list (is empty)", function (t3)
+    local meta = make_metaref()
+
+    local index =
+      subject.metaref_int_list_index_of(meta, TEST_PREFIX, MAX_SIZE, 0)
+
+    t3:assert_eq(index, nil)
+
+    index =
+      subject.metaref_int_list_index_of(meta, TEST_PREFIX, MAX_SIZE, 1)
+
+    t3:assert_eq(index, nil)
+  end)
+
+  t2:test("can return an int list with items", function (t3)
+    local meta = make_metaref()
+
+    for i = 1,6 do
+      subject.metaref_int_list_push(meta, TEST_PREFIX, MAX_SIZE, i)
+    end
+
+    local index =
+      subject.metaref_int_list_index_of(meta, TEST_PREFIX, MAX_SIZE, 0)
+
+    t3:assert_eq(index, nil)
+
+    index =
+      subject.metaref_int_list_index_of(meta, TEST_PREFIX, MAX_SIZE, 1)
+
+    t3:assert_eq(index, 1)
+
+    index =
+      subject.metaref_int_list_index_of(meta, TEST_PREFIX, MAX_SIZE, 7)
+
+    t3:assert_eq(index, nil)
+
+    index =
+      subject.metaref_int_list_index_of(meta, TEST_PREFIX, MAX_SIZE, 5)
+
+    t3:assert_eq(index, 5)
   end)
 end)
 
@@ -90,6 +138,10 @@ case:describe("metaref_int_list_peek/3", function (t2)
   end)
 end)
 
+--
+-- String[]
+--
+
 case:describe("metaref_string_list_to_table/3", function (t2)
   t2:test("can return a string list (is empty)", function (t3)
     local meta = make_metaref()
@@ -114,6 +166,50 @@ case:describe("metaref_string_list_to_table/3", function (t2)
 
     t3:assert_table_eq(list, source)
     t3:assert_eq(count, 6)
+  end)
+end)
+
+case:describe("metaref_string_list_index_of/3", function (t2)
+  t2:test("will return nil for items that do not exist", function (t3)
+    local meta = make_metaref()
+
+    local index =
+      subject.metaref_string_list_index_of(meta, TEST_PREFIX, MAX_SIZE, "a")
+
+    t3:assert_eq(index, nil)
+
+    index =
+      subject.metaref_string_list_index_of(meta, TEST_PREFIX, MAX_SIZE, "b")
+
+    t3:assert_eq(index, nil)
+  end)
+
+  t2:test("can return the index of a specific string", function (t3)
+    local meta = make_metaref()
+
+    for i = 1,6 do
+      subject.metaref_string_list_push(meta, TEST_PREFIX, MAX_SIZE, string.char(96 + i))
+    end
+
+    local index =
+      subject.metaref_string_list_index_of(meta, TEST_PREFIX, MAX_SIZE, "A")
+
+    t3:assert_eq(index, nil)
+
+    index =
+      subject.metaref_string_list_index_of(meta, TEST_PREFIX, MAX_SIZE, "a")
+
+    t3:assert_eq(index, 1)
+
+    index =
+      subject.metaref_string_list_index_of(meta, TEST_PREFIX, MAX_SIZE, "g")
+
+    t3:assert_eq(index, nil)
+
+    index =
+      subject.metaref_string_list_index_of(meta, TEST_PREFIX, MAX_SIZE, "e")
+
+    t3:assert_eq(index, 5)
   end)
 end)
 

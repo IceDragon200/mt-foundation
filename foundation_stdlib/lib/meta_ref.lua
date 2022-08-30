@@ -66,6 +66,30 @@ function foundation.com.metaref_int_list_to_table(meta, prefix, max)
   return count, result
 end
 
+-- @spec metaref_int_list_index_of(
+--   MetaRef,
+--   prefix: String,
+--   max: Integer,
+--   value: Integer
+-- ): (index: Integer | nil)
+function foundation.com.metaref_int_list_index_of(meta, prefix, max, item)
+  local count_key = prefix .. "count"
+  local count = meta:get_int(count_key)
+
+  if count > 1 then
+    local other
+    for i = 1,count do
+      other = meta:get_int(prefix .. i)
+
+      if other == item then
+        return i
+      end
+    end
+  end
+
+  return nil
+end
+
 -- @mutative
 -- @spec metaref_int_list_pop(MetaRef, prefix: String, max: Integer): nil | Integer
 function foundation.com.metaref_int_list_pop(meta, prefix, _max)
@@ -132,12 +156,13 @@ end
 -- @spec metaref_int_list_lazy_clear(MetaRef, prefix: String, max: Integer): void
 function foundation.com.metaref_int_list_lazy_clear(meta, prefix, max)
   local count_key = prefix .. "count"
-  local count = meta:get_int(count_key)
 
   meta:set_int(count_key, 0)
 end
 
+--
 -- String
+--
 
 -- @spec metaref_int_list_to_table(
 --   MetaRef,
@@ -157,6 +182,30 @@ function foundation.com.metaref_string_list_to_table(meta, prefix, max)
   end
 
   return count, result
+end
+
+-- @spec metaref_string_list_index_of(
+--   MetaRef,
+--   prefix: String,
+--   max: Integer,
+--   value: String
+-- ): (index: Integer | nil)
+function foundation.com.metaref_string_list_index_of(meta, prefix, max, item)
+  local count_key = prefix .. "count"
+  local count = meta:get_int(count_key)
+
+  if count > 1 then
+    local other
+    for i = 1,count do
+      other = meta:get_string(prefix .. i)
+
+      if other == item then
+        return i
+      end
+    end
+  end
+
+  return nil
 end
 
 -- @mutative
@@ -230,7 +279,6 @@ end
 -- @spec metaref_string_list_lazy_clear(MetaRef, prefix: String, max: Integer): void
 function foundation.com.metaref_string_list_lazy_clear(meta, prefix, max)
   local count_key = prefix .. "count"
-  local count = meta:get_int(count_key)
 
   meta:set_int(count_key, 0)
 end

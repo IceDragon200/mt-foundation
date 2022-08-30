@@ -22,7 +22,6 @@ function foundation.com.list_crawford_base32_le_rolling_encode_table(...)
   local len = #items
   local len1 = len + 1
   local i = 1
-  local j
   local acc = 0
   local po
   local slen
@@ -34,7 +33,6 @@ function foundation.com.list_crawford_base32_le_rolling_encode_table(...)
   local value
   local result = {}
   local r = 1
-  local _
 
   while i < len1 do
     -- integer length in bytes
@@ -254,8 +252,6 @@ end
 function foundation.com.list_sort(list)
   if next(list) then
     local size = #list
-    local sorting = true
-    local retry = false
     local a
     local b
 

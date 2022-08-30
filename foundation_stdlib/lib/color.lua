@@ -3,7 +3,6 @@
 local byte_to_hexpair = assert(foundation.com.byte_to_hexpair)
 local hexpair_to_byte = assert(foundation.com.string_hex_pair_to_byte)
 local nibble_to_hex = assert(foundation.com.nibble_to_hex)
-local hex_to_nibble = assert(foundation.com.string_hex_nibble_to_byte)
 local table_freeze = assert(foundation.com.table_freeze)
 
 local function hex_to_color_byte(hex)
@@ -148,7 +147,7 @@ end
 
 -- @spec to_grayscale(Color): Color
 function Color.to_grayscale(color)
-  local y = to_grayscale_value(color)
+  local y = Color.to_grayscale_value(color)
   return {
     r = y,
     g = y,

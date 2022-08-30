@@ -110,14 +110,12 @@ function foundation.com.string_remove_spaces(str)
   while i <= len do
     byte = bytes[i]
 
-    -- skip spaces, newlines, returns and tabs
-    if byte == 32 or
-       byte == 13 or
-       byte == 10 or
-       byte == 9 or
-       byte == 0 then
-      --
-    else
+    -- skip spaces, newlines, carriage returns, tabs and nulls
+    if byte ~= 32 and
+       byte ~= 13 and
+       byte ~= 10 and
+       byte ~= 9 and
+       byte ~= 0 then
       result[j] = string.char(byte)
       j = j + 1
     end

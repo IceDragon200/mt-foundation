@@ -118,7 +118,7 @@ function Easers.expo_in_out(k)
   end
   k = k * 2
   if k < 1 then
-    return 0.5 * Math.pow(1024, k - 1)
+    return 0.5 * math.pow(1024, k - 1)
   end
 
   return 0.5 * (-math.pow(2, -10 * (k - 1)) + 2)
