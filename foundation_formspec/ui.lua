@@ -223,10 +223,10 @@ function c:new_label(x, y, label)
 end
 
 function c:new_vertical_label(x, y, label)
-  local label = self:new_element("vertical_label")
-  label:set_position(x, y)
-  label.label = label
-  return label
+  local el = self:new_element("vertical_label")
+  el:set_position(x, y)
+  el.label = label
+  return el
 end
 
 function c:new_button(x, y, w, h, name, label)

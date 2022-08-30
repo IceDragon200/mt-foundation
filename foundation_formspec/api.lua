@@ -203,7 +203,13 @@ end
 
 api.listring = api.list_ring
 
-function api.list_colors(slot_bg_normal, slot_bg_hover, slot_border, tooltip_bgcolor, tooltip_fontcolor)
+function api.list_colors(
+  slot_bg_normal,
+  slot_bg_hover,
+  slot_border,
+  tooltip_bgcolor,
+  tooltip_fontcolor
+)
   local args = to_color(slot_bg_normal)..";"..to_color(slot_bg_hover)
   if slot_border then
     args = args .. ";" .. to_color(slot_border)
@@ -276,7 +282,17 @@ function api.image(x, y, w, h, texture_name, middle)
   return "image[" .. args .. "]"
 end
 
-function api.animated_image(x, y, w, h, name, texture_name, frame_count, frame_duration, frame_start)
+function api.animated_image(
+  x,
+  y,
+  w,
+  h,
+  name,
+  texture_name,
+  frame_count,
+  frame_duration,
+  frame_start
+)
   frame_start = frame_start or 1
 
   return "animated_image["..x..","..y..
@@ -408,7 +424,18 @@ function api.button(x, y, w, h, name, label)
   return "button["..args.."]"
 end
 
-function api.image_button(x, y, w, h, texture_name, name, label, noclip, drawborder, pressed_texture_name)
+function api.image_button(
+  x,
+  y,
+  w,
+  h,
+  texture_name,
+  name,
+  label,
+  noclip,
+  drawborder,
+  pressed_texture_name
+)
   local args = x..","..y..
     ";"..w..","..h..
     ";"..to_text(texture_name)..
