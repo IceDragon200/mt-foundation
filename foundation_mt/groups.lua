@@ -69,7 +69,7 @@ function Groups.item_has_group(name, group_name, optional_rank)
   local rank = minetest.get_item_group(name, group_name)
   if rank and rank > 0 then
     if optional_rank then
-      return value >= optional_rank
+      return rank >= optional_rank
     else
       return true
     end
