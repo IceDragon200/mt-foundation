@@ -1,7 +1,13 @@
 local ffi = foundation.com.ffi
 if not ffi then
-  minetest.log("warning", "ffi is unavailable, foundation.com native extensions cannot be loaded")
-  minetest.log("warning", "foundation.com will fallback to lua based implementations for some functions")
+  minetest.log(
+    "warning",
+    "ffi is unavailable, foundation.com native extensions cannot be loaded"
+  )
+  minetest.log(
+    "warning",
+    "foundation.com will fallback to lua based implementations for some functions"
+  )
   return
 end
 
@@ -11,8 +17,14 @@ pcall(function ()
 end)
 
 if not foundation_utils then
-  minetest.log("warning", "foundation_utils shared object is not available, skipping implementation")
-  minetest.log("warning", "WARN: Some functions will be slightly slower, should be fine for the most part.\n\n")
+  minetest.log(
+    "warning",
+    "foundation_utils shared object is not available, skipping implementation"
+  )
+  minetest.log(
+    "warning",
+    "WARN: Some functions will be slightly slower, should be fine for the most part.\n\n"
+  )
   return
 end
 
@@ -32,22 +44,39 @@ struct foundation_encode_cursor
   char held[4];
 };
 
-extern void foundation_string_hex_decode(struct foundation_encode_cursor* cursor, char* input, char* buffer);
-extern void foundation_string_hex_encode(struct foundation_encode_cursor* cursor, char* input, char* buffer, uint32_t spacer_size, char* spacer);
-extern void foundation_string_hex_unescape(struct foundation_encode_cursor* cursor, char* input, char* buffer);
-extern void foundation_string_hex_escape(struct foundation_encode_cursor* cursor, char* input, char* buffer, int mode);
+extern void foundation_string_hex_decode(
+  struct foundation_encode_cursor* cursor,
+  char* input,
+  char* buffer
+);
+extern void foundation_string_hex_encode(
+  struct foundation_encode_cursor* cursor,
+  char* input,
+  char* buffer,
+  uint32_t spacer_size,
+  char* spacer
+);
+extern void foundation_string_hex_unescape(
+  struct foundation_encode_cursor* cursor,
+  char* input,
+  char* buffer
+);
+extern void foundation_string_hex_escape(
+  struct foundation_encode_cursor* cursor,
+  char* input,
+  char* buffer,
+  int mode
+);
 ]])
 
 foundation.com.native_utils = foundation_utils
 
 do
-  local ffi = foundation.com.ffi
   local cursor = ffi.new("struct foundation_encode_cursor")
   cursor.buffer_size = 0x40000
 
   local input_buffer = ffi.new("char[" .. cursor.buffer_size .. "]")
   local buffer = ffi.new("char[" .. cursor.buffer_size .. "]")
-  local native_utils = foundation.com.native_utils
 
   function foundation.com.ffi_encoder(str, callback)
     assert(str, "expected a string")

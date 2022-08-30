@@ -4,7 +4,11 @@ local insec = minetest.request_insecure_environment()
 if insec then
   foundation.com.ffi = insec.require("ffi")
 else
-  minetest.log("warn", "foundation_native requested an insecure environment to require ffi, but got nothing, some modules will be disabled or implemented in lua.")
+  minetest.log(
+    "warn",
+    "foundation_native requested an insecure environment to require ffi, but got nothing." ..
+    " Some modules will be disabled or implemented in lua."
+  )
 end
 
 mod:require("native.lua")
