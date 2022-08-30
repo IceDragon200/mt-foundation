@@ -4,7 +4,7 @@ local case = foundation.com.Luna:new("foundation.com.Class")
 
 case:describe("&extends/1", function (t2)
   t2:test("creates a new class from base class", function (t3)
-    local a = Class:extends("test.a")
+    Class:extends("test.a")
   end)
 
   t2:test("can create an inheritance chain", function (t3)
