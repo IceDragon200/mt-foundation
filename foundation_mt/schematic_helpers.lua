@@ -49,7 +49,9 @@ function foundation.com.schematic_helpers.from_y_slices(schematic)
     result.data[1 + new_index] = value
   end
 
-  assert(#result.data == #schematic.data, "data size mismatch expected=" .. #schematic.data .. " got=" .. #result.data)
+  if #result.data ~= #schematic.data then
+    error("data size mismatch expected=" .. #schematic.data .. " got=" .. #result.data)
+  end
 
   return result
 end
@@ -245,7 +247,12 @@ end
 -- Optionally a range can be specified (sel_pos1 and sel_pos2) to pick a specific
 -- section of data to copy
 --
--- @spec #blit(pos: Vector3, builder: Builder, sel_pos1: Vector3 | nil, sel_pos2: Vector3 | nil): self
+-- @spec #blit(
+--   pos: Vector3,
+--   builder: Builder,
+--   sel_pos1: Vector3 | nil,
+--   sel_pos2: Vector3 | nil
+-- ): self
 function ic:blit(pos, builder, sel_pos1, sel_pos2)
   local other_swatch_map = {}
 
@@ -259,14 +266,15 @@ function ic:blit(pos, builder, sel_pos1, sel_pos2)
 
           if swatch_id then
             if not other_swatch_map[swatch_id] then
-              other_swatch_map[swatch_id] = self:find_or_add_palette_node(builder.palette[swatch_id])
+              other_swatch_map[swatch_id] =
+                self:find_or_add_palette_node(builder.palette[swatch_id])
             end
 
-            local old_pos = minetest.get_position_from_hash(node_id)
+            local old_pos = {}
             -- adjust selected position
-            old_pos.x = old_pos.x - x1
-            old_pos.y = old_pos.y - y1
-            old_pos.z = old_pos.z - z1
+            old_pos.x = x - x1
+            old_pos.y = y - y1
+            old_pos.z = z - z1
 
             local new_pos = vector.add(pos, old_pos)
 
