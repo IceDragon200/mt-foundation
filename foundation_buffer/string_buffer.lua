@@ -155,7 +155,6 @@ end
 
 -- @spec #scan_while(pattern: String): String
 function ic:scan_while(pattern)
-  local k = self:tell()
   local result = {}
 
   while not self:isEOF() do
@@ -203,19 +202,19 @@ ic.skip_bytes = ic.walk
 function ic:calc_read_length(len)
   assert(self.m_mode == "r" or self.m_mode == "rw", "expected read mode")
   local remaining_len = #self.m_data - self.m_cursor + 1
-  local len = math.min(len or remaining_len, remaining_len)
+  len = math.min(len or remaining_len, remaining_len)
   return len
 end
 
 -- @spec #peek_bytes(len?: Integer): (Integer[], Integer)
 function ic:peek_bytes(len)
-  local len = self:calc_read_length(len)
+  len = self:calc_read_length(len)
   return string.byte(self.m_data, self.m_cursor, self.m_cursor + len - 1), len
 end
 
 -- @spec #read_bytes(len?: Integer): (Integer[], Integer)
 function ic:read_bytes(len)
-  local len = self:calc_read_length(len)
+  len = self:calc_read_length(len)
   local pos = self.m_cursor
   self.m_cursor = self.m_cursor + len
   return string.byte(self.m_data, pos, pos + len - 1), len
@@ -226,7 +225,7 @@ end
 --
 -- @spec #peek(len?: Integer): (String, Integer))
 function ic:peek(len)
-  local len = self:calc_read_length(len)
+  len = self:calc_read_length(len)
   return string.sub(self.m_data, self.m_cursor, self.m_cursor + len - 1), len
 end
 
@@ -235,7 +234,7 @@ end
 --
 -- @spec #read(len?: Integer): (String, bytes_read: Integer)
 function ic:read(len)
-  local len = self:calc_read_length(len)
+  len = self:calc_read_length(len)
   local pos = self.m_cursor
   self.m_cursor = self.m_cursor + len
   return string.sub(self.m_data, pos, pos + len - 1), len
@@ -284,7 +283,7 @@ if utf8 then
   -- @spec peek_utf8_codepoint(): (String, Integer)
   function ic:peek_utf8_codepoint()
     local pos = self.m_cursor
-    local uni8char, tail = utf8.next_codepoint(self.m_data, pos)
+    local uni8char = utf8.next_codepoint(self.m_data, pos)
     if uni8char then
       return uni8char, string.len(uni8char)
     else

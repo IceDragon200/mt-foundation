@@ -5,19 +5,19 @@ local case = Luna:new("foundation.com.StringBuffer")
 
 case:describe(":initialize/2", function (t2)
   t2:test("can initialize a new string buffer in read mode", function (t3)
-    local strbuf = m:new("", "r")
+    m:new("", "r")
   end)
 
   t2:test("can initialize a new string buffer in write mode", function (t3)
-    local strbuf = m:new("", "w")
+    m:new("", "w")
   end)
 
   t2:test("can initialize a new string buffer in read-write mode", function (t3)
-    local strbuf = m:new("", "rw")
+    m:new("", "rw")
   end)
 
   t2:test("can initialize a new string buffer in append mode", function (t3)
-    local strbuf = m:new("", "a")
+    m:new("", "a")
   end)
 end)
 
@@ -27,11 +27,11 @@ case:describe(":size/0", function (t2)
 
     t3:assert_eq(0, strbuf:size())
 
-    local strbuf = m:new("Buffer Data", "r")
+    strbuf = m:new("Buffer Data", "r")
 
     t3:assert_eq(11, strbuf:size())
 
-    local strbuf = m:new("\x00\x00\x00\x00", "r")
+    strbuf = m:new("\x00\x00\x00\x00", "r")
 
     t3:assert_eq(4, strbuf:size())
   end)
@@ -42,10 +42,10 @@ case:describe(":isEOF/0", function (t2)
     local strbuf = m:new("", "r")
     t3:assert(strbuf:isEOF())
 
-    local strbuf = m:new("Data", "r")
+    strbuf = m:new("Data", "r")
     t3:refute(strbuf:isEOF())
 
-    local strbuf = m:new("Other data", "r")
+    strbuf = m:new("Other data", "r")
     strbuf:walk(5)
     t3:refute(strbuf:isEOF())
 
@@ -120,10 +120,10 @@ case:describe(":scan_while/1", function (t2)
     local data = strbuf:scan_while("DA")
     t3:assert_eq("DADADADA", data)
 
-    local data = strbuf:scan_while("BA")
+    data = strbuf:scan_while("BA")
     t3:assert_eq("BA", data)
 
-    local data = strbuf:read()
+    data = strbuf:read()
     t3:assert_eq("DA", data)
   end)
 end)

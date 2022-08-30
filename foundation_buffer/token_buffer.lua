@@ -46,9 +46,7 @@ local function _check_readable(self)
 end
 
 local function _check_writable(self)
-  if self.m_mode == 'w' or self.m_mode == 'rw' or self.m_mode == 'a' then
-    -- ok
-  else
+  if self.m_mode ~= 'w' and self.m_mode ~= 'rw' and self.m_mode ~= 'a' then
     error("expected TokenBuffer to be in some kind of write mode")
   end
 end
@@ -159,7 +157,6 @@ end
 
 function ic:scan_until(token_name)
   _check_readable(self)
-  local i = 1
   local len = #self.m_data
   local tokens = {}
 
