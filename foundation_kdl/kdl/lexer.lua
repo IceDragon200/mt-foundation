@@ -330,7 +330,7 @@ local function tokenize_default(state)
 
     -- spaces
     elseif SPACE_CHARACTER[char] then
-      local _space = buffer:scan_while(char)
+      buffer:scan_while(char)
       state.tokens:push_token("space", true)
 
     -- newlines
@@ -351,10 +351,8 @@ local function tokenize_default(state)
       state.tokens:push_token('sc', true)
 
     elseif char == 'r' then
-      local ok, _state, _err = try_tokenize_raw_string_start(state)
-      if ok then
-        -- nothing to do, the tokenizer has entered the raw string state
-      else
+      local ok = try_tokenize_raw_string_start(state)
+      if not ok then
         -- try regular term parsing instead
         state.name = 'term'
         state.acc = char
@@ -379,7 +377,6 @@ end
 
 local function tokenize_all(state)
   local buffer = state.buffer
-  local char
   local ok
   local err
   local should_continue
@@ -432,9 +429,11 @@ function Lexer.tokenize(blob)
     acc = '',
     tokens = TokenBuffer:new(),
   }
+  local ok
+  local err
 
   state.tokens:open('w')
-  local ok, state, err = tokenize_all(state)
+  ok, state, err = tokenize_all(state)
   state.tokens:open('r')
 
   if ok then

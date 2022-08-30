@@ -169,9 +169,8 @@ local function term_to_number(term)
       ri = ri + 1
       result[ri] = char
     elseif char == '_' then
-      if i > 1 or (dp_i and (dp_i - i) > 1) then
-        -- safely ignore it
-      else
+      local cond = i > 1 or (dp_i and (dp_i - i) > 1)
+      if not cond then
         error("cannot lead decimal int with an underscore")
       end
     else
@@ -348,11 +347,77 @@ local function handle_close_block(state)
   return_state(state)
 end
 
+local function decode_no_op(_tokens, _token, _state)
+  -- nothing to do here
+  return false
+end
+
+local function decode_node_start(_tokens, token, state)
+  -- node start
+
+  -- push current state unto stack
+  state.stack:push({
+    name = 'default',
+    acc = state.acc:copy()
+  })
+  -- wipe it so the node can use it next
+  state.acc:clear()
+
+  local annotations = state.annotations:data()
+  state.annotations:clear()
+  state.data = {
+    node = KDL.Node:new(token[2], { annotations = annotations }),
+    annotations = List:new(),
+  }
+
+  -- switch to the node state
+  state.name = 'node'
+  return true
+end
+
+local function decode_node_close_block(tokens, _token, state)
+  -- return to previous state to handle close block
+  tokens:walk(-1) -- step back cursor
+  return_state(state)
+  return true
+end
+
+local TOKEN_DECODER_DEFAULT = {
+  annotation = function (_tokens, token, state)
+    state.annotations:push(token[2])
+    return false
+  end,
+
+  slashdash = function (_tokens, _token, state)
+    state.acc:push(SLASHDASH)
+    return false
+  end,
+
+  comment_multiline_c = decode_no_op,
+
+  comment_c = decode_no_op,
+
+  fold = function (_tokens, _token, state)
+    unfold_leading_tokens(state)
+    return false
+  end,
+
+  sc = decode_no_op,
+  nl = decode_no_op,
+  space = decode_no_op,
+
+  term = decode_node_start,
+  dquote_string = decode_node_start,
+  raw_string = decode_node_start,
+
+  close_block = decode_node_close_block,
+}
+
 local function decode_default(state)
   local tokens = state.tokens
   local token
   local token_name
-  local annotations
+  local func
 
   if state.prev_acc then
     -- unroll the previous accumulator unto the current one
@@ -364,144 +429,110 @@ local function decode_default(state)
     token = tokens:next_token()
     token_name = token[1]
 
-    if token_name == 'annotation' then
-      state.annotations:push(token[2])
+    func = TOKEN_DECODER_DEFAULT[token_name]
 
-    elseif token_name == 'slashdash' then
-      state.acc:push(SLASHDASH)
-
-    elseif token_name == 'comment_multiline_c' or
-           token_name == 'comment_c' then
-      -- nothing to do here
-
-    elseif token_name == 'fold' then
-      unfold_leading_tokens(state)
-
-    elseif token_name == 'sc' then
-      -- loose semi-colon
-
-    elseif token_name == 'nl' then
-      -- leading newlines
-
-    elseif token_name == 'space' then
-      -- leading spaces
-
-    elseif token_name == 'term' or
-           token_name == 'dquote_string' or
-           token_name == 'raw_string' then
-      -- node start
-
-      -- push current state unto stack
-      state.stack:push({
-        name = 'default',
-        acc = state.acc:copy()
-      })
-      -- wipe it so the node can use it next
-      state.acc:clear()
-
-      annotations = state.annotations:data()
-      state.annotations:clear()
-      state.data = {
-        node = KDL.Node:new(token[2], { annotations = annotations }),
-        annotations = List:new(),
-      }
-
-      -- switch to the node state
-      state.name = 'node'
-      break
-
-    elseif token_name == 'close_block' then
-      -- return to previous state to handle close block
-      tokens:walk(-1) -- step back cursor
-      return_state(state)
-      break
-
+    if func then
+      if func(tokens, token, state) then
+        break
+      end
     else
       error("unexpected token while in default state `" .. token_name .. "`")
     end
   end
 end
 
+local function decode_commit(_tokens, _token, state)
+  -- newline or semicolon to terminate current node
+  commit_node(state)
+  return_state(state)
+  return true
+end
+
+local function decode_node_node_start(tokens, token, state)
+  -- attributes
+  local key_annotations = state.data.annotations:data()
+  state.data.annotations:clear()
+
+  local key = token_to_argument(token, key_annotations)
+
+  -- unfold as if it was just spaces and handling any potential folds
+  unfold_leading_tokens(state, 0)
+
+  if tokens:is_next_token('=') then
+    -- this is a property
+    tokens:next_token() -- skip '='
+    unfold_leading_tokens(state, 0) -- try unfolding again
+
+    read_leading_annotations(state)
+    local value_annotations = state.data.annotations:data()
+    state.data.annotations:clear()
+
+    local nt = tokens:next_token()
+
+    local value = token_to_argument(nt, value_annotations)
+
+    state.acc:push(KDL.Node.Property:new(key, value))
+  else
+    state.acc:push(key)
+  end
+end
+
+local TOKEN_DECODER_NODE = {
+  slashdash = TOKEN_DECODER_DEFAULT.slashdash,
+
+  comment_multiline_c = decode_no_op,
+  comment_c = decode_no_op,
+  space = decode_no_op,
+
+  fold = TOKEN_DECODER_DEFAULT.fold,
+
+  nl = decode_commit,
+  sc = decode_commit,
+
+  open_block = function (_tokens, _token, state)
+    state.data.node.children = List:new()
+
+    state.stack:push({
+      name = 'node',
+      data = state.data,
+      acc = state.acc:copy(),
+    })
+    state.acc:clear()
+    state.data = nil
+    state.name = 'default'
+    return true
+  end,
+
+  close_block = function (_tokens, _token, state)
+    handle_close_block(state)
+    return true
+  end,
+
+  annotation = function (_tokens, token, state)
+    state.data.annotations:push(token[2])
+    return false
+  end,
+
+  term = decode_node_node_start,
+  dquote_string = decode_node_node_start,
+  raw_string = decode_node_node_start,
+}
+
 local function decode_node(state)
   local tokens = state.tokens
   local token
   local token_name
-  local key_annotations
-  local key
-  local value_annotations
-  local value
+  local func
 
   while not tokens:isEOB() do
     token = tokens:next_token()
     token_name = token[1]
 
-    if token_name == 'slashdash' then
-      state.acc:push(SLASHDASH)
+    func = TOKEN_DECODER_NODE[token_name]
 
-    elseif token_name == 'comment_multiline_c' or
-           token_name == 'comment_c' then
-      -- nothing to do here
-
-    elseif token_name == 'space' then
-      -- nothing to do here
-
-    elseif token_name == 'fold' then
-      unfold_leading_tokens(state)
-
-    elseif token_name == 'nl' or token_name == 'sc' then
-      -- newline or semicolon to terminate current node
-      commit_node(state)
-      return_state(state)
-      break
-
-    elseif token_name == 'open_block' then
-      state.data.node.children = List:new()
-
-      state.stack:push({
-        name = 'node',
-        data = state.data,
-        acc = state.acc:copy(),
-      })
-      state.acc:clear()
-      state.data = nil
-      state.name = 'default'
-      break
-
-    elseif token_name == 'close_block' then
-      handle_close_block(state)
-      break
-
-    elseif token_name == 'annotation' then
-      state.data.annotations:push(token[2])
-
-    elseif token_name == 'term' or
-           token_name == 'dquote_string' or
-           token_name == 'raw_string' then
-      -- attributes
-      key_annotations = state.data.annotations:data()
-      state.data.annotations:clear()
-
-      key = token_to_argument(token, key_annotations)
-
-      -- unfold as if it was just spaces and handling any potential folds
-      unfold_leading_tokens(state, 0)
-
-      if tokens:is_next_token('=') then
-        -- this is a property
-        tokens:next_token() -- skip '='
-        unfold_leading_tokens(state, 0) -- try unfolding again
-
-        read_leading_annotations(state)
-        value_annotations = state.data.annotations:data()
-        state.data.annotations:clear()
-
-        token = tokens:next_token()
-
-        value = token_to_argument(token, value_annotations)
-
-        state.acc:push(KDL.Node.Property:new(key, value))
-      else
-        state.acc:push(key)
+    if func then
+      if func(tokens, token, state) then
+        break
       end
     else
       error("unexpected token in node state `" .. token_name .. "`")
@@ -538,7 +569,7 @@ function Decoder.decode(blob)
       return false, tokens, err
     end
   elseif type(blob) == 'table' then
-    ok = true
+    -- ok = true
     tokens = blob
   else
     return false, nil, "invalid blob"

@@ -93,9 +93,9 @@ case:describe("decode/1", function (t2)
 
     local ok, nodes, err = subject.decode(doc)
 
-    local doc = {}
+    local result = {}
     for i, node in ipairs(nodes) do
-      doc[i] = node:to_table()
+      result[i] = node:to_table()
     end
 
     t3:assert(ok, err)
@@ -179,7 +179,7 @@ case:describe("decode/1", function (t2)
         annotations = {},
         children = nil,
       },
-    }, doc)
+    }, result)
   end)
 
   t2:test("can decode node with properties", function (t3)
