@@ -17,7 +17,7 @@ local ic = NaiveDateTime.instance_class
 
 function ic:write(file, datetime)
   local all_bytes_written = 0
-  local bytes_written = 0
+  local bytes_written
   local err
   -- Datetime Version, in case the format needs to change
   bytes_written, err = ByteBuf:w_u32(file, 0)
@@ -31,7 +31,8 @@ function ic:write(file, datetime)
 end
 
 function ic:read(file)
-  local value, read_bytes = ByteBuf:r_u32(file)
+  -- local value, read_bytes = ByteBuf:r_u32(file)
+  local value = ByteBuf:r_u32(file)
   if value == 0 then
     return NaiveDateTimeSchema0:read(file)
   else

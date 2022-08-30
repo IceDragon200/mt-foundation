@@ -17,7 +17,7 @@ end
 function ic:write(file, data)
   local len = foundation.com.table_length(data)
   local all_bytes_written = 0
-  local bytes_written = 0
+  local bytes_written
   local err
 
   bytes_written, err = ByteBuf:w_u32(file, len)
@@ -46,7 +46,7 @@ function ic:read(file)
     local result = {}
     local key
     local value
-    local bytes_read = 0
+    local bytes_read
 
     for _ = 1,len do
       key, bytes_read = self.key_type:read(file)

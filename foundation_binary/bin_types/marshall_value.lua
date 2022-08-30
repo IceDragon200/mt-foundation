@@ -67,7 +67,7 @@ end
 
 function ic:write_boolean(file, data)
   local all_bytes_written = 0
-  local bytes_written = 0
+  local bytes_written
   local err
 
   bytes_written, err = ByteBuf:write(file, "B")
@@ -155,7 +155,7 @@ function ic:do_read_table(file)
 
   local key
   local value
-  local bytes_read = 0
+  local bytes_read
 
   for i = 1,num_pairs do
     key, bytes_read = self:read(file)
@@ -172,9 +172,10 @@ end
 
 function ic:read(file)
   local value
-  local bytes_read = 0
   local all_bytes_read = 0
-  local type_code, bytes_read = ByteBuf:read(file, 1)
+  local bytes_read
+  local type_code
+  type_code, bytes_read = ByteBuf:read(file, 1)
   all_bytes_read = all_bytes_read + bytes_read
 
   if type_code == "0" then

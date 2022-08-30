@@ -1,7 +1,10 @@
 -- @namespace foundation.com
 
 if not foundation_binary.ffi then
-  minetest.log("error", "foundation.com.BinaryBuffer is unavailable as it requires LuaJIT's FFI module")
+  minetest.log(
+    "error",
+    "foundation.com.BinaryBuffer is unavailable as it requires LuaJIT's FFI module"
+  )
   return
 end
 
@@ -94,13 +97,14 @@ end
 function ic:calc_read_length(len)
   assert(self.m_mode == "r" or self.m_mode == "rw", "expected read mode")
   local remaining_len = self.m_size - self.m_cursor + 1
-  local len = math.min(len or remaining_len, remaining_len)
+  len = math.min(len or remaining_len, remaining_len)
   return len, remaining_len
 end
 
 -- @spec #read(len?: Integer): (blob: String, bytes_read: Integer)
 function ic:read(len)
-  local len, remlen = self:calc_read_length(len)
+  local remlen
+  len, remlen = self:calc_read_length(len)
   local pos = self.m_cursor - 1
 
   self.m_cursor = self.m_cursor + len

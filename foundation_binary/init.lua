@@ -5,7 +5,11 @@ if insec then
   foundation_binary.native_bit = insec.require("bit")
   foundation_binary.ffi = insec.require("ffi")
 else
-  minetest.log("warn", "foundation_binary requested an insecure environment but got nothing, some modules may be unavailable.")
+  minetest.log(
+    "warn",
+    "foundation_binary requested an insecure environment but got nothing." ..
+    " Some modules may be unavailable."
+  )
 end
 
 mod:require("bit.lua")

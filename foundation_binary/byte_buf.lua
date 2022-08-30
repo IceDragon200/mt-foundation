@@ -30,7 +30,8 @@ do
       end
     -- Strings woot!
     elseif t == "string" then
-      local success, err = stream:write(data)
+      local success
+      success, err = stream:write(data)
       if success then
         num_bytes = num_bytes + #data
       else
@@ -43,7 +44,8 @@ do
       elseif data < -128 then
         return num_bytes, "byte overflow"
       end
-      local success, err = stream:write(string.char(data))
+      local success
+      success, err = stream:write(string.char(data))
       if success then
         num_bytes = num_bytes + 1
       else
@@ -198,11 +200,15 @@ do
   --
   -- @spec w_cstring(Stream, String): (Integer, error: String | nil)
   function ic:w_cstring(stream, str)
-    local num_bytes, err = self:write(stream, str)
+    local num_bytes
+    local err
+    local nbytes
+
+    num_bytes, err = self:write(stream, str)
     if err then
       return num_bytes, err
     end
-    local nbytes, err = self:w_u8(stream, 0)
+    nbytes, err = self:w_u8(stream, 0)
     return num_bytes + nbytes, err
   end
 
@@ -214,11 +220,15 @@ do
     if len > 255 then
       error("string is too long")
     end
-    local num_bytes, err  = self:w_u8(stream, len)
+    local num_bytes
+    local written
+    local err
+
+    num_bytes, err  = self:w_u8(stream, len)
     if err then
       return num_bytes, err
     end
-    local written, err = self:write(stream, data)
+    written, err = self:write(stream, data)
 
     return num_bytes + written, err
   end
@@ -230,11 +240,15 @@ do
     if len > 65535 then
       error("string is too long")
     end
-    local num_bytes, err = self:w_u16(stream, len)
+    local num_bytes
+    local written
+    local err
+
+    num_bytes, err = self:w_u16(stream, len)
     if err then
       return num_bytes, err
     end
-    local written, err = self:write(stream, data)
+    written, err = self:write(stream, data)
 
     return num_bytes + written, err
   end
@@ -246,11 +260,15 @@ do
     if len > 4294967295 then
       error("string is too long")
     end
-    local num_bytes, err = self:w_u32(stream, len)
+    local num_bytes
+    local written
+    local err
+
+    num_bytes, err = self:w_u32(stream, len)
     if err then
       return num_bytes, err
     end
-    local written, err = self:write(stream, data)
+    written, err = self:write(stream, data)
 
     return num_bytes + written, err
   end
@@ -262,16 +280,25 @@ do
     if len > 4294967295 then
       error("string is too long")
     end
-    local num_bytes, err = self:w_u32(stream, len)
+    local num_bytes
+    local written
+    local err
+
+    num_bytes, err = self:w_u32(stream, len)
     if err then
       return num_bytes, err
     end
-    local written, err = self:write(stream, data)
+    written, err = self:write(stream, data)
 
     return num_bytes + written, err
   end
 
-  -- @spec #w_map(Stream, key_type: String, value_type: String, Table): (Integer, error: String | nil)
+  -- @spec #w_map(
+  --   Stream,
+  --   key_type: String,
+  --   value_type: String,
+  --   Table
+  -- ): (Integer, error: String | nil)
   function ic:w_map(stream, key_type, value_type, data)
     -- length
     local len = foundation.com.table_length(data)
@@ -299,7 +326,12 @@ do
     return num_bytes, nil
   end
 
-  -- @spec #w_varray(Stream, type: String, data: Any[], len: Integer): (Integer, error: String | nil)
+  -- @spec #w_varray(
+  --   Stream,
+  --   type: String,
+  --   data: Any[],
+  --   len: Integer
+  -- ): (Integer, error: String | nil)
   function ic:w_varray(stream, type, data, len)
     local writer_name = "w_" .. type
     local all_bytes_written = 0
@@ -344,13 +376,13 @@ do
     return blob, bytes_read
   end
 
-  local INT_MAX = {
-    [1] = math.floor(math.pow(2, 8)),
-    [2] = math.floor(math.pow(2, 16)),
-    [3] = math.floor(math.pow(2, 24)),
-    [4] = math.floor(math.pow(2, 32)),
-    [8] = math.floor(math.pow(2, 64)),
-  }
+  -- local INT_MAX = {
+  --   [1] = math.floor(math.pow(2, 8)),
+  --   [2] = math.floor(math.pow(2, 16)),
+  --   [3] = math.floor(math.pow(2, 24)),
+  --   [4] = math.floor(math.pow(2, 32)),
+  --   [8] = math.floor(math.pow(2, 64)),
+  -- }
 
   -- @spec #r_i64(Stream): (result: Integer, bytes_read: Integer)
   function ic:r_i64(stream)

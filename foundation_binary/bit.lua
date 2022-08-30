@@ -10,7 +10,7 @@ foundation.com.bit = {}
 local BITS = 32
 local UINT32_MAX = 0xFFFFFFFF
 local INT32_MAX = 0x7FFFFFFF
-local INT32_MIN = -0x80000000
+-- local INT32_MIN = -0x80000000
 
 -- Lowercase Hex Table
 local LHEX_TABLE = {
@@ -69,10 +69,11 @@ local function to_unsigned(result)
 end
 
 do
-  local res = to_unsigned(-1)
+  local res
+  res = to_unsigned(-1)
   assert(res == 0xFFFFFFFF, "expected " .. res .. " to be equal to 0xFFFFFFFF")
 
-  local res = to_unsigned(-2)
+  res = to_unsigned(-2)
   assert(res == 0xFFFFFFFE, "expected " .. res .. " to be equal to 0xFFFFFFFE")
 end
 
@@ -85,9 +86,10 @@ local function to_signed(value)
 end
 
 do
-  local res = to_signed(0xFFFFFFFF)
+  local res
+  res = to_signed(0xFFFFFFFF)
   assert(res == -1, "expected " .. res .. " to be equal to -1")
-  local res = to_signed(0xFFFFFFFE)
+  res = to_signed(0xFFFFFFFE)
   assert(res == -2, "expected " .. res .. " to be equal to -2")
 end
 

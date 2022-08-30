@@ -15,8 +15,8 @@ end
 function ic:write(file, data)
   assert(data, "expected data")
   local all_bytes_written = 0
-  local len = 0
-  local bytes_written = 0
+  local len
+  local bytes_written
   local err
 
   if self.len >= 0 then
@@ -45,17 +45,19 @@ end
 
 function ic:read(file)
   local all_bytes_read = 0
-  local len = 0
+  local len
+  local bytes_read
+
   if self.len >= 0 then
     len = self.len
   else
-    local v, bytes_read = ByteBuf:r_u32(file)
+    local v
+    v, bytes_read = ByteBuf:r_u32(file)
     all_bytes_read = all_bytes_read + bytes_read
     len = v
   end
   local result = {}
   local item
-  local bytes_read = 0
 
   for i = 1,len do
     item, bytes_read = self.value_type:read(file)
