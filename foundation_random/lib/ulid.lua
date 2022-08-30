@@ -7,7 +7,8 @@
 local integer_le_encode = assert(foundation.com.integer_le_encode)
 local integer_be_encode = assert(foundation.com.integer_be_encode)
 local integer_hex_be_encode = assert(foundation.com.integer_hex_be_encode)
-local list_crawford_base32_le_rolling_encode_table = assert(foundation.com.list_crawford_base32_le_rolling_encode_table)
+local list_crawford_base32_le_rolling_encode_table =
+  assert(foundation.com.list_crawford_base32_le_rolling_encode_table)
 
 local secrand = SecureRandom()
 
