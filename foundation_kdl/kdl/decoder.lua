@@ -6,7 +6,7 @@ local string_starts_with = assert(foundation.com.string_starts_with)
 local string_trim_leading = assert(foundation.com.string_trim_leading)
 
 --
-local NULL = {}
+-- local NULL = {}
 local SLASHDASH = {}
 
 local Decoder = {}
@@ -38,9 +38,7 @@ local function term_to_binary_int(term)
       ri = ri + 1
       result[ri] = char
     elseif char == '_' then
-      if i > 1 then
-        -- safely ignore it
-      else
+      if i <= 1 then
         error("cannot lead binary int with an underscore")
       end
     else
@@ -78,9 +76,7 @@ local function term_to_octal_int(term)
       ri = ri + 1
       result[ri] = char
     elseif char == '_' then
-      if i > 1 then
-        -- safely ignore it
-      else
+      if i <= 1 then
         error("cannot lead octal int with an underscore")
       end
     else
@@ -120,9 +116,7 @@ local function term_to_hex_int(term)
       ri = ri + 1
       result[ri] = char
     elseif char == '_' then
-      if i > 1 then
-        -- safely ignore it
-      else
+      if i <= 1 then
         error("cannot lead hex int with an underscore")
       end
     else
@@ -308,7 +302,6 @@ local function commit_node(state)
   local node
   local i
   local acc
-  local attributes = {}
 
   if state.data then
     node = state.data.node
@@ -336,7 +329,10 @@ local function commit_node(state)
       if node.children then
         node.children:concat(state.prev_acc)
       else
-        assert(state.prev_acc:size() == 0, "previous accumulator has items, but the node didn't expect any")
+        assert(
+          state.prev_acc:size() == 0,
+          "previous accumulator has items, but the node didn't expect any"
+        )
       end
     end
 
@@ -430,9 +426,6 @@ local function decode_node(state)
   local tokens = state.tokens
   local token
   local token_name
-  local annotations
-  local parent
-  local entry
   local key_annotations
   local key
   local value_annotations

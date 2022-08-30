@@ -1,9 +1,7 @@
 local KDL = foundation_kdl.KDL
-local utf8 = assert(foundation.com.utf8)
 local table_merge = assert(foundation.com.table_merge)
 local StringBuffer = assert(foundation.com.StringBuffer)
 local TokenBuffer = assert(foundation.com.TokenBuffer)
-local List = assert(foundation.com.List)
 
 local Lexer = {}
 

@@ -126,12 +126,19 @@ case:describe("tokenize/1", function (t2)
 
     local expected = {
       SPACE, {"comment_c", " single line comment"}, NL,
-      SPACE, {"term", "node"}, SPACE, {"term", "key"}, {"=", true}, {"raw_string", "value"}, SPACE, {"term", "int"}, {"=", true}, {"term", "1"}, SPACE, {"open_block", true}, NL,
+      SPACE, {"term", "node"}, SPACE,
+        {"term", "key"}, {"=", true}, {"raw_string", "value"}, SPACE,
+        {"term", "int"}, {"=", true}, {"term", "1"}, SPACE,
+        {"open_block", true}, NL,
       SPACE, {"comment_multiline_c",
         "\n            Multiline comment\n          "
       }, NL,
-      SPACE, {"term", "node2"}, SPACE, {"open_block", true}, SPACE, {"comment_multiline_c", " Inline Multiline Comment "}, NL,
-      SPACE, {"term", "node3"}, SPACE, {"dquote_string", "string"}, SPACE, {"comment_c", " inline comment"}, NL,
+      SPACE, {"term", "node2"}, SPACE,
+        {"open_block", true}, SPACE,
+        {"comment_multiline_c", " Inline Multiline Comment "}, NL,
+      SPACE, {"term", "node3"}, SPACE,
+        {"dquote_string", "string"}, SPACE,
+        {"comment_c", " inline comment"}, NL,
       SPACE, {"close_block", true}, NL,
       SPACE, {"close_block", true}, NL,
       SPACE,
