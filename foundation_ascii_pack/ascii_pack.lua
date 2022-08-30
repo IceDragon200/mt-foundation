@@ -290,6 +290,7 @@ end
 function mod.pack(term, options, depth)
   depth = depth or 0
   options = options or {}
+  assert(options)
   local ty = type(term)
 
   if ty == "number" then
@@ -566,7 +567,8 @@ function mod.ascii_file_unpack(stream)
     bytes_read = bytes_read + br
     assert(len >= 0, "expected positive string size")
     if len > 0 then
-      local body, br = stream:read(len)
+      local body
+      body = stream:read(len)
       bytes_read = bytes_read + len
       return body, bytes_read
     else
@@ -615,7 +617,8 @@ function mod.ascii_file_unpack(stream)
   elseif ty == "F" or ty == "D" then
     len, br = mod.ascii_file_unpack(stream)
     bytes_read = bytes_read + br
-    local body, br = stream:read(len)
+    local body
+    body = stream:read(len)
     bytes_read = bytes_read + len
     return tonumber(body), bytes_read
   else

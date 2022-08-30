@@ -19,7 +19,7 @@ local function cycle_file_pack(term)
   ascii_file_pack(stream, term)
   io.close(stream)
 
-  local stream = io.open(filename, "r")
+  stream = io.open(filename, "r")
   local result = ascii_file_unpack(stream)
   io.close(stream)
   return result
@@ -90,24 +90,50 @@ case:describe("ascii_file_[un]pack/3", function (t2)
     t3:assert_eq(cycle_file_pack("Hello"), "Hello")
     t3:assert_eq(cycle_file_pack("####"), "####") -- # is the termination character
     t3:assert_eq(cycle_file_pack("0123456789"), "0123456789")
-    t3:assert_eq(cycle_file_pack("THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG"), "THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG")
-    t3:assert_eq(cycle_file_pack("the quick brown fox jumps over the lazy dog"), "the quick brown fox jumps over the lazy dog")
+    t3:assert_eq(
+      cycle_file_pack("THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG"),
+      "THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG"
+    )
+    t3:assert_eq(
+      cycle_file_pack("the quick brown fox jumps over the lazy dog"),
+      "the quick brown fox jumps over the lazy dog"
+    )
   end)
 
   t2:test("can handle arrays", function (t3)
     t3:assert_deep_eq(cycle_file_pack({}), {}) -- can handle empty arrays
     t3:assert_deep_eq(cycle_file_pack({1, 2, 3}), {1, 2, 3}) -- can handle empty arrays
-    t3:assert_deep_eq(cycle_file_pack({{}, {}, {}}), {{}, {}, {}}) -- can handle multi-dimensional empty arrays
-    t3:assert_deep_eq(cycle_file_pack({{1, 2, 3}, {"a", "b", "c"}, {true, false, nil}}),
-                                 {{1, 2, 3}, {"a", "b", "c"}, {true, false, nil}}) -- can handle multi-dimensional arrays
+    t3:assert_deep_eq(
+      cycle_file_pack({{}, {}, {}}),
+      {{}, {}, {}}
+    ) -- can handle multi-dimensional empty arrays
+    t3:assert_deep_eq(
+      cycle_file_pack({{1, 2, 3}, {"a", "b", "c"}, {true, false, nil}}),
+      {{1, 2, 3}, {"a", "b", "c"}, {true, false, nil}}
+    ) -- can handle multi-dimensional arrays
   end)
 
   t2:test("can handle maps", function (t3)
     t3:assert_deep_eq(cycle_file_pack({}), {}) -- can handle empty maps
     t3:assert_deep_eq(cycle_file_pack({ a = 1, b = 2, c = 3 }), { a = 1, b = 2, c = 3 })
-    t3:assert_deep_eq(cycle_file_pack({ a = {}, b = {}, c = {} }), { a = {}, b = {}, c = {} }) -- multi-dimensional
-    t3:assert_deep_eq(cycle_file_pack({ a = { d = "g", e = "h", f = "i" }, b = { j = 1, k = 2, l = 3}, c = { m = true, n = false } }),
-                                      { a = { d = "g", e = "h", f = "i" }, b = { j = 1, k = 2, l = 3}, c = { m = true, n = false } }) -- multi-dimensional
+    t3:assert_deep_eq(
+      cycle_file_pack({ a = {}, b = {}, c = {} }),
+      { a = {}, b = {}, c = {} }
+    ) -- multi-dimensional
+    t3:assert_deep_eq(
+      cycle_file_pack(
+        {
+          a = { d = "g", e = "h", f = "i" },
+          b = { j = 1, k = 2, l = 3},
+          c = { m = true, n = false }
+        }
+      ),
+      {
+        a = { d = "g", e = "h", f = "i" },
+        b = { j = 1, k = 2, l = 3},
+        c = { m = true, n = false }
+      }
+    ) -- multi-dimensional
   end)
 end)
 
@@ -169,24 +195,48 @@ case:describe("ascii_[un]pack/3", function (t2)
     t3:assert_eq(cycle_pack("Hello"), "Hello")
     t3:assert_eq(cycle_pack("####"), "####") -- # is the termination character
     t3:assert_eq(cycle_pack("0123456789"), "0123456789")
-    t3:assert_eq(cycle_pack("THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG"), "THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG")
-    t3:assert_eq(cycle_pack("the quick brown fox jumps over the lazy dog"), "the quick brown fox jumps over the lazy dog")
+    t3:assert_eq(
+      cycle_pack("THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG"),
+      "THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG"
+    )
+    t3:assert_eq(
+      cycle_pack("the quick brown fox jumps over the lazy dog"),
+      "the quick brown fox jumps over the lazy dog"
+    )
   end)
 
   t2:test("can handle arrays", function (t3)
     t3:assert_deep_eq(cycle_pack({}), {}) -- can handle empty arrays
     t3:assert_deep_eq(cycle_pack({1, 2, 3}), {1, 2, 3}) -- can handle empty arrays
-    t3:assert_deep_eq(cycle_pack({{}, {}, {}}), {{}, {}, {}}) -- can handle multi-dimensional empty arrays
-    t3:assert_deep_eq(cycle_pack({{1, 2, 3}, {"a", "b", "c"}, {true, false, nil}}),
-                                 {{1, 2, 3}, {"a", "b", "c"}, {true, false, nil}}) -- can handle multi-dimensional arrays
+    t3:assert_deep_eq(
+      cycle_pack({{}, {}, {}}),
+      {{}, {}, {}}
+    ) -- can handle multi-dimensional empty arrays
+    t3:assert_deep_eq(
+      cycle_pack({{1, 2, 3}, {"a", "b", "c"}, {true, false, nil}}),
+      {{1, 2, 3}, {"a", "b", "c"}, {true, false, nil}}
+    ) -- can handle multi-dimensional arrays
   end)
 
   t2:test("can handle maps", function (t3)
     t3:assert_deep_eq(cycle_pack({}), {}) -- can handle empty maps
     t3:assert_deep_eq(cycle_pack({ a = 1, b = 2, c = 3 }), { a = 1, b = 2, c = 3 })
-    t3:assert_deep_eq(cycle_pack({ a = {}, b = {}, c = {} }), { a = {}, b = {}, c = {} }) -- multi-dimensional
-    t3:assert_deep_eq(cycle_pack({ a = { d = "g", e = "h", f = "i" }, b = { j = 1, k = 2, l = 3}, c = { m = true, n = false } }),
-                                 { a = { d = "g", e = "h", f = "i" }, b = { j = 1, k = 2, l = 3}, c = { m = true, n = false } }) -- multi-dimensional
+    t3:assert_deep_eq(
+      cycle_pack({ a = {}, b = {}, c = {} }),
+      { a = {}, b = {}, c = {} }
+    ) -- multi-dimensional
+    t3:assert_deep_eq(
+      cycle_pack({
+        a = { d = "g", e = "h", f = "i" },
+        b = { j = 1, k = 2, l = 3},
+        c = { m = true, n = false }
+      }),
+      {
+        a = { d = "g", e = "h", f = "i" },
+        b = { j = 1, k = 2, l = 3 },
+        c = { m = true, n = false }
+      }
+    ) -- multi-dimensional
   end)
 end)
 
