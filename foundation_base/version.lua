@@ -166,26 +166,27 @@ function version:test(ver, test_term)
 end
 
 if foundation.self_test then
-  local ver = version:parse("0.0.0")
+  local ver
+  ver = version:parse("0.0.0")
 
   assert(ver.major == 0)
   assert(ver.minor == 0)
   assert(ver.patch == 0)
 
-  local ver = version:parse("2020.7.1")
+  ver = version:parse("2020.7.1")
 
   assert(ver.major == 2020)
   assert(ver.minor == 7)
   assert(ver.patch == 1)
 
   -- Cast tests
-  local ver = version:cast("2020.7.1")
+  ver = version:cast("2020.7.1")
 
   assert(ver.major == 2020)
   assert(ver.minor == 7)
   assert(ver.patch == 1)
 
-  local ver = version:cast({ major = 2020, minor = 7, patch = 1 })
+  ver = version:cast({ major = 2020, minor = 7, patch = 1 })
 
   assert(ver.major == 2020)
   assert(ver.minor == 7)

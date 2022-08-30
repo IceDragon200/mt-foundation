@@ -64,9 +64,7 @@ end
 -- @spec #require(Path): Any
 function FoundationModule:require(basename)
   local filename = path_join(self.modpath, basename)
-  if self.loaded_files[filename] then
-    -- nothing to do
-  else
+  if not self.loaded_files[filename] then
     self.loaded_files[filename] = dofile(filename)
   end
 
