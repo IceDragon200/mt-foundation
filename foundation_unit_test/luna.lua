@@ -173,7 +173,7 @@ local function format_message(message)
   if type(message) == "function" then
     return message()
   end
-  return message
+  return assert(message)
 end
 
 Luna.default_config = {

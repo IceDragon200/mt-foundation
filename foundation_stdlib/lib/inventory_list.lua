@@ -2,6 +2,7 @@
 foundation_stdlib:require("lib/item_stack.lua")
 
 local itemstack_new_blank = assert(foundation.com.itemstack_new_blank)
+local itemstack_copy = assert(foundation.com.itemstack_copy)
 local itemstack_is_blank = assert(foundation.com.itemstack_is_blank)
 local itemstack_split = assert(foundation.com.itemstack_split)
 local itemstack_maybe_merge = assert(foundation.com.itemstack_maybe_merge)
@@ -9,10 +10,12 @@ local itemstack_maybe_merge = assert(foundation.com.itemstack_maybe_merge)
 local InventoryList = {}
 
 --
---
+-- Creates a new itemstack list (i.e. InventoryList) given a count
 --
 -- @spec new(count: Integer): ItemStack[]
 function InventoryList.new(count)
+  assert(count, "expected a count")
+
   local result = {}
 
   for i = 1,count do
@@ -20,6 +23,54 @@ function InventoryList.new(count)
   end
 
   return result
+end
+
+-- @spec copy(list: ItemStack[]): ItemStack[]
+function InventoryList.copy(list)
+  assert(list, "expected a list")
+
+  local result = {}
+
+  for i, item_stack in pairs(list) do
+    result[i] = itemstack_copy(list[i])
+  end
+
+  return result
+end
+
+-- @mutative
+-- @spec add_items(list: ItemStack[], stacks_to_add: ItemStack[]): (leftovers: ItemStack[])
+function InventoryList.add_items(list, stacks_to_add)
+  local leftovers = {}
+  local j = 0
+
+  local leftover
+
+  for _, item_stack in ipairs(stacks_to_add) do
+    leftover = item_stack
+    for _, target_stack in ipairs(list) do
+      leftover = target_stack:add_item(leftover)
+      if leftover:is_empty() then
+        break
+      end
+    end
+
+    if not leftover:is_empty() then
+      j = j + 1
+      leftovers[j] = leftover
+    end
+  end
+
+  return leftovers
+end
+
+-- @spec fits_all_items(list: ItemStack[], stacks_to_add: ItemStack[]): Boolean
+function InventoryList.fits_all_items(list, stacks_to_add)
+  local fake_list = InventoryList.copy(list)
+
+  local leftovers = InventoryList.add_items(fake_list, stacks_to_add)
+
+  return next(leftovers) == nil
 end
 
 -- Determines if the given inventory list should be considered empty

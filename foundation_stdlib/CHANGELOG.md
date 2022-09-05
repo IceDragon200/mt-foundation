@@ -1,3 +1,9 @@
+# 1.24.0
+
+* Added `foundation.com.InventoryList.copy/1`
+* Added `foundation.com.InventoryList.add_items/2`
+* Added `foundation.com.InventoryList.fits_all_items/2`
+
 # 1.23.1
 
 * luacheckrc fixups
