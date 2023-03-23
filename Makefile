@@ -7,14 +7,10 @@ all:
 luacheck:
 	luacheck .
 
-.PHONY: release
-release:
-	git archive --format tar --output "${BUILD_DIR}/foundation.tar" master
-
 # Release step specifically when the modpack is under a game, this will copy
 # the modpack to the TMP_DIR
-.PHONY: release.game
-release.game:
+.PHONY: prepare.release
+prepare.release:
 	mkdir -p "${TMP_DIR}/foundation"
 
 	cp -r --parents foundation_ascii_pack "${RELEASE_DIR}"
