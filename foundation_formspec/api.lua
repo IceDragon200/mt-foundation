@@ -309,10 +309,14 @@ function api.animated_image(
                        ";"..frame_start.."]"
 end
 
+-- @spec item_image(x: Number, y: Number, w: Number, h: Number, item_name: String): String
 function api.item_image(x, y, w, h, item_name)
-  return "item_image["..x..","..y..
-                   ";"..w..","..h..
-                   ";"..to_text(item_name).."]"
+  local args =
+    x..","..y..";"..
+    w..","..h..";"..
+    to_text(item_name)
+
+  return "item_image["..args.."]"
 end
 
 function api.bg_color(bgcolor, fullscreen, fbgcolor)
