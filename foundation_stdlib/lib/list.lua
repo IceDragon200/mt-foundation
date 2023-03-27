@@ -271,3 +271,35 @@ function foundation.com.list_sort(list)
 
   return list
 end
+
+-- @since "1.25.0"
+-- @spec list_filter(list: Table, Function/1): Table
+function foundation.com.list_filter(list, callback)
+  local result = {}
+  local i = 0
+
+  for index, value in ipairs(list) do
+    if callback(value, index) then
+      i = i + 1
+      result[i] = value
+    end
+  end
+
+  return result
+end
+
+-- @since "1.25.0"
+-- @spec list_reject(list: Table, Function/1): Table
+function foundation.com.list_reject(list, callback)
+  local result = {}
+  local i = 0
+
+  for index, value in ipairs(list) do
+    if not callback(value, index) then
+      i = i + 1
+      result[i] = value
+    end
+  end
+
+  return result
+end

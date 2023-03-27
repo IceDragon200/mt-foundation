@@ -227,6 +227,84 @@ case:describe("table_sample/1", function (t2)
   end)
 end)
 
+case:describe("table_filter/2", function (t2)
+  t2:test("only includes truthy elements from callback", function (t3)
+    local t = {
+      a = 1,
+      b = 2,
+      c = 3,
+      d = 4,
+      e = 5,
+      f = 6,
+    }
+
+    local new_t =
+      m.table_filter(t, function (_key, value)
+        return math.fmod(value, 2) == 0
+      end)
+
+    t3:assert(m.table_equals(
+      t,
+      {
+        a = 1,
+        b = 2,
+        c = 3,
+        d = 4,
+        e = 5,
+        f = 6,
+      }
+    ))
+
+    t3:assert(m.table_equals(
+      new_t,
+      {
+        b = 2,
+        d = 4,
+        f = 6,
+      }
+    ))
+  end)
+end)
+
+case:describe("table_reject/2", function (t2)
+  t2:test("only removes truthy elements from callback", function (t3)
+    local t = {
+      a = 1,
+      b = 2,
+      c = 3,
+      d = 4,
+      e = 5,
+      f = 6,
+    }
+
+    local new_t =
+      m.table_reject(t, function (_key, value)
+        return math.fmod(value, 2) == 0
+      end)
+
+    t3:assert(m.table_equals(
+      t,
+      {
+        a = 1,
+        b = 2,
+        c = 3,
+        d = 4,
+        e = 5,
+        f = 6,
+      }
+    ))
+
+    t3:assert(m.table_equals(
+      new_t,
+      {
+        a = 1,
+        c = 3,
+        e = 5,
+      }
+    ))
+  end)
+end)
+
 case:execute()
 case:display_stats()
 case:maybe_error()

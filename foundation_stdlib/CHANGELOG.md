@@ -1,3 +1,10 @@
+# 1.25.0
+
+* Added `foundation.com.list_filter/2`
+* Added `foundation.com.list_reject/2`
+* Added `foundation.com.table_filter/2`
+* Added `foundation.com.table_reject/2`
+
 # 1.24.0
 
 * Added `foundation.com.InventoryList.copy/1`

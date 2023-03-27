@@ -146,6 +146,84 @@ case:describe("list_sort/1", function (t2)
   end)
 end)
 
+case:describe("list_filter/2", function (t2)
+  t2:test("only includes truthy elements from callback", function (t3)
+    local t = {
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+    }
+
+    local new_t =
+      subject.list_filter(t, function (value, _index)
+        return math.fmod(value, 2) == 0
+      end)
+
+    t3:assert(subject.table_equals(
+      t,
+      {
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+      }
+    ))
+
+    t3:assert(subject.table_equals(
+      new_t,
+      {
+        2,
+        4,
+        6,
+      }
+    ))
+  end)
+end)
+
+case:describe("list_reject/2", function (t2)
+  t2:test("only removes truthy elements from callback", function (t3)
+    local t = {
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+    }
+
+    local new_t =
+      subject.list_reject(t, function (value, _index)
+        return math.fmod(value, 2) == 0
+      end)
+
+    t3:assert(subject.table_equals(
+      t,
+      {
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+      }
+    ))
+
+    t3:assert(subject.table_equals(
+      new_t,
+      {
+        1,
+        3,
+        5,
+      }
+    ))
+  end)
+end)
+
 case:execute()
 case:display_stats()
 case:maybe_error()

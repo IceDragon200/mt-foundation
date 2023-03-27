@@ -330,3 +330,31 @@ function foundation.com.table_sample(t)
   end
   return nil, nil
 end
+
+-- @since "1.25.0"
+-- @spec table_filter(tab: Table, Function/2): Table
+function foundation.com.table_filter(tab, callback)
+  local result = {}
+
+  for key, value in pairs(tab) do
+    if callback(key, value) then
+      result[key] = value
+    end
+  end
+
+  return result
+end
+
+-- @since "1.25.0"
+-- @spec table_reject(tab: Table, Function/2): Table
+function foundation.com.table_reject(tab, callback)
+  local result = {}
+
+  for key, value in pairs(tab) do
+    if not callback(key, value) then
+      result[key] = value
+    end
+  end
+
+  return result
+end
