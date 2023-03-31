@@ -39,6 +39,7 @@ local function to_color(item)
   end
 end
 
+-- @private.spec to_text(String | Number | Boolean | Table | Function/0): String
 local function to_text(item)
   if item == nil then
     return ""
@@ -54,6 +55,7 @@ local function to_text(item)
   return minetest.formspec_escape(tostring(item))
 end
 
+-- @private.spec maybe_rect_to_args(Table | Any): String
 local function maybe_rect_to_args(arg)
   if type(arg) == "table" then
     if arg.w and arg.h then
@@ -287,6 +289,18 @@ function api.image(x, y, w, h, texture_name, middle)
   return "image[" .. args .. "]"
 end
 
+--
+-- @spec animated_image(
+--   x: Number,
+--   y: Number,
+--   w: Number,
+--   h: Number,
+--   name: String,
+--   texture_name: String,
+--   frame_count: Number,
+--   frame_duration: Number,
+--   frame_start: Number
+-- ): String
 function api.animated_image(
   x,
   y,
@@ -319,6 +333,7 @@ function api.item_image(x, y, w, h, item_name)
   return "item_image["..args.."]"
 end
 
+-- @spec bg_color(bgcolor: ColorSpec, fullscreen: Boolean, fbgcolor: ColorSpec): String
 function api.bg_color(bgcolor, fullscreen, fbgcolor)
   local args = to_color(bgcolor)
   if fullscreen == nil then
