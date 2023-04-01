@@ -403,10 +403,10 @@ function api.field_close_on_enter(name, should_close_on_enter)
   return "field_close_on_enter["..name..";"..to_bool(should_close_on_enter).."]"
 end
 
--- @spec textarea(x: Integer,
---                y: Integer,
---                w: Integer,
---                h: Integer,
+-- @spec textarea(x: Number,
+--                y: Number,
+--                w: Number,
+--                h: Number,
 --                name?: String,
 --                label: String,
 --                default: Any): String
@@ -425,24 +425,28 @@ function api.label(x, y, label)
   return "label["..args.."]"
 end
 
+--- @spec hypertext(x: Number, y: Number, w: Number, h: Number, name: String, text: String): String
 function api.hypertext(x, y, w, h, name, text)
-  local args = x..","..y..
+  local args =
+    x..","..y..
     ";"..w..","..h..
-    ";"..name..
+    ";"..to_text(name)..
     ";"..to_text(text)
 
   return "hypertext["..args.."]"
 end
 
+--- @spec vertlabel(x: Number, y: Number, label: String): String
 function api.vertlabel(x, y, label)
   local args = x..","..y..";"..to_text(label)
   return "vertlabel["..args.."]"
 end
 
+--- @spec button(x: Number, y: Number, w: Number, h: Number, name: String, label: String): String
 function api.button(x, y, w, h, name, label)
   local args = x..","..y..
     ";"..w..","..h..
-    ";"..name..
+    ";"..to_text(name)..
     ";"..to_text(label)
 
   return "button["..args.."]"

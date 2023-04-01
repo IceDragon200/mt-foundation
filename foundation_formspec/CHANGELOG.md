@@ -1,3 +1,7 @@
+# 1.4.1
+
+* `hypertext` and `button` functions use to_text on their element names now.
+
 # 1.4.0
 
 * Any formspec.api functions that take a color now accept color tables in rgba or rgb format
