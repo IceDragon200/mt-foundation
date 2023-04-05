@@ -1,4 +1,4 @@
--- @namespace foundation.com
+--- @namespace foundation.com
 local CROCKFORD_BASE32_ENCODE_TABLE = assert(foundation.com.CROCKFORD_BASE32_ENCODE_TABLE)
 
 local POW2 = {}
@@ -7,16 +7,16 @@ for x = 0,31 do
   POW2[x] = math.pow(2, x * 8)
 end
 
--- Encodes a list of integers or strings as crawford base32, the list should contain interspersed
--- values
--- That is the odd numbered parameters should be the integer length, followed by the integer
---
--- Usage:
---    list_crawford_base32_le_rolling_encode_table(4, int32, 2, int16, 6, int48) -- => Table
---
--- @spec list_crawford_base32_le_rolling_encode_table(
---   ...(int_len: Integer, int: Integer | String)
--- ): Table
+--- Encodes a list of integers or strings as crawford base32, the list should contain interspersed
+--- values
+--- That is the odd numbered parameters should be the integer length, followed by the integer
+---
+--- Usage:
+---    list_crawford_base32_le_rolling_encode_table(4, int32, 2, int16, 6, int48) -- => Table
+---
+--- @spec list_crawford_base32_le_rolling_encode_table(
+---   ...(int_len: Integer, int: Integer | String)
+--- ): Table
 function foundation.com.list_crawford_base32_le_rolling_encode_table(...)
   local items = {...}
   local len = #items
@@ -90,7 +90,7 @@ function foundation.com.list_crawford_base32_le_rolling_encode_table(...)
   return result
 end
 
--- @spec list_slice(Table, start: Integer, len: Integer): Table
+--- @spec list_slice(Table, start: Integer, len: Integer): Table
 function foundation.com.list_slice(t, start, len)
   local result = {}
 
@@ -104,7 +104,7 @@ end
 
 local list_slice = foundation.com.list_slice
 
--- @spec list_last(Table, count: Integer): Any
+--- @spec list_last(Table, count: Integer): Any
 function foundation.com.list_last(t, count)
   if count then
     count = math.min(#t, count)
@@ -114,7 +114,7 @@ function foundation.com.list_last(t, count)
   end
 end
 
--- @spec list_reverse(list: Table): Table
+--- @spec list_reverse(list: Table): Table
 function foundation.com.list_reverse(list)
   -- https://forums.coronalabs.com/topic/61784-function-for-reversing-table-order/
   local j = #list
@@ -127,7 +127,7 @@ function foundation.com.list_reverse(list)
   return list
 end
 
--- @spec list_reduce(list: Table, acc: Any, fun: Function/2): Any
+--- @spec list_reduce(list: Table, acc: Any, fun: Function/2): Any
 function foundation.com.list_reduce(list, acc, fun)
   local should_break
   for _, v in ipairs(list) do
@@ -141,10 +141,10 @@ end
 
 local list_reduce = foundation.com.list_reduce
 
--- Perform a reduce map on the specified list, this will return a new list
--- where elements were transformed by 'fun'
---
--- @spec list_map(Table, ReducerFunction): Table
+--- Perform a reduce map on the specified list, this will return a new list
+--- where elements were transformed by 'fun'
+---
+--- @spec list_map(Table, ReducerFunction): Table
 function foundation.com.list_map(list, fun)
   return list_reduce(list, {}, function (value, acc)
     table.insert(acc, fun(value))
@@ -152,17 +152,17 @@ function foundation.com.list_map(list, fun)
   end)
 end
 
--- Selects and returns a random value in the specified list
---
--- @spec list_sample(list: Table): Any
+--- Selects and returns a random value in the specified list
+---
+--- @spec list_sample(list: Table): Any
 function foundation.com.list_sample(list)
   local c = #list
   return list[math.random(c)]
 end
 
--- Retrieves the next value after the specified 'current'
---
--- @spec list_get_next(list: Table, current: Any): Any
+--- Retrieves the next value after the specified 'current'
+---
+--- @spec list_get_next(list: Table, current: Any): Any
 function foundation.com.list_get_next(list, current)
   -- returns the next element in a list given the current value,
   -- if the current is nil,
@@ -184,12 +184,12 @@ function foundation.com.list_get_next(list, current)
   end
 end
 
---
--- Combines multiple list-like tables into a single resultant list
--- Not to be confused with table.concat,
--- which is actually a 'join' in other languages.
---
--- @spec list_concat(...Table): Table
+---
+--- Combines multiple list-like tables into a single resultant list
+--- Not to be confused with table.concat,
+--- which is actually a 'join' in other languages.
+---
+--- @spec list_concat(...Table): Table
 function foundation.com.list_concat(...)
   local result = {}
   local i = 1
@@ -202,10 +202,10 @@ function foundation.com.list_concat(...)
   return result
 end
 
---
--- Returns a new list with only unique values
---
--- @spec list_uniq(list: Table): Table
+---
+--- Returns a new list with only unique values
+---
+--- @spec list_uniq(list: Table): Table
 function foundation.com.list_uniq(list)
   local seen = {}
   local result = {}
@@ -218,7 +218,7 @@ function foundation.com.list_uniq(list)
   return result
 end
 
--- @spec list_split(list: Table, alen: Integer): (Table, Table)
+--- @spec list_split(list: Table, alen: Integer): (Table, Table)
 function foundation.com.list_split(list, alen)
   local head = {}
   local tail = {}
@@ -244,11 +244,11 @@ function foundation.com.list_split(list, alen)
   return head, tail
 end
 
---
--- Sorts given list, I do not guarantee any performance, this is the easiest possible sort
---
--- @mutative
--- @spec #list_sort(list: Table): Table
+---
+--- Sorts given list, I do not guarantee any performance, this is the easiest possible sort
+---
+--- @mutative
+--- @spec #list_sort(list: Table): Table
 function foundation.com.list_sort(list)
   if next(list) then
     local size = #list
@@ -272,8 +272,49 @@ function foundation.com.list_sort(list)
   return list
 end
 
--- @since "1.25.0"
--- @spec list_filter(list: Table, Function/1): Table
+---
+--- Sorts given list, I do not guarantee any performance, this is the easiest possible sort
+---
+--- @since ""
+--- @mutative
+--- @spec #list_sort_by(list: Table, callback: Function/2): Table
+function foundation.com.list_sort_by(list, callback)
+
+  if next(list) then
+    local size = #list
+    local a
+    local b
+    local weights = {}
+    local tmp
+    local tmp2
+
+    for i = 1,size do
+      weights[i] = callback(list[i], i)
+    end
+
+    for i = 1,size do
+      a = weights[i]
+      for j = i,size do
+        b = weights[j]
+
+        if a > b then
+          tmp = list[i]
+          list[i] = list[j]
+          list[j] = tmp
+          tmp2 = weights[i]
+          weights[i] = weights[j]
+          weights[j] = tmp2
+          a = b
+        end
+      end
+    end
+  end
+
+  return list
+end
+
+--- @since "1.25.0"
+--- @spec list_filter(list: Table, Function/1): Table
 function foundation.com.list_filter(list, callback)
   local result = {}
   local i = 0
@@ -288,8 +329,8 @@ function foundation.com.list_filter(list, callback)
   return result
 end
 
--- @since "1.25.0"
--- @spec list_reject(list: Table, Function/1): Table
+--- @since "1.25.0"
+--- @spec list_reject(list: Table, Function/1): Table
 function foundation.com.list_reject(list, callback)
   local result = {}
   local i = 0

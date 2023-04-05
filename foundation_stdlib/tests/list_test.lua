@@ -146,6 +146,134 @@ case:describe("list_sort/1", function (t2)
   end)
 end)
 
+case:describe("list_sort_by/2", function (t2)
+  t2:test("can sort a given table of sub tables", function (t3)
+    local list = {
+      {
+        value = 0,
+        name = "A",
+      },
+      {
+        value = 2,
+        name = "B",
+      },
+      {
+        value = 1,
+        name = "C",
+      },
+      {
+        value = 4,
+        name = "D",
+      },
+      {
+        value = 3,
+        name = "E",
+      }
+    }
+
+    t3:assert_deep_eq(
+      subject.list_sort_by(
+        list,
+        function (a)
+          return a.value
+        end
+      ),
+      {
+        {
+          value = 0,
+          name = "A"
+        },
+        {
+          value = 1,
+          name = "C"
+        },
+        {
+          value = 2,
+          name = "B"
+        },
+        {
+          value = 3,
+          name = "E"
+        },
+        {
+          value = 4,
+          name = "D"
+        }
+      }
+    )
+  end)
+
+  t2:test("can sort a given table of random numbers", function (t3)
+    local list = {}
+
+    for i = 1,10 do
+      list[i] = {
+        value = math.random(100)
+      }
+    end
+
+    list = subject.list_sort_by(list, function (a)
+      return a.value
+    end)
+
+    local a = list[1]
+
+    for i = 2,#list do
+      local b = list[i]
+
+      t3:assert(a.value <= b.value)
+
+      a = b
+    end
+  end)
+
+  t2:test("can sort a given table of strings", function (t3)
+    local list = {
+      {
+        value = "a"
+      },
+      {
+        value = "c"
+      },
+      {
+        value = "b"
+      },
+      {
+        value = "e"
+      },
+      {
+        value = "d"
+      }
+    }
+
+    t3:assert_deep_eq(
+      subject.list_sort_by(
+        list,
+        function (a)
+          return a.value
+        end
+      ),
+      {
+        {
+          value = "a"
+        },
+        {
+          value = "b"
+        },
+        {
+          value = "c"
+        },
+        {
+          value = "d"
+        },
+        {
+          value = "e"
+        }
+      }
+    )
+  end)
+end)
+
 case:describe("list_filter/2", function (t2)
   t2:test("only includes truthy elements from callback", function (t3)
     local t = {

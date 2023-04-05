@@ -1,3 +1,7 @@
+# 1.26.0
+
+* Added `foundation.com.list_sort_by/2`
+
 # 1.25.0
 
 * Added `foundation.com.list_filter/2`
