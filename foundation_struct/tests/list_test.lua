@@ -451,6 +451,28 @@ case:describe("#reduce/2", function (t2)
   end)
 end)
 
+case:describe("#reduce_while/2", function (t2)
+  t2:test("can iterate an empty list", function (t3)
+    local list = m:new()
+
+    local result = list:reduce_while(0, function (_item, _index, acc)
+      return true, acc
+    end)
+
+    t3:assert_eq(0, result)
+  end)
+
+  t2:test("can iterate a list with items", function (t3)
+    local list = m:new({ 1, 2, 3 })
+
+    local result = list:reduce_while(0, function (item, _index, acc)
+      return item < 2, acc + item
+    end)
+
+    t3:assert_eq(3, result)
+  end)
+end)
+
 case:describe("#each/1", function (t2)
   t2:test("can iterate an empty list", function (t3)
     local list = m:new()
@@ -507,6 +529,116 @@ case:describe("#map/1", function (t2)
     end)
 
     t3:assert_table_eq({ 2, 4, 6 }, result:data())
+  end)
+end)
+
+case:describe("#find/2", function (t2)
+  t2:test("can find an element that matches criteria", function (t3)
+    local t = m:new({
+      1,
+      2,
+      3
+    })
+
+    t3:assert_eq(
+      t:find(nil, function (elm, _index)
+        return elm == 2
+      end),
+      2
+    )
+  end)
+
+  t2:test("correctly returns default when find fails", function (t3)
+    local t = m:new({
+      1,
+      2,
+      3
+    })
+
+    t3:assert_eq(
+      t:find(-1, function (elm, _index)
+        return elm == 4
+      end),
+      -1
+    )
+  end)
+end)
+
+case:describe("#filter/2", function (t2)
+  t2:test("only includes truthy elements from callback", function (t3)
+    local t = m:new({
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+    })
+
+    local new_t =
+      t:filter(function (value, _index)
+        return math.fmod(value, 2) == 0
+      end)
+
+    t3:assert_table_eq(
+      t:data(),
+      {
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+      }
+    )
+
+    t3:assert_table_eq(
+      new_t:data(),
+      {
+        2,
+        4,
+        6,
+      }
+    )
+  end)
+end)
+
+case:describe("#reject/2", function (t2)
+  t2:test("only removes truthy elements from callback", function (t3)
+    local t = m:new({
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+    })
+
+    local new_t =
+      t:reject(function (value, _index)
+        return math.fmod(value, 2) == 0
+      end)
+
+    t3:assert_table_eq(
+      t:data(),
+      {
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+      }
+    )
+
+    t3:assert_table_eq(
+      new_t:data(),
+      {
+        1,
+        3,
+        5,
+      }
+    )
   end)
 end)
 

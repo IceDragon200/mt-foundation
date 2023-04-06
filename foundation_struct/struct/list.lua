@@ -1,17 +1,17 @@
--- @namespace foundation.com
+--- @namespace foundation.com
 
 local Class = foundation.com.Class
 local table_copy = assert(foundation.com.table_copy)
 
--- @type ListCastable<T>: {
---   #to_list: Function/0 => T,
--- }
+--- @type ListCastable<T>: {
+---   #to_list: Function/0 => T,
+--- }
 
--- @class List<T>
+--- @class List<T>
 local List = Class:extends("foundation.com.List")
 local ic = List.instance_class
 
--- @spec list_next(List<T>, Integer): (Integer, T) | nil
+--- @spec list_next(List<T>, Integer): (Integer, T) | nil
 local function list_next(list, index)
   index = index + 1
   if index > list.m_cursor then
@@ -23,7 +23,7 @@ end
 
 List.list_next = list_next
 
--- @spec #initialize(data?: T[] | List<T>): void
+--- @spec #initialize(data?: T[] | List<T>): void
 function ic:initialize(data)
   ic._super.initialize(self)
 
@@ -55,18 +55,18 @@ function ic:initialize(data)
   end
 end
 
--- Returns itself, but is an interface function for other classes to implement
---
--- @since "1.1.0"
--- @spec #to_list(): List<T>
+--- Returns itself, but is an interface function for other classes to implement
+---
+--- @since "1.1.0"
+--- @spec #to_list(): List<T>
 function ic:to_list()
   return self
 end
 
--- Compares self against another list to determine if they contain the same
--- values.
---
--- @spec #equals(other: List): Boolean
+--- Compares self against another list to determine if they contain the same
+--- values.
+---
+--- @spec #equals(other: List): Boolean
 function ic:equals(other)
   if foundation.com.Class.is_object(other, List) then
     -- check if the lengths match, avoids the deeper check if they have
@@ -85,42 +85,42 @@ function ic:equals(other)
   return false
 end
 
--- Called by #copy internally to initialize the destination list (self)
--- with the source list (other)'s data.
---
--- @spec #initialize_copy(other: List): void
+--- Called by #copy internally to initialize the destination list (self)
+--- with the source list (other)'s data.
+---
+--- @spec #initialize_copy(other: List): void
 function ic:initialize_copy(other)
   self.m_data = table_copy(other.m_data)
   self.m_cursor = other.m_cursor
 end
 
--- Returns a copy of the list
---
--- @spec #copy(): List<T>
+--- Returns a copy of the list
+---
+--- @spec #copy(): List<T>
 function ic:copy()
   local list = self._class:alloc()
   list:initialize_copy(self)
   return list
 end
 
--- Returns the underlying data as is, this can be used to effectively unwrap
--- the list.
---
--- @spec #data(): Table
+--- Returns the underlying data as is, this can be used to effectively unwrap
+--- the list.
+---
+--- @spec #data(): Table
 function ic:data()
   return self.m_data
 end
 
--- Returns a shallow copy of the internal data.
---
--- @spec #to_table(): Table
+--- Returns a shallow copy of the internal data.
+---
+--- @spec #to_table(): Table
 function ic:to_table()
   return table_copy(self.m_data)
 end
 
--- Reverses the data in the list
---
--- @spec #reverse(): self
+--- Reverses the data in the list
+---
+--- @spec #reverse(): self
 function ic:reverse()
   -- check if there is more than 1 item in the list to reverse it
   if self.m_cursor > 1 then
@@ -138,9 +138,9 @@ function ic:reverse()
   return self
 end
 
--- Specialized flatten function to produce a iodata ready list (for #join/0+)
---
--- @spec #flatten_iodata(): self
+--- Specialized flatten function to produce a iodata ready list (for #join/0+)
+---
+--- @spec #flatten_iodata(): self
 function ic:flatten_iodata()
   if self.m_cursor > 0 then
     local data = self.m_data
@@ -166,20 +166,20 @@ function ic:flatten_iodata()
   return self
 end
 
--- Clears all data in the list, this will replace the internal table with an
--- empty one, it is safe to call #data/0 before to retrieve the table.
---
--- @spec #clear(): self
+--- Clears all data in the list, this will replace the internal table with an
+--- empty one, it is safe to call #data/0 before to retrieve the table.
+---
+--- @spec #clear(): self
 function ic:clear()
   self.m_data = {}
   self.m_cursor = 0
   return self
 end
 
--- Pushes the item unto the list.
--- Yes, you can push nil.
---
--- @spec #push(T): self
+--- Pushes the item unto the list.
+--- Yes, you can push nil.
+---
+--- @spec #push(T): self
 function ic:push(...)
   local len = select('#', ...)
   for i = 1,len do
@@ -207,9 +207,9 @@ function ic:_flat_concat_list(other)
   return self
 end
 
--- Concatenates one list into the target list, but all elements will be flattened
---
--- @spec #flat_concat(Table | List): self
+--- Concatenates one list into the target list, but all elements will be flattened
+---
+--- @spec #flat_concat(Table | List): self
 function ic:flat_concat(other)
   if Class.is_object(other) then
     if other:is_instance_of(List) then
@@ -234,10 +234,10 @@ function ic:flat_concat(other)
   end
 end
 
--- Concatenates one list into the target list.
---
--- @since "1.1.0"
--- @spec #concat(other: List<T> | Table | ListCastable<T>): self
+--- Concatenates one list into the target list.
+---
+--- @since "1.1.0"
+--- @spec #concat(other: List<T> | Table | ListCastable<T>): self
 function ic:concat(other)
   if Class.is_object(other) then
     if other:is_instance_of(List) then
@@ -271,11 +271,11 @@ function ic:_concat_list(list)
   return self
 end
 
--- Removes the first element or elements in the list and returns them
---
--- @since "1.1.0"
--- @spec #shift(len: Integer): T[] | nil
--- @spec #shift(): T | nil
+--- Removes the first element or elements in the list and returns them
+---
+--- @since "1.1.0"
+--- @spec #shift(len: Integer): T[] | nil
+--- @spec #shift(): T | nil
 function ic:shift(len)
   local item
   local data
@@ -331,12 +331,12 @@ function ic:shift(len)
   end
 end
 
--- Pops the last item in the list.
--- A `len` is specified it will attempt to pop that many items from the list and
--- return a table containing those items.
---
--- @spec #pop(len: Integer): T[] | nil
--- @spec #pop(): T | nil
+--- Pops the last item in the list.
+--- A `len` is specified it will attempt to pop that many items from the list and
+--- return a table containing those items.
+---
+--- @spec #pop(len: Integer): T[] | nil
+--- @spec #pop(): T | nil
 function ic:pop(len)
   local item
   if len then
@@ -366,10 +366,10 @@ function ic:pop(len)
   return nil
 end
 
--- Pops the item at the specified position, this will rebuild the internal
--- table if the position is not at the end of the list.
---
--- @spec #pop_at(pos: Integer): T | nil
+--- Pops the item at the specified position, this will rebuild the internal
+--- table if the position is not at the end of the list.
+---
+--- @spec #pop_at(pos: Integer): T | nil
 function ic:pop_at(pos)
   local item
   if pos > 0 and pos <= self.m_cursor then
@@ -397,31 +397,31 @@ function ic:pop_at(pos)
   return nil
 end
 
--- Delete an item at the specified position, this is equivalent to a pop(pos)
--- and discarding the returned value.
---
--- @spec #delete_at(pos: Integer): self
+--- Delete an item at the specified position, this is equivalent to a pop(pos)
+--- and discarding the returned value.
+---
+--- @spec #delete_at(pos: Integer): self
 function ic:delete_at(pos)
   self:pop_at(pos)
   return self
 end
 
--- @spec #size(): Integer
+--- @spec #size(): Integer
 function ic:size()
   return self.m_cursor
 end
 
--- Reports true if the list contains no elements, false otherwise
---
--- @spec #is_empty(): Boolean
+--- Reports true if the list contains no elements, false otherwise
+---
+--- @spec #is_empty(): Boolean
 function ic:is_empty()
   return self.m_cursor < 1
 end
 
--- Tries to put the item in a selected list at position.
--- Returns true if the item was placed, false otherwise.
---
--- @spec #put_at(pos: Integer, item: T): Boolean
+--- Tries to put the item in a selected list at position.
+--- Returns true if the item was placed, false otherwise.
+---
+--- @spec #put_at(pos: Integer, item: T): Boolean
 function ic:put_at(pos, item)
   if pos > 0 and pos <= self.m_cursor then
     self.m_data[pos] = item
@@ -430,25 +430,25 @@ function ic:put_at(pos, item)
   return false
 end
 
--- Joins all elements in the list into a string
---
--- @spec #join(separator: String): String
+--- Joins all elements in the list into a string
+---
+--- @spec #join(separator: String): String
 function ic:join(separator)
   return table.concat(self.m_data, separator)
 end
 
--- Retrieve item at position
---
--- @spec #get(pos: Integer): T | nil
+--- Retrieve item at position
+---
+--- @spec #get(pos: Integer): T | nil
 function ic:get(pos)
   return self.m_data[pos]
 end
 
--- Returns the first value in the list, if `len` is specified, it will
--- return a list of the first `len` elements
---
--- @spec #first(len: Integer): T[]
--- @spec #first(): T | nil
+--- Returns the first value in the list, if `len` is specified, it will
+--- return a list of the first `len` elements
+---
+--- @spec #first(len: Integer): T[]
+--- @spec #first(): T | nil
 function ic:first(len)
   if len then
     local result = {}
@@ -463,10 +463,10 @@ function ic:first(len)
   end
 end
 
--- Returns the last value in the list
---
--- @spec #last(len: Integer): T[] | nil
--- @spec #last(): T | nil
+--- Returns the last value in the list
+---
+--- @spec #last(len: Integer): T[] | nil
+--- @spec #last(): T | nil
 function ic:last(len)
   if len then
     local result = {}
@@ -484,9 +484,9 @@ function ic:last(len)
   end
 end
 
--- Randomly returns an element in the list, or nil if the list is empty
---
--- @spec #sample(): T | nil
+--- Randomly returns an element in the list, or nil if the list is empty
+---
+--- @spec #sample(): T | nil
 function ic:sample()
   if self.m_cursor > 0 then
     return self.m_data[math.random(self.m_cursor)]
@@ -494,9 +494,9 @@ function ic:sample()
   return nil
 end
 
--- Randomly pops an element from the list and returns it
---
--- @spec #pop_sample(): T | nil
+--- Randomly pops an element from the list and returns it
+---
+--- @spec #pop_sample(): T | nil
 function ic:pop_sample()
   if self.m_cursor > 0 then
     local pos = math.random(self.m_cursor)
@@ -505,8 +505,8 @@ function ic:pop_sample()
   return nil
 end
 
--- @since "1.1.0"
--- @spec #reduce(Any, Function/3): Any
+--- @since "1.1.0"
+--- @spec #reduce(Any, Function/3): Any
 function ic:reduce(acc, callback)
   if self.m_cursor > 0 then
     for index, item in list_next,self,0 do
@@ -516,9 +516,24 @@ function ic:reduce(acc, callback)
   return acc
 end
 
--- @since "1.1.0"
--- @spec #each(): (Function, List<T>, Integer)
--- @spec #each(Function/1): self
+--- @since "1.5.0"
+--- @spec #reduce_while(acc: Any, (item: T, index: Integer, acc: Any) => (Boolean, Any)): Any
+function ic:reduce_while(acc, callback)
+  local should_continue
+  if self.m_cursor > 0 then
+    for index, item in list_next,self,0 do
+      should_continue, acc = callback(item, index, acc)
+      if not should_continue then
+        break
+      end
+    end
+  end
+  return acc
+end
+
+--- @since "1.1.0"
+--- @spec #each(): (Function, List<T>, Integer)
+--- @spec #each(Function/2): self
 function ic:each(callback)
   if callback then
     if self.m_cursor > 0 then
@@ -532,12 +547,46 @@ function ic:each(callback)
   return list_next, self, 0
 end
 
--- @since "1.1.0"
--- @spec #map(Function<T>/1): List<T>
+--- @since "1.1.0"
+--- @spec #map<T2>((item: T, index: Integer) => T2): List<T2>
 function ic:map(callback)
   return self:reduce(List:new(), function (item, index, acc)
     acc:push(callback(item, index))
     return acc
+  end)
+end
+
+--- @since "1.5.0"
+--- @spec #filter((item: T, index: Integer) => Boolean): List<T>
+function ic:filter(callback)
+  return self:reduce(List:new(), function (item, index, acc)
+    if callback(item, index) then
+      acc:push(item)
+    end
+    return acc
+  end)
+end
+
+--- @since "1.5.0"
+--- @spec #reject((item: T, index: Integer) => Boolean): List<T>
+function ic:reject(callback)
+  return self:reduce(List:new(), function (item, index, acc)
+    if not callback(item, index) then
+      acc:push(item)
+    end
+    return acc
+  end)
+end
+
+--- @since "1.5.0"
+--- @spec #find(default: T, callback: (item: T, index: Integer) => Boolean): T
+function ic:find(default, callback)
+  return self:reduce_while(default, function (item, index, acc)
+    if callback(item, index) then
+      return false, item
+    else
+      return true, acc
+    end
   end)
 end
 

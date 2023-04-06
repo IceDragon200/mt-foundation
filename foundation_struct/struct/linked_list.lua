@@ -1,21 +1,21 @@
---
--- Singlely linked list, suitable for Queues
---
 local Class = assert(foundation.com.Class)
 
--- @namespace foundation.com
+--- @namespace foundation.com
 
--- @since "1.2.0"
--- @class LinkedList<T>
+---
+--- Singlely linked list, suitable for Queues
+---
+--- @since "1.2.0"
+--- @class LinkedList<T>
 local LinkedList = Class:extends("LinkedList")
 local ic = LinkedList.instance_class
 
--- @type LinkedList.Node<T>: {
---   value: T,
---   next: LinkedList.Node<T> | nil,
--- }
+--- @type LinkedList.Node<T>: {
+---   value: T,
+---   next: LinkedList.Node<T> | nil,
+--- }
 
--- @spec linked_list_next(LinkedList<T>, LinkedList.Node<T>): (LinkedList.Node<T>, T) | nil
+--- @spec linked_list_next(LinkedList<T>, LinkedList.Node<T>): (LinkedList.Node<T>, T) | nil
 local function linked_list_next(_ll, node)
   assert(_ll)
   node = node.next
@@ -27,7 +27,7 @@ local function linked_list_next(_ll, node)
   end
 end
 
--- @spec #initialize(): void
+--- @spec #initialize(): void
 function ic:initialize(value)
   -- kind of useless assignments, but gives an idea of the structure
   self.next = nil
@@ -54,26 +54,26 @@ function ic:initialize(value)
   end
 end
 
--- @spec #initialize_copy(LinkedList<T>): void
+--- @spec #initialize_copy(LinkedList<T>): void
 function ic:initialize_copy(other)
   for _, item in other:each() do
     self:push(item)
   end
 end
 
--- @spec #copy(): LinkedList<T>
+--- @spec #copy(): LinkedList<T>
 function ic:copy()
   local ll = self._class:alloc()
   ll:initialize_copy(self)
   return ll
 end
 
--- @spec #to_linked_list(): LinkedList<T>
+--- @spec #to_linked_list(): LinkedList<T>
 function ic:to_linked_list()
   return self
 end
 
--- @spec #to_table(): Table
+--- @spec #to_table(): Table
 function ic:to_table()
   local result = {}
   local i = 0
@@ -88,7 +88,7 @@ function ic:to_table()
   return result
 end
 
--- @spec #size(): Integer
+--- @spec #size(): Integer
 function ic:size()
   local len = 0
   local node = self.next
@@ -101,7 +101,7 @@ function ic:size()
   return len
 end
 
--- @spec #shift_node(): LinkedList.Node<T> | nil
+--- @spec #shift_node(): LinkedList.Node<T> | nil
 function ic:shift_node()
   local node
   if self.next then
@@ -116,7 +116,7 @@ function ic:shift_node()
   return node
 end
 
--- @spec #shift(): T | nil
+--- @spec #shift(): T | nil
 function ic:shift(len)
   local node
 
@@ -147,7 +147,7 @@ function ic:shift(len)
   end
 end
 
--- @spec #push(...): self
+--- @spec #push(...): self
 function ic:push(...)
   local len = select('#', ...)
   local value
@@ -174,12 +174,12 @@ function ic:push(...)
   return self
 end
 
--- @spec #first_node(): LinkedList.Node<T> | nil
+--- @spec #first_node(): LinkedList.Node<T> | nil
 function ic:first_node()
   return self.next
 end
 
--- @spec #first(): T | nil
+--- @spec #first(): T | nil
 function ic:first()
   local node = self:first_node()
 
@@ -190,12 +190,12 @@ function ic:first()
   return nil
 end
 
--- @spec #last_node(): LinkedList.Node<T> | nil
+--- @spec #last_node(): LinkedList.Node<T> | nil
 function ic:last_node()
   return self.tail
 end
 
--- @spec #last(): T | nil
+--- @spec #last(): T | nil
 function ic:last()
   local node = self:last_node()
 
@@ -206,9 +206,9 @@ function ic:last()
   return nil
 end
 
--- Retrieve a node by index
---
--- @spec #get_node(Integer): LinkedList.Node<T> | nil
+--- Retrieve a node by index
+---
+--- @spec #get_node(Integer): LinkedList.Node<T> | nil
 function ic:get_node(index)
   if index > 0 then
     local i = 0
@@ -228,9 +228,9 @@ function ic:get_node(index)
   return nil
 end
 
--- Retrieve an item by index
---
--- @spec #get(Integer): T | nil
+--- Retrieve an item by index
+---
+--- @spec #get(Integer): T | nil
 function ic:get(index)
   local node = self:get_node(index)
 
@@ -241,8 +241,8 @@ function ic:get(index)
   return nil
 end
 
--- @spec #each(): (Function, LinkedList, LinkedList)
--- @spec #each(Function/2): self
+--- @spec #each(): (Function, LinkedList, LinkedList)
+--- @spec #each(Function/2): self
 function ic:each(callback)
   if callback then
     local node = self.next
