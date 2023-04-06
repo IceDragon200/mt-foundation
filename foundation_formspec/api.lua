@@ -6,9 +6,8 @@
 
 local Color = assert(foundation.com.Color)
 
--- @namespace foundation.com.formspec.api
-
-foundation.com.formspec = {}
+--- @namespace foundation.com.formspec.api
+foundation.com.formspec = foundation.com.formspec or {}
 
 local api = {}
 local vector2 = foundation.com.Vector2
@@ -540,17 +539,17 @@ function api.textlist(x, y, w, h, name, listitems, selected_index, is_transparen
   return "textlist["..args.."]"
 end
 
--- @spec tabheader(
---   x: Integer,
---   y: Integer,
---   w?: Integer,
---   h?: Integer,
---   name: String,
---   captions: [String],
---   current_tab_index: Integer,
---   is_transparent: Boolean,
---   draw_border: Boolean
--- ): String
+--- @spec tabheader(
+---   x: Integer,
+---   y: Integer,
+---   w?: Integer,
+---   h?: Integer,
+---   name: String,
+---   captions: [String],
+---   current_tab_index: Integer,
+---   is_transparent: Boolean,
+---   draw_border: Boolean
+--- ): String
 function api.tabheader(x, y, w, h, name, captions, current_tab_index, is_transparent, draw_border)
   local args = x..","..y
 
@@ -582,7 +581,7 @@ function api.tabheader(x, y, w, h, name, captions, current_tab_index, is_transpa
   return "tabheader["..args.."]"
 end
 
--- @spec box(x: Number, y: Number, w: Number, h: Number, color: Color): String
+--- @spec box(x: Number, y: Number, w: Number, h: Number, color: Color): String
 function api.box(x, y, w, h, color)
   local args = x..","..y..
     ";"..w..","..h

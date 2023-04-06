@@ -1,3 +1,7 @@
+# 1.5.0
+
+* Added `formspec.parser` module for parsing formspecs.
+
 # 1.4.1
 
 * `hypertext` and `button` functions use to_text on their element names now.
