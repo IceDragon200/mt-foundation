@@ -61,31 +61,46 @@ do
 
   -- @spec #w_i64(Stream, int: Integer): (Integer, error: String | nil)
   function ic:w_i64(stream, int)
-    assert(type(int) == "number", "expected an integer")
+    local type = type(int)
+    if type ~= "number" then
+      error("expected an integer (got "..type..")")
+    end
     return self:w_iv(stream, 8, int)
   end
 
   -- @spec #w_i32(Stream, int: Integer): (Integer, error: String | nil)
   function ic:w_i32(stream, int)
-    assert(type(int) == "number", "expected an integer")
+    local type = type(int)
+    if type ~= "number" then
+      error("expected an integer (got "..type..")")
+    end
     return self:w_iv(stream, 4, int)
   end
 
   -- @spec #w_i24(Stream, int: Integer): (Integer, error: String | nil)
   function ic:w_i24(stream, int)
-    assert(type(int) == "number", "expected an integer")
+    local type = type(int)
+    if type ~= "number" then
+      error("expected an integer (got "..type..")")
+    end
     return self:w_iv(stream, 3, int)
   end
 
   -- @spec #w_i16(Stream, int: Integer): (Integer, error: String | nil)
   function ic:w_i16(stream, int)
-    assert(type(int) == "number", "expected an integer")
+    local type = type(int)
+    if type ~= "number" then
+      error("expected an integer (got "..type..")")
+    end
     return self:w_iv(stream, 2, int)
   end
 
   -- @spec #w_i8(Stream, int: Integer): (Integer, error: String | nil)
   function ic:w_i8(stream, int)
-    assert(type(int) == "number", "expected an integer")
+    local type = type(int)
+    if type ~= "number" then
+      error("expected an integer (got "..type..")")
+    end
     return self:w_iv(stream, 1, int)
   end
 
@@ -94,31 +109,46 @@ do
 
   -- @spec #w_u64(Stream, int: Integer): (Integer, error: String | nil)
   function ic:w_u64(stream, int)
-    assert(type(int) == "number", "expected an integer")
+    local type = type(int)
+    if type ~= "number" then
+      error("expected an integer (got "..type..")")
+    end
     return self:w_uv(stream, 8, int)
   end
 
   -- @spec #w_u32(Stream, int: Integer): (Integer, error: String | nil)
   function ic:w_u32(stream, int)
-    assert(type(int) == "number", "expected an integer")
+    local type = type(int)
+    if type ~= "number" then
+      error("expected an integer (got "..type..")")
+    end
     return self:w_uv(stream, 4, int)
   end
 
   -- @spec #w_u24(Stream, int: Integer): (Integer, error: String | nil)
   function ic:w_u24(stream, int)
-    assert(type(int) == "number", "expected an integer")
+    local type = type(int)
+    if type ~= "number" then
+      error("expected an integer (got "..type..")")
+    end
     return self:w_uv(stream, 3, int)
   end
 
   -- @spec #w_u16(Stream, int: Integer): (Integer, error: String | nil)
   function ic:w_u16(stream, int)
-    assert(type(int) == "number", "expected an integer")
+    local type = type(int)
+    if type ~= "number" then
+      error("expected an integer (got "..type..")")
+    end
     return self:w_uv(stream, 2, int)
   end
 
   -- @spec #w_u8(Stream, int: Integer): (Integer, error: String | nil)
   function ic:w_u8(stream, int)
-    assert(type(int) == "number", "expected an integer")
+    local type = type(int)
+    if type ~= "number" then
+      error("expected an integer (got "..type..")")
+    end
     return self:w_uv(stream, 1, int)
   end
 
@@ -609,6 +639,10 @@ do
 
   -- @spec #w_uv(Stream, len: Integer, int: Integer): (Integer, error: String | nil)
   function ic:w_uv(stream, len, int)
+    local type = type(int)
+    if type ~= "number" then
+      error("expected value to be an integer (got "..type..")")
+    end
     assert(int >= 0, "expected integer to be greater than or equal to 0")
     local r = int
     local num_bytes = 0
