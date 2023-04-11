@@ -1,3 +1,19 @@
+# 1.27.0
+
+* Vector2, Vector3, and Vector4 all have a metatable, keep in mind that foundation's vectors typically expect the destination vector first for `add/3`, `subtract/3`, `divide/3`, and `multiply/3`.
+
+```lua
+local v2 = foundation.com.Vector2.new(0, 0)
+--- mutates v2 in place
+v2:add(a, b)
+
+--- will return a new vector each time
+local c = v2 + a + b
+
+--- operations could be chained as well
+v2:add(a, b):multiply(a2, b2)
+```
+
 # 1.26.0
 
 * Added `foundation.com.list_sort_by/2`
