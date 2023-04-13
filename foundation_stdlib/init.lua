@@ -1,13 +1,14 @@
 --
 -- Foundation Standard Library (STDLIB)
 --
-local mod = foundation.new_module("foundation_stdlib", "1.27.0")
+local mod = foundation.new_module("foundation_stdlib", "1.28.0")
 
 mod:require("lib/encoding_tables.lua")
 
 mod:require("lib/table.lua")
 
 mod:require("lib/vector.lua")
+mod:require("lib/matrix.lua")
 mod:require("lib/cuboid.lua")
 mod:require("lib/direction.lua")
 mod:require("lib/inventory_list.lua")

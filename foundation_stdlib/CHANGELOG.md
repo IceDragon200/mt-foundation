@@ -1,3 +1,9 @@
+# 1.28.0
+
+* Fixed `Vector4.idivide/3` being overwritten by the `Vector4.apply/3` function
+* Added `Vector2.apply/3` and `Vector3.apply/3`
+* Added `Matrix3x3` and `Matrix4x4`
+
 # 1.27.0
 
 * Vector2, Vector3, and Vector4 all have a metatable, keep in mind that foundation's vectors typically expect the destination vector first for `add/3`, `subtract/3`, `divide/3`, and `multiply/3`.

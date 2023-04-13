@@ -162,8 +162,9 @@ function vector4.idivide(dest, v1, v2)
   return dest
 end
 
+--- @since "1.28.0"
 --- @spec apply(dest: Vector4, source: Vector4, func: Function/1): Vector4
-function vector4.idivide(dest, v1, func)
+function vector4.apply(dest, v1, func)
   local v1x, v1y, v1z, v1w = vector4.unwrap(v1)
   dest.x = func(v1x)
   dest.y = func(v1y)

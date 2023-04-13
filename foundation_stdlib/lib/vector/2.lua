@@ -140,6 +140,15 @@ function vector2.idivide(dest, v1, v2)
   return dest
 end
 
+--- @since "1.28.0"
+--- @spec apply(dest: Vector2, source: Vector2, func: Function/1): Vector2
+function vector2.apply(dest, v1, func)
+  local v1x, v1y = vector2.unwrap(v1)
+  dest.x = func(v1x)
+  dest.y = func(v1y)
+  return dest
+end
+
 --- Intended to be used by persistence systems to dump a vector2 to a plain table
 ---
 --- @spec dump_data(Vector2): Table
