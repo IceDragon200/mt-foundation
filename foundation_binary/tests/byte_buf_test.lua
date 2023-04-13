@@ -27,6 +27,8 @@ case:describe("#write/1", function (t2)
 
     subject:write(buf, "Hello, World")
 
+    buf:reopen("r")
+
     t3:assert_eq("Hello, World", buf:blob())
   end)
 end)
