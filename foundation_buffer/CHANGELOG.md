@@ -1,3 +1,11 @@
+# 2.3.0
+
+* Added `foundation.com.StringBuffer#flush/0`
+* Added `foundation.com.StringBuffer#can_read/0`
+* Added `foundation.com.StringBuffer#check_readable/0`
+* Added `foundation.com.StringBuffer#maybe_close/0`
+* Added `foundation.com.StringBuffer#reopen/1`
+
 # 2.2.0
 
 * Added `foundation.com.FileBuffer` a wrapper class around a lua file handle
