@@ -1,3 +1,7 @@
+# 1.6.0
+
+* Added `foundation.com.formspec.api.model/14`
+
 # 1.5.0
 
 * Added `formspec.parser` module for parsing formspecs.

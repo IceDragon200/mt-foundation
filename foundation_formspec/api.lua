@@ -288,18 +288,18 @@ function api.image(x, y, w, h, texture_name, middle)
   return "image[" .. args .. "]"
 end
 
---
--- @spec animated_image(
---   x: Number,
---   y: Number,
---   w: Number,
---   h: Number,
---   name: String,
---   texture_name: String,
---   frame_count: Number,
---   frame_duration: Number,
---   frame_start: Number
--- ): String
+---
+--- @spec animated_image(
+---   x: Number,
+---   y: Number,
+---   w: Number,
+---   h: Number,
+---   name: String,
+---   texture_name: String,
+---   frame_count: Number,
+---   frame_duration: Number,
+---   frame_start: Number
+--- ): String
 function api.animated_image(
   x,
   y,
@@ -322,7 +322,7 @@ function api.animated_image(
                        ";"..frame_start.."]"
 end
 
--- @spec item_image(x: Number, y: Number, w: Number, h: Number, item_name: String): String
+--- @spec item_image(x: Number, y: Number, w: Number, h: Number, item_name: String): String
 function api.item_image(x, y, w, h, item_name)
   local args =
     x..","..y..";"..
@@ -332,24 +332,112 @@ function api.item_image(x, y, w, h, item_name)
   return "item_image["..args.."]"
 end
 
--- @spec bg_color(bgcolor: ColorSpec, fullscreen: Boolean, fbgcolor: ColorSpec): String
+--- @since "1.6.0"
+--- @spec model(
+---   x: Number,
+---   y: Number,
+---   w: Number,
+---   h: Number,
+---   name: String,
+---   model: String,
+---   textures: String[] | String,
+---   rotation_x?: Number,
+---   rotation_y?: Number,
+---   is_continous?: Boolean,
+---   has_mouse_control?: Boolean,
+---   frame_loop_start?: Number,
+---   frame_loop_end?: Number,
+---   animation_speed?: Number
+--- ): String
+function api.model(
+  x,
+  y,
+  w,
+  h,
+  name,
+  model,
+  textures,
+  rotation_x,
+  rotation_y,
+  is_continous,
+  has_mouse_control,
+  frame_loop_start,
+  frame_loop_end,
+  animation_speed
+)
+  local tex
+  local ty = type(textures)
+  if ty == "table" then
+    tex = to_text(table.concat(textures, ","))
+  elseif ty == "string" then
+    tex = to_text(textures)
+  else
+    error("expected textures to be string or table")
+  end
+
+  local args =
+    x..","..y..";"..
+    w..","..h..";"..
+    to_text(name)..";"..
+    to_text(model)..";"..
+    tex..";"
+
+  -- rotation
+  if rotation_x and rotation_y then
+    args = args..rotation_x..","..rotation_y
+  end
+  args = args..";"
+
+  -- continuous
+  if is_continous ~= nil then
+    args = args..to_bool(is_continous)
+  end
+  args = args..";"
+
+  -- mouse_control
+  if has_mouse_control ~= nil then
+    args = args..to_bool(has_mouse_control)
+  end
+  args = args..";"
+
+  -- frame loop range
+  if frame_loop_start and frame_loop_end then
+    args = args..frame_loop_start..","..frame_loop_end
+  end
+  args = args..";"
+
+  -- animation_speed
+  if animation_speed then
+    args = args..animation_speed
+  end
+
+  return "model["..args.."]"
+end
+
+--- @spec bg_color(bgcolor: ColorSpec, fullscreen: Boolean, fbgcolor: ColorSpec): String
 function api.bg_color(bgcolor, fullscreen, fbgcolor)
   local args = to_color(bgcolor)
-  if fullscreen == nil then
-    args = args..";"
-  else
-    args = args..";"..to_bool(fullscreen)
+  args = args..";"
+  if fullscreen ~= nil then
+    args = args..to_bool(fullscreen)
   end
+  args = args..";"
   if fbgcolor then
-    args = args..";"..to_color(fbgcolor)
-  else
-    args = args..";"
+    args = args..to_color(fbgcolor)
   end
   return "bgcolor["..args.."]"
 end
 
 api.bgcolor = api.bg_color
 
+--- @spec background(
+---   x: Number,
+---   y: Number,
+---   w: Number,
+---   h: Number,
+---   texture_name: String,
+---   auto_clip: Boolean
+--- ): String
 function api.background(x, y, w,  h, texture_name, auto_clip)
   local args = x..","..y..";"..w..","..h..";"..to_text(texture_name)
 
@@ -359,13 +447,20 @@ function api.background(x, y, w,  h, texture_name, auto_clip)
   return "background["..args.."]"
 end
 
+--- @spec background9(
+---   x: Number,
+---   y: Number,
+---   w: Number,
+---   h: Number,
+---   texture_name: String,
+---   auto_clip: Boolean,
+---   middle: Number
+--- ): String
 function api.background9(x, y, w,  h, texture_name, auto_clip, middle)
-  local args = x..","..y..";"..w..","..h..";"..to_text(texture_name)
+  local args = x..","..y..";"..w..","..h..";"..to_text(texture_name)..";"
 
-  if auto_clip == nil then
-    args = args..";"
-  else
-    args = args..";"..to_bool(auto_clip)
+  if auto_clip ~= nil then
+    args = args..to_bool(auto_clip)
   end
 
   if middle then
