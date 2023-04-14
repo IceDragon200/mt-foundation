@@ -1,3 +1,48 @@
+# 1.29.0
+
+* `Matrix3x3` now has a metatable with limited arithmetic support
+* Additional `Matrix3x3` functions:
+  * `add_scalar/3`
+  * `subtract_scalar/3`
+  * `multiply_scalar/3`
+  * `divide_scalar/3`
+  * `idivide_scalar/3`
+  * `is_matrix3x3/1`
+  * `from_table/1`
+  * `random/2`
+  * `to_string/1`
+  * `inspect/1`
+  * `equals/2`
+  * `idivide/3`
+  * `idivide_vec3/3`
+* `Matrix4x4` now has a metatable with limited arithmetic support
+* Additional `Matrix4x4` functions:
+  * `add_scalar/3`
+  * `subtract_scalar/3`
+  * `multiply_scalar/3`
+  * `divide_scalar/3`
+  * `idivide_scalar/3`
+  * `is_matrix4x4/1`
+  * `from_table/1`
+  * `random/2`
+  * `to_string/1`
+  * `inspect/1`
+  * `equals/2`
+  * `idivide/3`
+  * `idivide_vec4/3`
+* Additional `Vector2` functions:
+  * `is_vector2/1` to determine if the given table has a Vector2 metatable
+  * `inspect/1` returns a string representation of the vector (e.g. `(1, 2)`)
+  * `length/1`
+* Additional `Vector3` functions:
+  * `is_vector3/1` to determine if the given table has a Vector3 metatable (not minetest vector fyi)
+  * `inspect/1` returns a string representation of the vector (e.g. `(1, 2, 3)`)
+  * `length/1`
+* Additional `Vector4` functions:
+  * `is_vector4/1` to determine if the given table has a Vector4 metatable
+  * `inspect/1` returns a string representation of the vector (e.g. `(1, 2, 3, 4)`)
+  * `length/1`
+
 # 1.28.0
 
 * Fixed `Vector4.idivide/3` being overwritten by the `Vector4.apply/3` function

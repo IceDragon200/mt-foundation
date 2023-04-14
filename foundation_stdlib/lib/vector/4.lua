@@ -22,12 +22,20 @@ vector4 = {
 ---   w: Number,
 --- }
 
+--- @since "1.29.0"
+--- @spec is_vector4(obj: Any): Boolean
+--- @spec #is_vector4(): Boolean
+function vector4.is_vector4(obj)
+  return getmetatable(obj) == vector4.metatable
+end
+
 --- @spec new(x: Number, y: Number, z: Number, w: Number): Vector4
 function vector4.new(x, y, z, w)
   return setmetatable({ x = x, y = y, z = z, w = w }, vector4.metatable)
 end
 
 --- @spec copy(Vector4): Vector4
+--- @spec #copy(): Vector4
 function vector4.copy(v1)
   return vector4.new(v1.x, v1.y, v1.z, v1.w)
 end
@@ -48,17 +56,27 @@ function vector4.zero()
 end
 
 --- @spec to_string(Vector4, sep?: String): String
+--- @spec #to_string(): String
 function vector4.to_string(v1, sep)
   sep = sep or ","
   return v1.x .. sep .. v1.y .. sep .. v1.z .. sep .. v1.w
 end
 
+--- @spec inspect(Vector4, sep?: String): String
+--- @spec #inspect(sep?: String): String
+function vector4.inspect(v1, sep)
+  sep = sep or ","
+  return "(" .. v1.x .. sep .. v1.y .. sep .. v1.z .. sep .. v1.w .. ")"
+end
+
 --- @spec equals(a: Vector4, b: Vector4): Boolean
+--- @spec #equals(b: Vector4): Boolean
 function vector4.equals(a, b)
   return a.x == b.x and a.y == b.y and a.z == b.z and a.w == b.w
 end
 
---- @spec distance(a: Vector4, b: Vector4): Float
+--- @spec distance(a: Vector4, b: Vector4): Number
+--- @spec #distance(b: Vector4): Number
 function vector4.distance(a, b)
   local x = a.x - b.x
   x = x * x
@@ -70,6 +88,13 @@ function vector4.distance(a, b)
   w = w * w
 
   return math.sqrt(x + y + z + w)
+end
+
+--- @since "1.29.0"
+--- @spec length(a: Vector4): Number
+--- @spec #length(): Number
+function vector4.length(a)
+  return math.sqrt(a.x * a.x + a.y * a.y + a.z * a.z + a.w * a.w)
 end
 
 --- @spec floor(Vector4, Vector4): Vector4
@@ -103,11 +128,13 @@ function vector4.round(dest, v2)
 end
 
 --- @spec dot(Vector4, Vector4): Vector4
+--- @spec #dot(v2: Vector4): Vector4
 function vector4.dot(v1, v2)
   return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z + v1.w * v2.w
 end
 
 --- @spec add(dest: Vector4, Vector4, Vector4): Vector4
+--- @spec #add(Vector4, Vector4): Vector4
 function vector4.add(dest, v1, v2)
   local v1x, v1y, v1z, v1w = vector4.unwrap(v1)
   local v2x, v2y, v2z, v2w = vector4.unwrap(v2)
@@ -119,6 +146,7 @@ function vector4.add(dest, v1, v2)
 end
 
 --- @spec subtract(dest: Vector4, Vector4, Vector4): Vector4
+--- @spec #subtract(Vector4, Vector4): Vector4
 function vector4.subtract(dest, v1, v2)
   local v1x, v1y, v1z, v1w = vector4.unwrap(v1)
   local v2x, v2y, v2z, v2w = vector4.unwrap(v2)
@@ -130,6 +158,7 @@ function vector4.subtract(dest, v1, v2)
 end
 
 --- @spec multiply(dest: Vector4, Vector4, Vector4): Vector4
+--- @spec #multiply(Vector4, Vector4): Vector4
 function vector4.multiply(dest, v1, v2)
   local v1x, v1y, v1z, v1w = vector4.unwrap(v1)
   local v2x, v2y, v2z, v2w = vector4.unwrap(v2)
@@ -141,6 +170,7 @@ function vector4.multiply(dest, v1, v2)
 end
 
 --- @spec divide(dest: Vector4, Vector4, Vector4): Vector4
+--- @spec #divide(Vector4, Vector4): Vector4
 function vector4.divide(dest, v1, v2)
   local v1x, v1y, v1z, v1w = vector4.unwrap(v1)
   local v2x, v2y, v2z, v2w = vector4.unwrap(v2)
@@ -152,6 +182,7 @@ function vector4.divide(dest, v1, v2)
 end
 
 --- @spec idivide(dest: Vector4, Vector4, Vector4): Vector4
+--- @spec #idivide(v1: Vector4, v2: Vector4): Vector4
 function vector4.idivide(dest, v1, v2)
   local v1x, v1y, v1z, v1w = vector4.unwrap(v1)
   local v2x, v2y, v2z, v2w = vector4.unwrap(v2)
@@ -164,6 +195,7 @@ end
 
 --- @since "1.28.0"
 --- @spec apply(dest: Vector4, source: Vector4, func: Function/1): Vector4
+--- @spec #apply(source: Vector4, func: Function/1): Vector4
 function vector4.apply(dest, v1, func)
   local v1x, v1y, v1z, v1w = vector4.unwrap(v1)
   dest.x = func(v1x)
@@ -176,6 +208,7 @@ end
 --- Intended to be used by persistence systems to dump a vector4 to a plain table
 ---
 --- @spec dump_data(Vector4): Table
+--- @spec #dump_data(): Table
 function vector4.dump_data(vec)
   return { x = vec.x, y = vec.y, z = vec.z, w = vec.w }
 end

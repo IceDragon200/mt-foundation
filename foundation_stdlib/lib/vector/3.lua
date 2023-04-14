@@ -19,6 +19,12 @@ vector3 = {
 ---   z: Number,
 --- }
 
+--- @since "1.29.0"
+--- @spec is_vector3(obj: Any): Boolean
+function vector3.is_vector3(obj)
+  return getmetatable(obj) == vector3.metatable
+end
+
 --- @spec new(x: Number, y: Number, z: Number): Vector3
 function vector3.new(x, y, z)
   return setmetatable({ x = x, y = y, z = z }, vector3.metatable)
@@ -50,12 +56,19 @@ function vector3.to_string(v1, seperator)
   return v1.x .. seperator .. v1.y .. seperator .. v1.z
 end
 
+--- @since "1.29.0"
+--- @spec inspect(Vector3, seperator?: String): String
+function vector3.inspect(v1, seperator)
+  seperator = seperator or ","
+  return "(" .. v1.x .. seperator .. v1.y .. seperator .. v1.z .. ")"
+end
+
 --- @spec equals(a: Vector3, b: Vector3): Boolean
 function vector3.equals(a, b)
   return a.x == b.x and a.y == b.y and a.z == b.z
 end
 
---- @spec distance(a: Vector3, b: Vector3): Float
+--- @spec distance(a: Vector3, b: Vector3): Number
 function vector3.distance(a, b)
   local x = a.x - b.x
   x = x * x
@@ -65,6 +78,13 @@ function vector3.distance(a, b)
   z = z * z
 
   return math.sqrt(x + y + z)
+end
+
+--- @since "1.29.0"
+--- @spec length(a: Vector3): Number
+--- @spec #length(): Number
+function vector3.length(a)
+  return math.sqrt(a.x * a.x + a.y * a.y + a.z * a.z)
 end
 
 --- @spec floor(Vector3, Vector3): Vector3

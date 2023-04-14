@@ -3,7 +3,7 @@ local subject = assert(foundation.com.Vector3)
 
 local case = Luna:new("foundation.com.Vector3")
 
-case:describe(".new", function (t2)
+case:describe("new/3", function (t2)
   t2:test("can create a new vector", function (t3)
     local a = subject.new(3, 6, 9)
 
@@ -15,7 +15,7 @@ case:describe(".new", function (t2)
   end)
 end)
 
-case:describe(".copy", function (t2)
+case:describe("copy/1", function (t2)
   t2:test("can copy an existing vector", function (t3)
     local a = subject.new(3, 6, 9)
     local b = subject.copy(a)
@@ -28,7 +28,7 @@ case:describe(".copy", function (t2)
   end)
 end)
 
-case:describe(".zero", function (t2)
+case:describe("zero/0", function (t2)
   t2:test("can create a zeroed vector", function (t3)
     local a = subject.zero()
 
@@ -37,6 +37,17 @@ case:describe(".zero", function (t2)
       y = 0,
       z = 0,
     }, a)
+  end)
+end)
+
+case:describe("equals/2", function (t2)
+  t2:test("can compare two vectors", function (t3)
+    local a = subject.new(3, 6, 9)
+    local b = subject.new(2, 4, 7)
+    local c = subject.new(a.x, a.y, a.z)
+
+    t3:refute(subject.equals(a, b))
+    t3:assert(subject.equals(a, c))
   end)
 end)
 

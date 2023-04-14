@@ -37,6 +37,17 @@ case:describe(".zero", function (t2)
   end)
 end)
 
+case:describe(".equals", function (t2)
+  t2:test("can compare two vectors", function (t3)
+    local a = subject.new(3, 6)
+    local b = subject.new(2, 4)
+    local c = subject.new(a.x, a.y)
+
+    t3:refute(subject.equals(a, b))
+    t3:assert(subject.equals(a, c))
+  end)
+end)
+
 case:describe("#-~", function (t2)
   t2:test("can negate a vector", function (t3)
     local a = subject.new(2, -4)

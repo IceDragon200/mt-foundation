@@ -19,6 +19,12 @@ vector2 = {
 ---   y: Number,
 --- }
 
+--- @since "1.29.0"
+--- @spec is_vector2(obj: Any): Boolean
+function vector2.is_vector2(obj)
+  return getmetatable(obj) == vector2.metatable
+end
+
 --- @spec new(x: Number, y: Number): Vector2
 function vector2.new(x, y)
   return setmetatable({ x = x, y = y }, vector2.metatable)
@@ -50,12 +56,19 @@ function vector2.to_string(v2, seperator)
   return v2.x .. seperator .. v2.y
 end
 
+--- @since "1.29.0"
+--- @spec inspect(Vector2, seperator?: String): String
+function vector2.inspect(v2, seperator)
+  seperator = seperator or ","
+  return "(" .. v2.x .. seperator .. v2.y .. ")"
+end
+
 --- @spec equals(a: Vector2, b: Vector2): Boolean
 function vector2.equals(a, b)
   return a.x == b.x and a.y == b.y
 end
 
---- @spec distance(a: Vector2, b: Vector2): Float
+--- @spec distance(a: Vector2, b: Vector2): Number
 function vector2.distance(a, b)
   local x = a.x - b.x
   x = x * x
@@ -63,6 +76,13 @@ function vector2.distance(a, b)
   y = y * y
 
   return math.sqrt(x + y)
+end
+
+--- @since "1.29.0"
+--- @spec length(a: Vector2): Number
+--- @spec #length(): Number
+function vector2.length(a)
+  return math.sqrt(a.x * a.x + a.y * a.y)
 end
 
 --- @spec floor(dest: Vector2, v2: Vector2): Vector2
