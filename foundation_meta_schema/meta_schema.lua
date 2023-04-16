@@ -100,7 +100,7 @@ do
   function ic:compile(basename)
     assert(basename, "expected a basename")
     local schema = {
-      keys = {}
+      __keys = {}
     }
 
     local prefix = (self.prefix or "") .. basename
@@ -108,7 +108,7 @@ do
       local field_name = prefix .. "_" .. key
       local setter_name = "set_" .. key
       local getter_name = "get_" .. key
-      schema[key] = {
+      schema.__keys[key] = {
         field_name = field_name,
         type = entry.type,
         setter_name = setter_name,
@@ -133,7 +133,7 @@ do
 
     function schema.set(myself, meta, t)
       for key,value in pairs(t) do
-        local entry = schema.keys[key]
+        local entry = schema.__keys[key]
         if entry then
           myself[entry.setter_name](myself, meta, value)
         end
@@ -143,7 +143,7 @@ do
 
     function schema.get(myself, meta)
       local result = {}
-      for key,entry in pairs(myself.keys) do
+      for key,entry in pairs(myself.__keys) do
         result[key] = myself[entry.getter_name](myself, meta)
       end
       return result
