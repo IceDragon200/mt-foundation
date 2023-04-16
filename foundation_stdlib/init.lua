@@ -9,6 +9,7 @@ mod:require("lib/table.lua")
 
 mod:require("lib/vector.lua")
 mod:require("lib/matrix.lua")
+mod:require("lib/quaternion.lua")
 mod:require("lib/cuboid.lua")
 mod:require("lib/direction.lua")
 mod:require("lib/inventory_list.lua")

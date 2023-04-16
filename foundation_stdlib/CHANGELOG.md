@@ -1,3 +1,28 @@
+# 1.30.0
+
+* Implemented parts of `Quaternion` module:
+  * `is_quaternion/1`
+  * `new/4`
+  * `copy/1`
+  * `from_vector4`
+  * `unwrap/1`
+  * `unit/0`
+  * `to_string/{1,2}`
+  * `inspect/{1,2}`
+  * `equals/2`
+  * `length/1`
+  * `conjugate/2`
+  * `inverse/2`
+  * `normalize/2`
+  * `add/3`
+  * `subtract/3`
+  * `hadamard_multiply/3`
+  * `multiply/3`
+  * `divide/3`
+  * `to_euler/1`
+  * `dump_data/1`
+  * `load_data/1`
+
 # 1.29.0
 
 * `Matrix3x3` now has a metatable with limited arithmetic support

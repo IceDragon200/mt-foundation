@@ -58,6 +58,7 @@ mod:require("/tests/table_test.lua")
 mod:require("/tests/value_test.lua")
 mod:require("/tests/vector_test.lua")
 mod:require("/tests/waves_test.lua")
+mod:require("/tests/quaternion_test.lua")
 
 --
 mod:require("/tests/metaref_test.lua")
