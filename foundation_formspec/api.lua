@@ -233,6 +233,12 @@ end
 
 api.listcolors = api.list_colors
 
+--- @spec tooltip_element(
+---   gui_element_name: String,
+---   tooltip_text: String,
+---   bgcolor: Color,
+---   fontcolor: Color
+--- ): String
 function api.tooltip_element(gui_element_name, tooltip_text, bgcolor, fontcolor)
   local args = gui_element_name..";"..to_text(tooltip_text)
 
@@ -372,7 +378,7 @@ function api.model(
   elseif ty == "string" then
     tex = to_text(textures)
   else
-    error("expected textures to be string or table")
+    error("expected textures to be string or table (got " .. ty .. ")")
   end
 
   local args =
@@ -546,6 +552,18 @@ function api.button(x, y, w, h, name, label)
   return "button["..args.."]"
 end
 
+--- @spec image_button(
+---   x: Number,
+---   y: Number,
+---   w: Number,
+---   h: Number,
+---   texture_name: String,
+---   name: String,
+---   label: String,
+---   noclip: Boolean,
+---   drawborder: Boolean,
+---   pressed_texture_name: String
+--- ): String
 function api.image_button(
   x,
   y,
@@ -582,6 +600,15 @@ function api.image_button(
   return "image_button["..args.."]"
 end
 
+--- @spec item_image_button(
+---   x: Number,
+---   y: Number,
+---   w: Number,
+---   h: Number,
+---   item_name: String,
+---   name: String,
+---   label: String
+--- ): String
 function api.item_image_button(x, y, w, h, item_name, name, label)
   local args = x..","..y..
     ";"..w..","..h..
