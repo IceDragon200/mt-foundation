@@ -251,7 +251,7 @@ function ic:neat_dump(value)
   assert(self)
   local ty = type(value)
   if ty == "string" then
-    return ty .. "(" .. #value .. "); \"" .. string_hex_escape(value) .. "\""
+    return ty .. "<\"" .. string_hex_escape(value) .. "\">#" .. #value
   else
     return ty .. "; " .. dump(value)
   end
