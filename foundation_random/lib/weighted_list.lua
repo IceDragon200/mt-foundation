@@ -1,12 +1,14 @@
--- @namespace foundation.com
+--- @namespace foundation.com
 
--- @class WeightedList
+--- @class WeightedList<T>
 local WeightedList = foundation.com.Class:extends("WeightedList")
 local ic = assert(WeightedList.instance_class)
 
---
--- @spec #initialize(): void
+---
+--- @spec #initialize(): void
 function ic:initialize()
+  ic._super.initialize(self)
+
   self.weights = {}
   self.weight_at_index = {}
   self.data = {}
@@ -14,12 +16,12 @@ function ic:initialize()
   self.total_weight = 0
 end
 
---
--- Push item with specific weight unto the list
---
--- @spec #push(item: Any, weight: Integer): self
+---
+--- Push item with specific weight unto the list
+---
+--- @spec #push(item: T, weight: Integer): self
 function ic:push(item, weight)
-  assert(weight, "need a weight")
+  assert(type(weight) == "number", "expected weight value to be a number")
   assert(weight > 0, "weight must be greater than 0")
 
   self.size = self.size + 1
@@ -32,65 +34,50 @@ function ic:push(item, weight)
   return self
 end
 
---
--- Retrieve item in weight value
---
--- @spec #get_item_within_weight(weight: Integer): Any
-function ic:get_item_within_weight(weight)
-  if weight < 1 then
+---
+--- Retrieve item in weight value
+---
+--- @spec #get_item_within_weight(expected_weight: Integer): (value: T, index: Integer)
+function ic:get_item_within_weight(expected_weight)
+  assert(type(expected_weight) == "number", "expected number for expected_weight")
+
+  if expected_weight < 1 then
     return nil
-  elseif weight > self.total_weight then
+  elseif expected_weight > self.total_weight then
     return nil
-  end
-
-  local index = 1
-  local prev_weight = 0
-  local current_weight
-
-  while index <= self.size do
-    current_weight = self.weight_at_index[index]
-
-    if weight >= prev_weight and weight <= current_weight then
-      return self.data[index]
-    else
-      index = index + 1
-    end
   end
 
   -- Binary search
-  -- local index = math.floor(self.size / 2)
-  -- local iterations = 0
+  local lo = 1
+  local hi = self.size
+  local idx
+  local weight
+  local prev_weight
 
-  -- local current_weight
-  -- local prev_weight
+  while lo <= hi do
+    idx = lo + math.floor((hi - lo) / 2)
+    weight = self.weight_at_index[idx]
+    prev_weight = self.weight_at_index[idx - 1] or 0
 
-  -- while true do
-  --   if iterations > self.size then
-  --     error("stalled: index=" .. index)
-  --   end
+    if expected_weight > weight then
+      -- the expected is higher than the current
+      lo = idx + 1
+    elseif expected_weight <= prev_weight then
+      -- the expected is less than the current
+      hi = idx - 1
+    else
+      -- within range
+      return self.data[idx], idx
+    end
+  end
 
-  --   current_weight = self.weight_at_index[index]
-  --   prev_weight = self.weight_at_index[index - 1] or 0
-
-  --   if weight > current_weight then
-  --     -- currently behind
-  --     index = index + math.floor((self.size - index + 1) / 2)
-  --   elseif weight < prev_weight then
-  --     -- currently ahead
-  --     index = math.floor(index / 2)
-  --   else
-  --     -- within range
-  --     return self.data[index]
-  --   end
-
-  --   iterations = iterations + 1
-  -- end
+  return nil, nil
 end
 
---
--- Randomly select an item from the list
---
--- @spec #random(): Any
+---
+--- Randomly select an item from the list
+---
+--- @spec #random(): T
 function ic:random()
   if self.total_weight > 0 then
     local weight = math.random(self.total_weight)
@@ -100,10 +87,10 @@ function ic:random()
   end
 end
 
---
--- Retrieve a list of random items
---
--- @spec #random_list(Integer): Any[]
+---
+--- Retrieve a list of random items
+---
+--- @spec #random_list(Integer): T[]
 function ic:random_list(count)
   local t = {}
   for i = 1,count do
