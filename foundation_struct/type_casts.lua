@@ -1,7 +1,7 @@
 --- @namespace foundation.com
 
-local List = foundation.com.List
-local LinkedList = foundation.com.List
+local List = assert(foundation.com.List)
+local LinkedList = assert(foundation.com.LinkedList)
 
 local ic
 
@@ -15,7 +15,7 @@ do
   function ic:to_linked_list()
     local ll = LinkedList:new()
 
-    for _, item in list_next,self.m_data,0 do
+    for _, item in list_next,self,0 do
       ll:push(item)
     end
 
@@ -31,7 +31,7 @@ do
   function ic:to_list()
     local item
     local list = List:new()
-    local node = self.head
+    local node = self.next
 
     while node do
       item = node.value

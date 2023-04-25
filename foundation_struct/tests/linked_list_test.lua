@@ -35,6 +35,16 @@ case:describe("&new/1", function (t2)
   end)
 end)
 
+case:describe("#copy/0", function (t2)
+  t2:test("can copy a linked list", function (t3)
+    local ll = m:new({ 1, 2, 3 })
+    local other_ll = ll:copy()
+
+    t3:refute_eq(ll, other_ll)
+    t3:assert_table_eq(ll:to_table(), other_ll:to_table())
+  end)
+end)
+
 case:describe("#size/0", function (t2)
   t2:test("can correctly report the size of an empty list", function (t3)
     local ll = m:new()
@@ -144,6 +154,38 @@ case:describe("#each/0", function (t2)
     end
 
     t3:assert_table_eq({ 1, 2, 3 }, seen)
+  end)
+end)
+
+case:describe("#to_table/0", function (t2)
+  t2:test("can return a table with the underlying data", function (t3)
+    local ll = m:new({ 1, 2, 3 })
+
+    local t = ll:to_table()
+
+    t3:assert_table_eq({ 1, 2, 3 }, t)
+  end)
+end)
+
+case:describe("#to_linked_list/0", function (t2)
+  t2:test("should return self", function (t3)
+    local ll = m:new({ "a", "b", "c" })
+    local other_ll = ll:to_linked_list()
+
+    --- Should be the same ll
+    t3:assert_eq(ll, other_ll)
+  end)
+end)
+
+case:describe("#to_list/0", function (t2)
+  t2:test("can convert given linked list to a regular list", function (t3)
+    local ll = m:new({ 1, 2, 3 })
+
+    local l = ll:to_list()
+
+    t3:assert(l:is_instance_of(foundation.com.List))
+    t3:refute_eq(ll, l)
+    t3:assert_table_eq({ 1, 2, 3 }, l:to_table())
   end)
 end)
 

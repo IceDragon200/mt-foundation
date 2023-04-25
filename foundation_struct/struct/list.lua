@@ -579,13 +579,61 @@ function ic:reject(callback)
 end
 
 --- @since "1.5.0"
---- @spec #find(default: T, callback: (item: T, index: Integer) => Boolean): T
+--- @spec #find(default: T2, callback: (item: T, index: Integer) => Boolean): T | T2
 function ic:find(default, callback)
   return self:reduce_while(default, function (item, index, acc)
     if callback(item, index) then
       return false, item
     else
       return true, acc
+    end
+  end)
+end
+
+--- @since "1.6.0"
+--- @spec #bsearch_by(predicate: (value: T, idx: Integer) => Integer): T | nil
+function ic:bsearch_by(predicate)
+  assert(type(predicate) == "function", "expected predicate function")
+  if self.m_cursor > 0 then
+    local len = self.m_cursor
+    local lo = 1
+    local hi = len
+    local idx
+    local elem
+    local res
+    while lo <= hi do
+      idx = lo + math.floor((hi - lo) / 2)
+      elem = self.m_data[idx]
+
+      res = predicate(elem, idx)
+
+      if res > 0 then
+        -- Needed item is above the idx position
+        lo = idx + 1
+      elseif res < 0 then
+        -- Needed item is below the idx position
+        hi = idx - 1
+      elseif res == 0 then
+        return elem, idx
+      else
+        error("invalid result from predicate/2, expected a value between -1 and 1")
+      end
+    end
+  end
+
+  return nil, nil
+end
+
+--- @since "1.6.0"
+--- @spec #bsearch(a: T): T | nil
+function ic:bsearch(a)
+  return self:bsearch_by(function (b, _bidx)
+    if a == b then
+      return 0
+    elseif a > b then
+      return 1
+    elseif a < b then
+      return -1
     end
   end)
 end

@@ -93,6 +93,32 @@ case:describe("#to_table/0", function (t2)
   end)
 end)
 
+case:describe("#to_list/0", function (t2)
+  t2:test("should return self", function (t3)
+    local list = m:new({ "a", "b", "c" })
+    local other_list = list:to_list()
+
+    --- Should be the same list
+    t3:assert_eq(list, other_list)
+  end)
+end)
+
+case:describe("#to_linked_list/0", function (t2)
+  t2:test("can retrieve underlying table", function (t3)
+    local list = m:new({ "a", "b", "c" })
+    local ll = list:to_linked_list()
+
+    t3:assert(ll:is_instance_of(assert(foundation.com.LinkedList)))
+
+    --- Should be the same list
+    t3:refute_eq(list, ll)
+
+    t3:assert_eq(ll:size(), 3)
+    t3:assert_eq(ll:first(), "a")
+    t3:assert_eq(ll:last(), "c")
+  end)
+end)
+
 case:describe("#push/1", function (t2)
   t2:test("can push a value unto the list", function (t3)
     local list = m:new()
@@ -639,6 +665,97 @@ case:describe("#reject/2", function (t2)
         5,
       }
     )
+  end)
+end)
+
+case:describe("#bsearch/1", function (t2)
+  t2:test("can perform a binary search on an empty list", function (t3)
+    local list = m:new()
+
+    local res, idx = list:bsearch(1)
+
+    t3:assert_eq(res, nil)
+    t3:assert_eq(idx, nil)
+  end)
+
+  t2:test("can perform a binary search on a sorted list (with integers)", function (t3)
+    local list = m:new({10, 20, 30, 40, 50, 60, 70, 80, 90})
+
+    for aidx, a in list:each() do
+      local b, bidx = list:bsearch(a)
+
+      t3:assert_eq(a, b)
+      t3:assert_eq(aidx, bidx)
+    end
+
+    for _, a in ipairs({ 0, 100 }) do
+      local b, bidx = list:bsearch(a)
+
+      t3:assert_eq(b, nil)
+      t3:assert_eq(bidx, nil)
+    end
+  end)
+
+  t2:test("can perform a binary search on a sorted list (with integers) of random length", function (t3)
+    local list = m:new({})
+
+    for i = 1,math.random(20) do
+      list:push(i * 20)
+    end
+
+    for aidx, a in list:each() do
+      local b, bidx = list:bsearch(a)
+
+      t3:assert_eq(a, b)
+      t3:assert_eq(aidx, bidx)
+    end
+  end)
+end)
+
+case:describe("#bsearch_by/1", function (t2)
+  t2:test("can perform a binary search on an empty list", function (t3)
+    local list = m:new()
+
+    local res, idx = list:bsearch_by(function (_a)
+      return 1
+    end)
+
+    t3:assert_eq(res, nil)
+    t3:assert_eq(idx, nil)
+  end)
+
+  t2:test("can perform a binary search on a sorted list", function (t3)
+    local list = m:new({10, 20, 30, 40, 50, 60, 70, 80, 90})
+
+    for aidx, a in list:each() do
+      local c, cidx = list:bsearch_by(function (b, bidx)
+        if a == b then
+          return 0
+        elseif a > b then
+          return 1
+        elseif a < b then
+          return -1
+        end
+      end)
+
+      t3:assert_eq(a, c)
+      t3:assert_eq(aidx, cidx)
+    end
+
+    for _, a in ipairs({ 0, 100 }) do
+      local c, cidx = list:bsearch_by(function (b)
+        if a == b then
+          return 0
+        elseif a > b then
+          return 1
+        elseif a < b then
+          return -1
+        end
+      end)
+
+      t3:assert_eq(c, nil)
+      t3:assert_eq(cidx, nil)
+    end
   end)
 end)
 
