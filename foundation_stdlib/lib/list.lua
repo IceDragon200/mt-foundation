@@ -348,7 +348,10 @@ end
 --- Keep in mind, the key and value are reversed for lists unlike with tables.
 ---
 --- @since "1.31.0"
---- @spec list_find(t: Table<K, V>, (value: V, index: K) => Boolean): (value: V | nil, index: K | nil)
+--- @spec list_find(
+---   t: Table<K, V>,
+---   (value: V, index: K) => Boolean
+--- ): (value: V | nil, index: K | nil)
 function foundation.com.list_find(t, predicate)
   local result = {}
 
@@ -359,4 +362,59 @@ function foundation.com.list_find(t, predicate)
   end
 
   return nil, nil
+end
+
+--- @since "1.32.0"
+--- @spec list_bsearch_by(
+---   t: Table<K, V>,
+---   (value: V, index: K) => Integer
+--- ): (value: V | nil, index: K | nil)
+function foundation.com.list_bsearch_by(t, predicate)
+  local len = #t
+
+  if len > 0 then
+    local lo = 1
+    local hi = len
+    local idx
+    local elem
+    local res
+    while lo <= hi do
+      idx = lo + math.floor((hi - lo) / 2)
+      elem = t[idx]
+
+      res = predicate(elem, idx)
+
+      if res > 0 then
+        -- Needed item is above the idx position
+        lo = idx + 1
+      elseif res < 0 then
+        -- Needed item is below the idx position
+        hi = idx - 1
+      elseif res == 0 then
+        return elem, idx
+      else
+        error("invalid result from predicate/2, expected a value between -1 and 1")
+      end
+    end
+  end
+
+  return nil, nil
+end
+
+local list_bsearch_by = assert(foundation.com.list_bsearch_by)
+--- @since "1.32.0"
+--- @spec list_bsearch_by(
+---   t: Table<K, V>,
+---   v: Any,
+--- ): (value: V | nil, index: K | nil)
+function foundation.com.list_bsearch(t, a)
+  return list_bsearch_by(t, function (b, bidx)
+    if a == b then
+      return 0
+    elseif a > b then
+      return 1
+    elseif a < b then
+      return -1
+    end
+  end)
 end

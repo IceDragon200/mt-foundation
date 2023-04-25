@@ -405,6 +405,97 @@ case:describe("list_find/2", function (t2)
   end)
 end)
 
+case:describe("list_bsearch/2", function (t2)
+  t2:test("can perform a binary search on an empty list", function (t3)
+    local t = {}
+
+    local res, idx = subject.list_bsearch(t, 1)
+
+    t3:assert_eq(res, nil)
+    t3:assert_eq(idx, nil)
+  end)
+
+  t2:test("can perform a binary search on a sorted list (with integers)", function (t3)
+    local t = {10, 20, 30, 40, 50, 60, 70, 80, 90}
+
+    for aidx, a in ipairs(t) do
+      local b, bidx = subject.list_bsearch(t, a)
+
+      t3:assert_eq(a, b)
+      t3:assert_eq(aidx, bidx)
+    end
+
+    for _, a in ipairs({ 0, 100 }) do
+      local b, bidx = subject.list_bsearch(t, a)
+
+      t3:assert_eq(b, nil)
+      t3:assert_eq(bidx, nil)
+    end
+  end)
+
+  t2:test("can perform a binary search on a sorted list (with integers) of random length", function (t3)
+    local t = {}
+
+    for i = 1,math.random(20) do
+      t[i] = i * 20
+    end
+
+    for aidx, a in ipairs(t) do
+      local b, bidx = subject.list_bsearch(t, a)
+
+      t3:assert_eq(a, b)
+      t3:assert_eq(aidx, bidx)
+    end
+  end)
+end)
+
+case:describe("list_bsearch_by/2", function (t2)
+  t2:test("can perform a binary search on an empty list", function (t3)
+    local t = {}
+
+    local res, idx = subject.list_bsearch_by(t, function (_a)
+      return 1
+    end)
+
+    t3:assert_eq(res, nil)
+    t3:assert_eq(idx, nil)
+  end)
+
+  t2:test("can perform a binary search on a sorted list", function (t3)
+    local t = {10, 20, 30, 40, 50, 60, 70, 80, 90}
+
+    for aidx, a in ipairs(t) do
+      local c, cidx = subject.list_bsearch_by(t, function (b, bidx)
+        if a == b then
+          return 0
+        elseif a > b then
+          return 1
+        elseif a < b then
+          return -1
+        end
+      end)
+
+      t3:assert_eq(a, c)
+      t3:assert_eq(aidx, cidx)
+    end
+
+    for _, a in ipairs({ 0, 100 }) do
+      local c, cidx = subject.list_bsearch_by(t, function (b)
+        if a == b then
+          return 0
+        elseif a > b then
+          return 1
+        elseif a < b then
+          return -1
+        end
+      end)
+
+      t3:assert_eq(c, nil)
+      t3:assert_eq(cidx, nil)
+    end
+  end)
+end)
+
 case:execute()
 case:display_stats()
 case:maybe_error()

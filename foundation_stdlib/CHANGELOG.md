@@ -1,3 +1,8 @@
+# 1.32.0
+
+* Added `list_bsearch/2`
+* Added `list_bsearch_by/2`
+
 # 1.31.0
 
 * Added `table_find/2` which iterates over each pair in the table and returns the matching pair based on a given predicate.
