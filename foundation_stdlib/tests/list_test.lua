@@ -352,6 +352,59 @@ case:describe("list_reject/2", function (t2)
   end)
 end)
 
+case:describe("list_find/2", function (t2)
+  t2:test("can find matching pair by predicate", function (t3)
+    local t = {
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+    }
+
+    local value, idx = subject.list_find(t, function (v, _idx)
+      return (v / 2.0) == 2.0
+    end)
+
+    t3:assert_eq(value, 4)
+    t3:assert_eq(idx, 4)
+
+    value, idx = subject.list_find(t, function (v, _idx)
+      return (v / 2.0) == 4.0
+    end)
+
+    t3:refute(value)
+    t3:refute(idx)
+  end)
+
+  --- Just to make sure it actually does something
+  t2:test("works with string values", function (t3)
+    local t = {
+      "Apple",
+      "Banana",
+      "Cantalope",
+      "Durian",
+      "Elderberry",
+      "Fig",
+    }
+
+    local value, idx = subject.list_find(t, function (v, _idx)
+      return "Apple" == v
+    end)
+
+    t3:assert_eq(value, "Apple")
+    t3:assert_eq(idx, 1)
+
+    value, idx = subject.list_find(t, function (v, _idx)
+      return "Durian" == v
+    end)
+
+    t3:assert_eq(value, "Durian")
+    t3:assert_eq(idx, 4)
+  end)
+end)
+
 case:execute()
 case:display_stats()
 case:maybe_error()

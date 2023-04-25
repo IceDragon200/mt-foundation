@@ -1,8 +1,8 @@
--- @namespace foundation.com
+--- @namespace foundation.com
 
--- Disables modifications on the specified table for creating read-only tables.
---
--- @spec table_freeze(Table): Table
+--- Disables modifications on the specified table for creating read-only tables.
+---
+--- @spec table_freeze(Table): Table
 function foundation.com.table_freeze(a)
   assert(type(a) == "table", "expected a table")
   setmetatable(a, getmetatable(a) or {})
@@ -10,11 +10,11 @@ function foundation.com.table_freeze(a)
   return a
 end
 
--- Not table.concat (which is really just a join)
--- This is concat like any other sane language, it really should be used on
--- array/list like tables and not map like ones.
---
--- @spec table_concat(...Table): Table
+--- Not table.concat (which is really just a join)
+--- This is concat like any other sane language, it really should be used on
+--- array/list like tables and not map like ones.
+---
+--- @spec table_concat(...Table): Table
 function foundation.com.table_concat(...)
   local result = {}
   local len = select('#', ...)
@@ -33,9 +33,9 @@ function foundation.com.table_concat(...)
   return result
 end
 
--- Copy the specified keys from the given table, returning a new table with those keys
---
--- @spec table_take(t: Table, keys: String[]): Table
+--- Copy the specified keys from the given table, returning a new table with those keys
+---
+--- @spec table_take(t: Table, keys: String[]): Table
 function foundation.com.table_take(t, keys)
   local result = {}
 
@@ -46,11 +46,11 @@ function foundation.com.table_take(t, keys)
   return result
 end
 
--- Removes the specified keys from the given table
--- This will return the same table.
---
--- @mutative
--- @spec table_drop(Table, keys: String[]): Table
+--- Removes the specified keys from the given table
+--- This will return the same table.
+---
+--- @mutative
+--- @spec table_drop(Table, keys: String[]): Table
 function foundation.com.table_drop(t, keys)
   for _, key in ipairs(keys) do
     t[key] = nil
@@ -58,9 +58,9 @@ function foundation.com.table_drop(t, keys)
   return t
 end
 
--- Determines if the expected value is a key of the given table.
---
--- @spec table_key_of(Table<T, _V>, expected: T): Boolean
+--- Determines if the expected value is a key of the given table.
+---
+--- @spec table_key_of(Table<T, _V>, expected: T): Boolean
 function foundation.com.table_key_of(t, expected)
   for key,value in pairs(t) do
     if value == expected then
@@ -70,7 +70,7 @@ function foundation.com.table_key_of(t, expected)
   return nil
 end
 
--- @spec table_reduce(table: Table, acc: T, Function/3): T
+--- @spec table_reduce(table: Table, acc: T, Function/3): T
 function foundation.com.table_reduce(tbl, acc, fun)
   local should_break
   for k, v in pairs(tbl) do
@@ -82,9 +82,9 @@ function foundation.com.table_reduce(tbl, acc, fun)
   return acc
 end
 
--- Returns the total count of key-value pairs in the table
---
--- @spec table_length(Table): Integer
+--- Returns the total count of key-value pairs in the table
+---
+--- @spec table_length(Table): Integer
 function foundation.com.table_length(tbl)
   local len = 0
   for _k, _v in pairs(tbl) do
@@ -93,11 +93,11 @@ function foundation.com.table_length(tbl)
   return len
 end
 
--- Attempts to push the value unto the specified key, if the key doesn't
--- have a table value, one will be created and the value will be inserted into it
---
--- @mutative
--- @spec table_cpush(t: Table, key: String, value: Any): Table
+--- Attempts to push the value unto the specified key, if the key doesn't
+--- have a table value, one will be created and the value will be inserted into it
+---
+--- @mutative t
+--- @spec table_cpush(t: Table, key: String, value: Any): Table
 function foundation.com.table_cpush(t, key, value)
   if not t[key] then
     t[key] = {}
@@ -106,10 +106,10 @@ function foundation.com.table_cpush(t, key, value)
   return t
 end
 
--- Used to merge multiple map-like tables together, if you need to merge lists
--- use `list_concat/*` instead
---
--- @spec table_merge(...Table): Table
+--- Used to merge multiple map-like tables together, if you need to merge lists
+--- use `list_concat/*` instead
+---
+--- @spec table_merge(...Table): Table
 function foundation.com.table_merge(...)
   local result = {}
   local len = select('#', ...)
@@ -126,7 +126,7 @@ function foundation.com.table_merge(...)
   return result
 end
 
--- @spec table_deep_merge(...Table): Table
+--- @spec table_deep_merge(...Table): Table
 function foundation.com.table_deep_merge(...)
   local result = {}
   local len = select('#', ...)
@@ -151,9 +151,9 @@ function foundation.com.table_deep_merge(...)
   return result
 end
 
--- Makes a copy of the given table
---
--- @spec table_copy(Table): Table
+--- Makes a copy of the given table
+---
+--- @spec table_copy(Table): Table
 function foundation.com.table_copy(tab)
   local result = {}
   for key,value in pairs(tab) do
@@ -162,12 +162,12 @@ function foundation.com.table_copy(tab)
   return result
 end
 
--- Makes a deep copy of the table.
--- Note that this function is recursive and does not make any effort to
--- deduplicate any values for sake of performance.
---
--- @recursive unsafe
--- @spec table_deep_copy(Table): Table
+--- Makes a deep copy of the table.
+--- Note that this function is recursive and does not make any effort to
+--- deduplicate any values for sake of performance.
+---
+--- @recursive unsafe
+--- @spec table_deep_copy(Table): Table
 function foundation.com.table_deep_copy(tab)
   local result = {}
 
@@ -182,21 +182,21 @@ function foundation.com.table_deep_copy(tab)
   return result
 end
 
--- Sets a key in the specified table to the given value.
--- You really shouldn't need this under normal circumstances.
---
--- @mutative
--- @spec table_put(t: Table, k: Any, v: Any): Table
+--- Sets a key in the specified table to the given value.
+--- You really shouldn't need this under normal circumstances.
+---
+--- @mutative t
+--- @spec table_put(t: Table, k: Any, v: Any): Table
 function foundation.com.table_put(t, key, value)
   t[key] = value
   return t
 end
 
--- Puts a value nested into a table following the specified path.
--- Note that additional tables may be created to complete the bury.
---
--- @mutative
--- @spec table_bury(Table, path: Any[], value: Any): Table
+--- Puts a value nested into a table following the specified path.
+--- Note that additional tables may be created to complete the bury.
+---
+--- @mutative t
+--- @spec table_bury(t: Table, path: Any[], value: Any): Table
 function foundation.com.table_bury(t, path, value)
   local top = t
   for i = 1,(#path - 1) do
@@ -209,9 +209,9 @@ function foundation.com.table_bury(t, path, value)
   return t
 end
 
--- Returns all keys in the given table in a new table (list)
---
--- @spec table_keys(Table<T, _V>): T[]
+--- Returns all keys in the given table in a new table (list)
+---
+--- @spec table_keys(Table<T, _V>): T[]
 function foundation.com.table_keys(t)
   local keys = {}
   local i = 0
@@ -222,9 +222,9 @@ function foundation.com.table_keys(t)
   return keys
 end
 
--- Returns all value sin the given table in a new table (list)
---
--- @spec table_values(Table<_K, T>): T[]
+--- Returns all value sin the given table in a new table (list)
+---
+--- @spec table_values(Table<_K, T>): T[]
 function foundation.com.table_values(t)
   local values = {}
   local i = 0
@@ -235,9 +235,9 @@ function foundation.com.table_values(t)
   return values
 end
 
--- Shallow compares two given tables
---
--- @spec table_equals(a: Table, b: Table): Boolean
+--- Shallow compares two given tables
+---
+--- @spec table_equals(a: Table, b: Table): Boolean
 function foundation.com.table_equals(a, b)
   if a == b then
     -- even if a and b are nil, its true that they are at least equal
@@ -257,9 +257,9 @@ function foundation.com.table_equals(a, b)
   return true
 end
 
--- Determines if the given value contains the specified table (expected)
---
--- @spec table_includes_value(Table<_K, T>, expected: T): Boolean
+--- Determines if the given value contains the specified table (expected)
+---
+--- @spec table_includes_value(Table<_K, T>, expected: T): Boolean
 function foundation.com.table_includes_value(t, expected)
   for _, value in pairs(t) do
     if value == expected then
@@ -269,10 +269,10 @@ function foundation.com.table_includes_value(t, expected)
   return false
 end
 
--- Adds a spacer item between values, this is intended to be used on
--- lists rather than tables.
---
--- @spec table_intersperse(Table, spacer: Any): Table
+--- Adds a spacer item between values, this is intended to be used on
+--- lists rather than tables.
+---
+--- @spec table_intersperse(Table, spacer: Any): Table
 function foundation.com.table_intersperse(t, spacer)
   local count = #t
   local result = {}
@@ -288,9 +288,9 @@ function foundation.com.table_intersperse(t, spacer)
   return result
 end
 
--- Determines if the given table is empty
---
--- @spec is_table_empty(Table): Boolean
+--- Determines if the given table is empty
+---
+--- @spec is_table_empty(Table): Boolean
 function foundation.com.is_table_empty(t)
   return next(t) == nil
 end
@@ -308,18 +308,18 @@ local function flatten_reducer(t, index, value, depth)
   end
 end
 
--- Attempts to flatten the given table structure, that is all sub tables
--- are merged directly into the top-level, leaving a 1 level deep table as the
--- result.
---
--- @spec table_flatten(Table): Table
+--- Attempts to flatten the given table structure, that is all sub tables
+--- are merged directly into the top-level, leaving a 1 level deep table as the
+--- result.
+---
+--- @spec table_flatten(Table): Table
 function foundation.com.table_flatten(t)
   return flatten_reducer({}, 1, t, 0)
 end
 
--- Returns a random key-value pair
---
--- @spec table_sample(Table): Table
+--- Returns a random key-value pair
+---
+--- @spec table_sample(Table): Table
 function foundation.com.table_sample(t)
   if next(t) then
     local keys = foundation.com.table_keys(t)
@@ -331,13 +331,13 @@ function foundation.com.table_sample(t)
   return nil, nil
 end
 
--- @since "1.25.0"
--- @spec table_filter(tab: Table, Function/2): Table
-function foundation.com.table_filter(tab, callback)
+--- @since "1.25.0"
+--- @spec table_filter(tab: Table<K, V>, (key: K, value: V) => Boolean): Table
+function foundation.com.table_filter(tab, predicate)
   local result = {}
 
   for key, value in pairs(tab) do
-    if callback(key, value) then
+    if predicate(key, value) then
       result[key] = value
     end
   end
@@ -345,16 +345,32 @@ function foundation.com.table_filter(tab, callback)
   return result
 end
 
--- @since "1.25.0"
--- @spec table_reject(tab: Table, Function/2): Table
-function foundation.com.table_reject(tab, callback)
+--- @since "1.25.0"
+--- @spec table_reject(tab: Table<K, V>, (key: K, value: V) => Boolean): Table
+function foundation.com.table_reject(tab, predicate)
   local result = {}
 
   for key, value in pairs(tab) do
-    if not callback(key, value) then
+    if not predicate(key, value) then
       result[key] = value
     end
   end
 
   return result
+end
+
+--- Returns the matching pair that evaluates to true based on the predicate function.
+---
+--- @since "1.31.0"
+--- @spec table_find(t: Table<K, V>, (key: K, value: V) => Boolean): (key: K | nil, value: V | nil)
+function foundation.com.table_find(t, predicate)
+  local result = {}
+
+  for key, value in pairs(t) do
+    if predicate(key, value) then
+      return key, value
+    end
+  end
+
+  return nil, nil
 end

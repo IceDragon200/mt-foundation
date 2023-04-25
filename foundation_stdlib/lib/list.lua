@@ -275,11 +275,10 @@ end
 ---
 --- Sorts given list, I do not guarantee any performance, this is the easiest possible sort
 ---
---- @since ""
+--- @since "1.26.0"
 --- @mutative
 --- @spec #list_sort_by(list: Table, callback: Function/2): Table
 function foundation.com.list_sort_by(list, callback)
-
   if next(list) then
     local size = #list
     local a
@@ -314,7 +313,7 @@ function foundation.com.list_sort_by(list, callback)
 end
 
 --- @since "1.25.0"
---- @spec list_filter(list: Table, Function/1): Table
+--- @spec list_filter(list: Table<K, V>, (value: V, index: K) => Boolean): Table
 function foundation.com.list_filter(list, callback)
   local result = {}
   local i = 0
@@ -330,7 +329,7 @@ function foundation.com.list_filter(list, callback)
 end
 
 --- @since "1.25.0"
---- @spec list_reject(list: Table, Function/1): Table
+--- @spec list_reject(list: Table<K, V>, (value: V, index: K) => Boolean): Table
 function foundation.com.list_reject(list, callback)
   local result = {}
   local i = 0
@@ -343,4 +342,21 @@ function foundation.com.list_reject(list, callback)
   end
 
   return result
+end
+
+--- Returns the matching pair that evaluates to true based on the predicate function.
+--- Keep in mind, the key and value are reversed for lists unlike with tables.
+---
+--- @since "1.31.0"
+--- @spec list_find(t: Table<K, V>, (value: V, index: K) => Boolean): (value: V | nil, index: K | nil)
+function foundation.com.list_find(t, predicate)
+  local result = {}
+
+  for index, value in ipairs(t) do
+    if predicate(value, index) then
+      return value, index
+    end
+  end
+
+  return nil, nil
 end

@@ -1,3 +1,8 @@
+# 1.31.0
+
+* Added `table_find/2` which iterates over each pair in the table and returns the matching pair based on a given predicate.
+* Added `list_find/2` see `table_find/2` as well, as they do the same thing, just with arguments reversed.
+
 # 1.30.0
 
 * Implemented parts of `Quaternion` module:
