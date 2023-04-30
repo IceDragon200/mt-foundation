@@ -68,6 +68,15 @@ function ic:is_empty()
 end
 
 ---
+--- Determines if the buffer has items at all.
+---
+--- @since "1.7.0"
+--- @spec #has_items(): Boolean
+function ic:has_items()
+  return self.m_size > 0
+end
+
+---
 --- Is the buffer full?
 ---
 --- @spec #is_full(): Boolean

@@ -1,3 +1,7 @@
+# 1.7.0
+
+* Added `RingBuffer#has_items/0`
+
 # 1.6.0
 
 * Added `List#bsearch/1`
