@@ -219,7 +219,10 @@ globals = {
             fields = {},
           },
           MetaSchema = {},
-          FakeMetaRef = {},
+          headless = {
+            MetaRef = {},
+            ItemStack = {},
+          },
           Trace = {},
           Class = {
             fields = {

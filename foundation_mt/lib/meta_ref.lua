@@ -1,7 +1,7 @@
--- @namespace foundation.com
+--- @namespace foundation.com
 foundation_stdlib:require("lib/table.lua")
 
--- @spec metaref_merge_fields_from_table(MetaRef, Table): MetaRef
+--- @spec metaref_merge_fields_from_table(MetaRef, Table): MetaRef
 function foundation.com.metaref_merge_fields_from_table(meta, params)
   local base = meta:to_table()
   local new_fields = foundation.com.table_merge(base.fields, params)
@@ -10,7 +10,7 @@ function foundation.com.metaref_merge_fields_from_table(meta, params)
   return meta
 end
 
--- @spec metaref_dec_float(MetaRef, String, Float): Float
+--- @spec metaref_dec_float(MetaRef, String, Float): Float
 function foundation.com.metaref_dec_float(meta, name, amount)
   amount = amount or 1
   local n = meta:get_float(name)
@@ -19,7 +19,7 @@ function foundation.com.metaref_dec_float(meta, name, amount)
   return n
 end
 
--- @spec metaref_dec_int(MetaRef, String, Integer): Integer
+--- @spec metaref_dec_int(MetaRef, String, Integer): Integer
 function foundation.com.metaref_dec_int(meta, name, amount)
   amount = amount or 1
   local n = meta:get_int(name)
@@ -28,7 +28,7 @@ function foundation.com.metaref_dec_int(meta, name, amount)
   return n
 end
 
--- @spec metaref_inc_float(MetaRef, String, Float): Float
+--- @spec metaref_inc_float(MetaRef, String, Float): Float
 function foundation.com.metaref_inc_float(meta, name, amount)
   amount = amount or 1
   local n = meta:get_float(name)
@@ -37,7 +37,7 @@ function foundation.com.metaref_inc_float(meta, name, amount)
   return n
 end
 
--- @spec metaref_inc_int(MetaRef, String, Integer): Integer
+--- @spec metaref_inc_int(MetaRef, String, Integer): Integer
 function foundation.com.metaref_inc_int(meta, name, amount)
   amount = amount or 1
   local n = meta:get_int(name)
@@ -118,12 +118,12 @@ function foundation.com.metaref_int_list_peek(meta, prefix, _max)
   return nil
 end
 
---
--- Pushes given item unto the list, if there is no space (i.e. exceeds max) nil is returned,
--- otherwise the index of the item added is returned instead
---
--- @mutative
--- @spec metaref_int_list_push(MetaRef, prefix: String, max: Integer, item: Integer): nil | Integer
+---
+--- Pushes given item unto the list, if there is no space (i.e. exceeds max) nil is returned,
+--- otherwise the index of the item added is returned instead
+---
+--- @mutative
+--- @spec metaref_int_list_push(MetaRef, prefix: String, max: Integer, item: Integer): nil | Integer
 function foundation.com.metaref_int_list_push(meta, prefix, max, item)
   local count_key = prefix .. "count"
   local count = meta:get_int(count_key)
@@ -138,8 +138,8 @@ function foundation.com.metaref_int_list_push(meta, prefix, max, item)
   return nil
 end
 
--- @mutative
--- @spec metaref_int_list_clear(MetaRef, prefix: String, max: Integer): void
+--- @mutative
+--- @spec metaref_int_list_clear(MetaRef, prefix: String, max: Integer): void
 function foundation.com.metaref_int_list_clear(meta, prefix, max)
   local count_key = prefix .. "count"
   local count = meta:get_int(count_key)
@@ -152,8 +152,8 @@ function foundation.com.metaref_int_list_clear(meta, prefix, max)
   meta:set_int(count_key, 0)
 end
 
--- @mutative
--- @spec metaref_int_list_lazy_clear(MetaRef, prefix: String, max: Integer): void
+--- @mutative
+--- @spec metaref_int_list_lazy_clear(MetaRef, prefix: String, max: Integer): void
 function foundation.com.metaref_int_list_lazy_clear(meta, prefix, max)
   local count_key = prefix .. "count"
 
@@ -164,11 +164,11 @@ end
 -- String
 --
 
--- @spec metaref_int_list_to_table(
---   MetaRef,
---   prefix: String,
---   max: Integer
--- ): (count: Integer, result: Table)
+--- @spec metaref_int_list_to_table(
+---   MetaRef,
+---   prefix: String,
+---   max: Integer
+--- ): (count: Integer, result: Table)
 function foundation.com.metaref_string_list_to_table(meta, prefix, max)
   local count_key = prefix .. "count"
   local count = meta:get_int(count_key)
@@ -184,12 +184,12 @@ function foundation.com.metaref_string_list_to_table(meta, prefix, max)
   return count, result
 end
 
--- @spec metaref_string_list_index_of(
---   MetaRef,
---   prefix: String,
---   max: Integer,
---   value: String
--- ): (index: Integer | nil)
+--- @spec metaref_string_list_index_of(
+---   MetaRef,
+---   prefix: String,
+---   max: Integer,
+---   value: String
+--- ): (index: Integer | nil)
 function foundation.com.metaref_string_list_index_of(meta, prefix, max, item)
   local count_key = prefix .. "count"
   local count = meta:get_int(count_key)
@@ -208,8 +208,8 @@ function foundation.com.metaref_string_list_index_of(meta, prefix, max, item)
   return nil
 end
 
--- @mutative
--- @spec metaref_string_list_pop(MetaRef, prefix: String, max: Integer): nil | String
+--- @mutative meta
+--- @spec metaref_string_list_pop(MetaRef, prefix: String, max: Integer): nil | String
 function foundation.com.metaref_string_list_pop(meta, prefix, _max)
   local count_key = prefix .. "count"
   local count = meta:get_int(count_key)
@@ -223,7 +223,7 @@ function foundation.com.metaref_string_list_pop(meta, prefix, _max)
   return nil
 end
 
--- @spec metaref_string_list_peek(MetaRef, prefix: String, max: Integer): nil | String
+--- @spec metaref_string_list_peek(MetaRef, prefix: String, max: Integer): nil | String
 function foundation.com.metaref_string_list_peek(meta, prefix, _max)
   local count_key = prefix .. "count"
   local count = meta:get_int(count_key)
@@ -236,17 +236,17 @@ function foundation.com.metaref_string_list_peek(meta, prefix, _max)
   return nil
 end
 
---
--- Pushes given item unto the list, if there is no space (i.e. exceeds max) nil is returned,
--- otherwise the index of the item added is returned instead
---
--- @mutative
--- @spec metaref_string_list_push(
---   MetaRef,
---   prefix: String,
---   max: Integer,
---   item: String
--- ): nil | Integer
+---
+--- Pushes given item unto the list, if there is no space (i.e. exceeds max) nil is returned,
+--- otherwise the index of the item added is returned instead
+---
+--- @mutative
+--- @spec metaref_string_list_push(
+---   MetaRef,
+---   prefix: String,
+---   max: Integer,
+---   item: String
+--- ): nil | Integer
 function foundation.com.metaref_string_list_push(meta, prefix, max, item)
   local count_key = prefix .. "count"
   local count = meta:get_int(count_key)
@@ -261,8 +261,8 @@ function foundation.com.metaref_string_list_push(meta, prefix, max, item)
   return nil
 end
 
--- @mutative
--- @spec metaref_string_list_clear(MetaRef, prefix: String, max: Integer): void
+--- @mutative
+--- @spec metaref_string_list_clear(MetaRef, prefix: String, max: Integer): void
 function foundation.com.metaref_string_list_clear(meta, prefix, max)
   local count_key = prefix .. "count"
   local count = meta:get_int(count_key)
@@ -275,8 +275,8 @@ function foundation.com.metaref_string_list_clear(meta, prefix, max)
   meta:set_int(count_key, 0)
 end
 
--- @mutative
--- @spec metaref_string_list_lazy_clear(MetaRef, prefix: String, max: Integer): void
+--- @mutative
+--- @spec metaref_string_list_lazy_clear(MetaRef, prefix: String, max: Integer): void
 function foundation.com.metaref_string_list_lazy_clear(meta, prefix, max)
   local count_key = prefix .. "count"
 

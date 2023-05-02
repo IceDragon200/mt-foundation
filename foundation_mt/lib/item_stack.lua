@@ -1,6 +1,6 @@
--- @namespace foundation.com
+--- @namespace foundation.com
 
--- @spec itemstack_deep_equals(ItemStack, ItemStack): Boolean
+--- @spec itemstack_deep_equals(ItemStack, ItemStack): Boolean
 function foundation.com.itemstack_deep_equals(a, b)
   if a == b then
     return true
@@ -16,7 +16,7 @@ function foundation.com.itemstack_deep_equals(a, b)
   return false
 end
 
--- @spec itemstack_is_blank(ItemStack): Boolean
+--- @spec itemstack_is_blank(ItemStack): Boolean
 function foundation.com.itemstack_is_blank(stack)
   if stack then
     return stack:is_empty()
@@ -24,12 +24,12 @@ function foundation.com.itemstack_is_blank(stack)
   return true
 end
 
--- @spec itemstack_copy(ItemStack): ItemStack
+--- @spec itemstack_copy(ItemStack): ItemStack
 function foundation.com.itemstack_copy(stack)
   return stack:peek_item(stack:get_count())
 end
 
--- @spec itemstack_get_itemdef(ItemStack | nil): Table
+--- @spec itemstack_get_itemdef(ItemStack | nil): Table
 function foundation.com.itemstack_get_itemdef(stack)
   if not foundation.com.itemstack_is_blank(stack) then
     return stack:get_definition()
@@ -37,7 +37,7 @@ function foundation.com.itemstack_get_itemdef(stack)
   return nil
 end
 
--- @spec itemstack_has_group(stack: ItemStack, group_name: String, optional_value: Integer): Boolean
+--- @spec itemstack_has_group(stack: ItemStack, group_name: String, optional_value: Integer): Boolean
 function foundation.com.itemstack_has_group(stack, group_name, optional_value)
   local itemdef = foundation.com.itemstack_get_itemdef(stack)
   if itemdef then
@@ -47,7 +47,7 @@ function foundation.com.itemstack_has_group(stack, group_name, optional_value)
   end
 end
 
--- @spec itemstack_inspect(stack: ItemStack | nil): String
+--- @spec itemstack_inspect(stack: ItemStack | nil): String
 function foundation.com.itemstack_inspect(stack)
   if stack then
     return "stack[" ..
@@ -71,10 +71,10 @@ function foundation.com.itemstack_new_blank()
   })
 end
 
--- A non-destructive version of ItemStack#take_item,
--- this will return the taken stack as the first value and the remaining as the second
---
--- @spec itemstack_split(stack: ItemStack, size: Integer): (stack: ItemStack, leftover: ItemStack)
+--- A non-destructive version of ItemStack#take_item,
+--- this will return the taken stack as the first value and the remaining as the second
+---
+--- @spec itemstack_split(stack: ItemStack, size: Integer): (stack: ItemStack, leftover: ItemStack)
 function foundation.com.itemstack_split(stack, size)
   local max = stack:get_count()
   local takable = math.min(size, max)
@@ -85,10 +85,10 @@ function foundation.com.itemstack_split(stack, size)
   end
 end
 
--- @spec itemstack_maybe_merge(
---   base_stack: ItemStack,
---   merging_stack: ItemStack
--- ): (stack: ItemStack, leftover: ItemStack)
+--- @spec itemstack_maybe_merge(
+---   base_stack: ItemStack,
+---   merging_stack: ItemStack
+--- ): (stack: ItemStack, leftover: ItemStack)
 function foundation.com.itemstack_maybe_merge(base_stack, merging_stack)
   local result = base_stack:peek_item(base_stack:get_count())
   local leftover = result:add_item(merging_stack)
@@ -101,14 +101,14 @@ local function assert_itemstack_meta(itemstack)
   end
 end
 
--- @spec get_itemstack_item_description(itemstack: ItemStack): String
+--- @spec get_itemstack_item_description(itemstack: ItemStack): String
 function foundation.com.get_itemstack_item_description(itemstack)
   local itemdef = itemstack:get_definition()
 
   return itemdef.description or itemstack:get_name()
 end
 
--- @spec get_itemstack_description(itemstack: ItemStack): String
+--- @spec get_itemstack_description(itemstack: ItemStack): String
 function foundation.com.get_itemstack_description(itemstack)
   assert_itemstack_meta(itemstack)
   local desc = itemstack:get_meta():get_string("description")
@@ -120,15 +120,16 @@ function foundation.com.get_itemstack_description(itemstack)
   end
 end
 
--- @mutative
--- @spec set_itemstack_meta_description(itemstack: ItemStack, description: String): ItemStack
+--- @mutative itemstack
+--- @spec set_itemstack_meta_description(itemstack: ItemStack, description: String): ItemStack
 function foundation.com.set_itemstack_meta_description(itemstack, description)
   assert_itemstack_meta(itemstack)
   itemstack:get_meta():set_string("description", description)
   return itemstack
 end
 
--- @spec append_itemstack_meta_description(itemstack: ItemStack, description: String): ItemStack
+--- @mutative itemstack
+--- @spec append_itemstack_meta_description(itemstack: ItemStack, description: String): ItemStack
 function foundation.com.append_itemstack_meta_description(itemstack, description)
   local new_desc = foundation.com.get_itemstack_description(itemstack) .. description
 

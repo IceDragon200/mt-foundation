@@ -1,3 +1,8 @@
+# 2.0.0
+
+* New dedicated namespace `foundation.com.headless`
+* `foundation.com.FakeMetaRef` moved to `foundation.com.headless.MetaDataRef`
+
 # 1.2.0
 
 * `#from_table/1` now correctly checks the type of values being set, and will return true on failure

@@ -1,6 +1,4 @@
--- @namespace foundation.com.InventoryList
-foundation_stdlib:require("lib/item_stack.lua")
-
+--- @namespace foundation.com.InventoryList
 local itemstack_new_blank = assert(foundation.com.itemstack_new_blank)
 local itemstack_copy = assert(foundation.com.itemstack_copy)
 local itemstack_is_blank = assert(foundation.com.itemstack_is_blank)
@@ -9,10 +7,10 @@ local itemstack_maybe_merge = assert(foundation.com.itemstack_maybe_merge)
 
 local InventoryList = {}
 
---
--- Creates a new itemstack list (i.e. InventoryList) given a count
---
--- @spec new(count: Integer): ItemStack[]
+---
+--- Creates a new itemstack list (i.e. InventoryList) given a count
+---
+--- @spec new(count: Integer): ItemStack[]
 function InventoryList.new(count)
   assert(count, "expected a count")
 
@@ -25,7 +23,7 @@ function InventoryList.new(count)
   return result
 end
 
--- @spec copy(list: ItemStack[]): ItemStack[]
+--- @spec copy(list: ItemStack[]): ItemStack[]
 function InventoryList.copy(list)
   assert(list, "expected a list")
 
@@ -38,8 +36,8 @@ function InventoryList.copy(list)
   return result
 end
 
--- @mutative
--- @spec add_items(list: ItemStack[], stacks_to_add: ItemStack[]): (leftovers: ItemStack[])
+--- @mutative list
+--- @spec add_items(list: ItemStack[], stacks_to_add: ItemStack[]): (leftovers: ItemStack[])
 function InventoryList.add_items(list, stacks_to_add)
   local leftovers = {}
   local j = 0
@@ -64,7 +62,7 @@ function InventoryList.add_items(list, stacks_to_add)
   return leftovers
 end
 
--- @spec fits_all_items(list: ItemStack[], stacks_to_add: ItemStack[]): Boolean
+--- @spec fits_all_items(list: ItemStack[], stacks_to_add: ItemStack[]): Boolean
 function InventoryList.fits_all_items(list, stacks_to_add)
   local fake_list = InventoryList.copy(list)
 
@@ -73,9 +71,9 @@ function InventoryList.fits_all_items(list, stacks_to_add)
   return next(leftovers) == nil
 end
 
--- Determines if the given inventory list should be considered empty
---
--- @spec is_empty(ItemStack[]): Boolean
+--- Determines if the given inventory list should be considered empty
+---
+--- @spec is_empty(ItemStack[]): Boolean
 function InventoryList.is_empty(list)
   for _index, item_stack in ipairs(list) do
     if not item_stack:is_empty() then
@@ -86,7 +84,7 @@ function InventoryList.is_empty(list)
   return true
 end
 
--- @spec first_present_stack(ItemStack[]): ItemStack | nil
+--- @spec first_present_stack(ItemStack[]): ItemStack | nil
 function InventoryList.first_present_stack(list)
   assert(list, "expected an inventory list")
   for _,item_stack in ipairs(list) do
@@ -97,7 +95,7 @@ function InventoryList.first_present_stack(list)
   return nil
 end
 
--- @spec merge_stack(list: ItemStack[], stack: ItemStack): (ItemStack[], ItemStack)
+--- @spec merge_stack(list: ItemStack[], stack: ItemStack): (ItemStack[], ItemStack)
 function InventoryList.merge_stack(list, stack)
   assert(list, "expected an inventory list")
   local max_stack_size = stack:get_stack_max()
@@ -117,10 +115,10 @@ function InventoryList.merge_stack(list, stack)
   return list, stack
 end
 
--- @spec extract_stack(
---   list: ItemStack[],
---   stack_or_size: ItemStack | Integer
--- ): (ItemStack[], ItemStack)
+--- @spec extract_stack(
+---   list: ItemStack[],
+---   stack_or_size: ItemStack | Integer
+--- ): (ItemStack[], ItemStack)
 function InventoryList.extract_stack(list, stack_or_size)
   assert(list, "expected an inventory list")
   local taken = nil

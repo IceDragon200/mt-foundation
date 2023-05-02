@@ -1,4 +1,4 @@
---- @namespace foundation.com
+--- @namespace foundation.com.headless
 
 local table_equals = assert(foundation.com.table_equals)
 local Class = assert(foundation.com.Class)
@@ -16,7 +16,7 @@ local Class = assert(foundation.com.Class)
 * `get_float(key)`: Returns `0` if key not present.
 * `to_table()`: returns `nil` or a table with keys:
     * `fields`: key-value storage
-    * `inventory`: `{list1 = {}, ...}}` (NodeMetaRef only)
+    * `inventory`: `{list1 = {}, ...}}` (NodeMetaDataRef only)
 * `from_table(nil or {})`
     * Any non-table value will clear the metadata
     * See [Node Metadata] for an example
@@ -26,43 +26,58 @@ local Class = assert(foundation.com.Class)
 
 ]]
 
---- @class FakeMetaRef
-local FakeMetaRef = Class:extends("FakeMetaRef")
+--- @class MetaDataRef
+local MetaDataRef = Class:extends("MetaDataRef")
 do
-  local ic = FakeMetaRef.instance_class
+  local ic = MetaDataRef.instance_class
 
   --- @spec #initialize(data: Table): void
   function ic:initialize(data)
     ic._super.initialize(self)
-    self.data = data or {}
+    self.m_data = data or {}
 
-    assert(type(self.data) == "table", "expected data to be a table")
+    assert(type(self.m_data) == "table", "expected data to be a table")
+  end
+
+  --- @spec #__copy()
+  function ic:__copy()
+    local other = MetaDataRef:new()
+
+    for key, value in pairs(self.m_data) do
+      other.m_data[key] = value
+    end
+
+    if self.m_inventory then
+      other.m_inventory = self.m_inventory:__copy()
+    end
+
+    return other
   end
 
   --- @spec #contains(key: String): Boolean
   function ic:contains(key)
-    return self.data[key] ~= nil
+    return self.m_data[key] ~= nil
   end
 
   --- @spec #get(key: String): Any
   function ic:get(key)
-    return self.data[key]
+    return self.m_data[key]
   end
 
   --- @spec #set_string(key: String, value: String): self
   function ic:set_string(key, value)
     value = tostring(value)
     if value == "" then
-      self.data[key] = nil
+      self.m_data[key] = nil
     else
-      self.data[key] = value
+      self.m_data[key] = value
     end
     return self
   end
 
   --- @spec #get_string(key: String): String
   function ic:get_string(key)
-    local d = self.data[key]
+    local d = self.m_data[key]
     if d ~= nil then
       return tostring(d)
     else
@@ -72,29 +87,44 @@ do
 
   --- @spec #set_int(key: String, value: Integer): self
   function ic:set_int(key, value)
-    self.data[key] = math.floor(tonumber(value))
+    self.m_data[key] = math.floor(tonumber(value))
     return self
   end
 
   --- @spec #get_int(key: String): Integer
   function ic:get_int(key)
-    return math.floor(tonumber(self.data[key] or 0))
+    return math.floor(tonumber(self.m_data[key] or 0))
   end
 
   --- @spec #set_float(key: String, value: Float): self
   function ic:set_float(key, value)
-    self.data[key] = tonumber(value) * 1.0
+    self.m_data[key] = tonumber(value) * 1.0
     return self
   end
 
   --- @spec #get_float(String): Float
   function ic:get_float(key)
-    return tonumber(self.data[key] or 0.0) * 1.0
+    return tonumber(self.m_data[key] or 0.0) * 1.0
   end
 
   --- @spec #to_table(): Table
   function ic:to_table()
-    return table.copy(self.data)
+    local result = {
+      fields = {},
+      inventory = {},
+    }
+
+    for key, value in pairs(self.m_data) do
+      result.fields[key] = value
+    end
+
+    if self.m_inventory then
+      for name, inv in pairs(self.m_inventory) do
+        result.inventory[name] = {}
+      end
+    end
+
+    return result
   end
 
   --- @spec #from_table(Table): Boolean
@@ -102,32 +132,43 @@ do
     if type(value) == "table" then
       local result = {}
       local ty
-      for key, val in pairs(value) do
-        ty = type(val)
+      if value.fields then
+        for key, val in pairs(value.fields) do
+          ty = type(val)
 
-        if ty == "string" or ty == "number" or ty == "boolean" then
-          result[key] = val
-        else
-          return false
+          if ty == "string" or ty == "number" or ty == "boolean" then
+            result[key] = val
+          else
+            return false
+          end
         end
+        self.m_data = result
       end
-      self.data = result
       return true
     end
-    self.data = {}
+    self.m_data = {}
+    self.m_inventory = nil
     return false
   end
 
-  --- @spec #equals(FakeMetaRef, MetaRef): Boolean
+  --- @spec #equals(MetaDataRef, MetaDataRef): Boolean
   function ic:equals(other)
-    if Class.is_object(other, FakeMetaRef) then
-      return table_equals(self.data, other.data)
+    if Class.is_object(other, MetaDataRef) then
+      return table_equals(self.m_data, other.m_data)
     elseif other.to_table then
       other = other:to_table()
-      return table_equals(self.data, other)
+      return table_equals(self.m_data, other.fields)
     end
     return false
+  end
+
+  --- @spec #get_inventory(): InvRef
+  function ic:get_inventory()
+    if not self.m_inventory then
+      self.m_inventory = foundation.com.headless.InvRef:new()
+    end
+    return self.m_inventory
   end
 end
 
-foundation.com.FakeMetaRef = FakeMetaRef
+foundation.com.headless.MetaDataRef = MetaDataRef

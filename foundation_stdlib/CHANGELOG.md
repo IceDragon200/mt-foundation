@@ -1,3 +1,9 @@
+# 1.33.0
+
+* Moved `metaref_*` functions to `foundation_mt` since they are minetest specific.
+* Moved `item_stack_*` functions to `foundation_mt` since they are minetest specific.
+* Moved `inventory_*` functions to `foundation_mt` since they are minetest specific.
+
 # 1.32.0
 
 * Added `list_bsearch/2`

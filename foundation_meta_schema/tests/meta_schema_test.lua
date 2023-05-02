@@ -43,11 +43,14 @@ case:describe("#compile/1", function (t2)
   end)
 
   t2:test("compiled MetaSchema functions work as intended", function (t3, tags)
-    local meta = foundation.com.FakeMetaRef:new()
+    local meta = foundation.com.headless.MetaDataRef:new()
 
     local data = meta:to_table()
 
-    t3:assert_table_eq({}, data)
+    t3:assert_deep_eq({
+      fields = {},
+      inventory = {},
+    }, data)
 
     local schema = tags.meta_schema:compile("base")
 
@@ -57,7 +60,7 @@ case:describe("#compile/1", function (t2)
 
     data = schema:get(meta)
 
-    t3:assert_table_eq({
+    t3:assert_deep_eq({
       x = 12,
       name = "John Doe",
       delta = 33.2,
@@ -65,10 +68,13 @@ case:describe("#compile/1", function (t2)
 
     data = meta:to_table()
 
-    t3:assert_table_eq({
-      base_x = 12,
-      base_name = "John Doe",
-      base_delta = 33.2,
+    t3:assert_deep_eq({
+      fields = {
+        base_x = 12,
+        base_name = "John Doe",
+        base_delta = 33.2,
+      },
+      inventory = {},
     }, data)
 
     t3:assert_eq(schema:get_x(meta), 12)
@@ -83,10 +89,13 @@ case:describe("#compile/1", function (t2)
 
     data = meta:to_table()
 
-    t3:assert_table_eq({
-      base_x = 24,
-      base_name = "Sally Sue",
-      base_delta = 144.22,
+    t3:assert_deep_eq({
+      fields = {
+        base_x = 24,
+        base_name = "Sally Sue",
+        base_delta = 144.22,
+      },
+      inventory = {}
     }, data)
   end)
 end)
