@@ -162,7 +162,10 @@ function NullReporter:report(...)
   return self
 end
 
--- @class Luna
+--- @type DescribeFunction: (Luna) => void
+--- @type TestFunction: (Luna) => void
+
+--- @class Luna
 local Luna = foundation.com.Class:extends()
 local ic = Luna.instance_class
 
@@ -180,7 +183,7 @@ Luna.default_config = {
   reporter = DefaultReporter
 }
 
--- @spec #initialize(name: String, config?: Table): void
+--- @spec #initialize(name: String, config?: Table): void
 function ic:initialize(name, config)
   self.name = name
   self.config = table_merge(Luna.default_config, config or {})
@@ -200,22 +203,27 @@ function ic:initialize(name, config)
   self.finalize_all_callbacks = {}
 end
 
+--- @spec #setup(Function): void
 function ic:setup(callback)
   table.insert(self.setup_callbacks, callback)
 end
 
+--- @spec #setup_all(Function): void
 function ic:setup_all(callback)
   table.insert(self.setup_all_callbacks, callback)
 end
 
+--- @spec #finalize(Function): void
 function ic:finalize(callback)
   table.insert(self.finalize_callbacks, callback)
 end
 
+--- @spec #finalize_all(Function): void
 function ic:finalize_all(callback)
   table.insert(self.finalize_all_callbacks, callback)
 end
 
+--- @spec #describe(name: String, func: DescribeFunction): void
 function ic:describe(name, func)
   local luna = self._class:new(name)
   luna.reporter = self.reporter
@@ -225,11 +233,13 @@ function ic:describe(name, func)
   return luna
 end
 
+--- @spec #xtest(name: String, func: TestFunction): void
 function ic:xtest(name, func)
   table.insert(self.tests, {"xtest", name, func})
   return self
 end
 
+--- @spec #test(name: String, func: TestFunction): void
 function ic:test(name, func)
   table.insert(self.tests, {"test", name, func})
   return self
