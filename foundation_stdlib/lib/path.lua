@@ -1,14 +1,12 @@
--- @namespace foundation.com
+--- @namespace foundation.com
 local string_split = assert(foundation.com.string_split)
 
-local SEPARATOR = "/"
-
--- @spec path_components(a: String): String[]
+--- @spec path_components(a: String): String[]
 function foundation.com.path_components(a)
   if a == "" then
     return {}
   else
-    local parts = string_split(a, SEPARATOR)
+    local parts = string_split(a, DIR_DELIM)
     local result = {}
     local i = 0
     local was_blank = false
@@ -30,7 +28,7 @@ function foundation.com.path_components(a)
   end
 end
 
--- @spec path_dirname(a: String): String
+--- @spec path_dirname(a: String): String
 function foundation.com.path_dirname(a)
   local components = foundation.com.path_components(a)
 
@@ -38,7 +36,7 @@ function foundation.com.path_dirname(a)
     -- it has 2 or more components
     components[#components] = nil
     if components[2] then
-      return table.concat(components, SEPARATOR)
+      return table.concat(components, DIR_DELIM)
     else
       if components[1] == "" then
         return "/"
@@ -56,7 +54,7 @@ function foundation.com.path_dirname(a)
   end
 end
 
--- @spec path_basename(a: String): String
+--- @spec path_basename(a: String): String
 function foundation.com.path_basename(a)
   local components = foundation.com.path_components(a)
   if components[1] then
@@ -69,10 +67,10 @@ function foundation.com.path_basename(a)
   return ""
 end
 
--- @spec path_join(a: String, b: String): String
+--- @spec path_join(a: String, b: String): String
 function foundation.com.path_join(a, b)
-  a = foundation.com.string_trim_trailing(a, SEPARATOR)
-  b = foundation.com.string_trim_leading(b, SEPARATOR)
+  a = foundation.com.string_trim_trailing(a, DIR_DELIM)
+  b = foundation.com.string_trim_leading(b, DIR_DELIM)
 
-  return a .. SEPARATOR .. b
+  return a .. DIR_DELIM .. b
 end
