@@ -87,6 +87,29 @@ local function table_equals(a, b)
   return true
 end
 
+local function list_sort(list)
+  if next(list) then
+    local size = #list
+    local a
+    local b
+
+    for i = 1,size do
+      a = list[i]
+      for j = i,size do
+        b = list[j]
+
+        if a > b then
+          list[i] = b
+          list[j] = a
+          a = b
+        end
+      end
+    end
+  end
+
+  return list
+end
+
 local function deep_equals(a, b, depth)
   depth = depth or 0
   if depth > 20 then
@@ -124,6 +147,34 @@ local function table_includes_value(t, expected)
     end
   end
   return false
+end
+
+local function iodata_to_string_recur(value, result, index)
+  if type(value) == "table" then
+    for _, item in ipairs(value) do
+      result, index = iodata_to_string_recur(item, result, index)
+    end
+  elseif type(value) == "string" then
+    index = index + 1
+    result[index] = value
+  else
+    error("unexpected value " .. dump(value))
+  end
+  return result, index
+end
+
+-- Flattens a table into a string
+--
+-- @spec iodata_to_string(Table | String): String
+local function iodata_to_string(value)
+  if type(value) == "string" then
+    return value
+  elseif type(value) == "table" then
+    local result = iodata_to_string_recur(value, {}, 0)
+    return table.concat(result)
+  else
+    error("unexpected value " .. dump(value))
+  end
 end
 
 local PREFIXES = {
@@ -261,10 +312,83 @@ function ic:neat_dump(value)
   assert(self)
   local ty = type(value)
   if ty == "string" then
-    return ty .. "<\"" .. string_hex_escape(value) .. "\">#" .. #value
+    return ty .. "<\"" .. string_hex_escape(value) .. "\">[" .. #value .. "]"
   else
-    return ty .. "; " .. dump(value)
+    return ty .. "<" .. dump(value) .. ">"
   end
+end
+
+--- @spec #dump_diff(a, b, String): Table
+function ic:dump_diff(a, b, prefix)
+  if type(a) == "table" and type(b) == "table" then
+    local keys_map = {}
+
+    for key, _ in pairs(a) do
+      keys_map[key] = true
+    end
+
+    for key, _ in pairs(b) do
+      keys_map[key] = true
+    end
+
+    local keys = {}
+    local idx = 0
+    for key, _ in pairs(keys_map) do
+      idx = idx + 1
+      keys[idx] = key
+    end
+
+    keys = list_sort(keys)
+
+    local result = {
+      "table<{\n",
+    }
+    local missing_keys = {}
+    for _, key in ipairs(keys) do
+      local a_val = a[key]
+      local b_val = b[key]
+
+      if a_val == nil then
+        table.insert(missing_keys, key)
+      else
+        table.insert(result, prefix .. "  " .. key .. " = ")
+        table.insert(result, self:dump_diff(a_val, b_val, prefix .. "  "))
+        table.insert(result, "\n")
+      end
+    end
+
+    for _, key in ipairs(missing_keys) do
+      table.insert(result, prefix .. "  - " .. key .. ",\n")
+    end
+
+    table.insert(result, prefix .. "}>")
+
+    return result
+  else
+    if a == b then
+      return { self:neat_dump(a) }
+    elseif a ~= nil and b ~= nil then
+      return { "~ ", self:neat_dump(a) }
+    elseif a == nil and b ~= nil then
+      return { "- ", self:neat_dump(b) }
+    elseif a ~= nil and b == nil then
+      return { "+ ", self:neat_dump(a) }
+    end
+  end
+end
+
+--- @spec #pretty_diff(a: Any, b: Any): String
+function ic:pretty_diff(a, b)
+  if type(a) == type(b) then
+    local ty = type(a)
+    if ty == "table" then
+      return "  left: " .. iodata_to_string(self:dump_diff(a, b, "    ")) .. "\n" ..
+             "  right: " .. iodata_to_string(self:dump_diff(b, a, "    "))
+    end
+  end
+
+  return "  left: " .. self:neat_dump(a) ..
+         "  right: " .. self:neat_dump(b)
 end
 
 function ic:assert_eq(a, b, message)
@@ -293,8 +417,7 @@ end
 
 function ic:assert_deep_eq(a, b, message)
   message = message or function ()
-    return ("expected to be equal to:\n\t left: " .. self:neat_dump(a) ..
-            "\n\tright: " .. self:neat_dump(b))
+    return ("expected to be equal to:\n" .. self:pretty_diff(a, b))
   end
 
   self:assert(deep_equals(a, b), message)
