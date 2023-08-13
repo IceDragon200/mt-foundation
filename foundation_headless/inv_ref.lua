@@ -146,8 +146,9 @@ do
 
   function ic:remove_item(name, stack)
     assert(type(name) == "string", "expected inventory list name")
+    assert(stack, "expected an item stack")
 
-    local remaining_count = stack.count
+    local remaining_count = stack:get_count()
     local result = ItemStack()
     local list = self.m_data[name]
     local taken
@@ -157,10 +158,10 @@ do
         if item_stack:get_name() == stack:get_name() then
           taken = item_stack:take_item(remaining_count)
 
-          if taken.name == stack.name then
-            result:set_name(taken.name)
-            result:set_count(result.count + taken.count)
-            remaining_count = remaining_count - taken.count
+          if taken:get_name() == stack:get_name() then
+            result:set_name(taken:get_name())
+            result:set_count(result:get_count() + taken:get_count())
+            remaining_count = remaining_count - taken:get_count()
           end
         end
 
@@ -191,18 +192,48 @@ do
     return true
   end
 
+  --- @spec #contains_item(name: String, stack: ItemStack)
+  function ic:contains_item(name, expected_stack)
+    local list = self.m_data[name]
+
+    if list then
+      local existing_count = 0
+      local expected_name = expected_stack:get_name()
+      local expected_count = expected_stack:get_count()
+
+      for _, item_stack in pairs(list) do
+        if not item_stack:is_empty() then
+          if item_stack:get_name() == expected_name then
+            existing_count = existing_count + item_stack:get_count()
+          end
+        end
+
+        if existing_count >= expected_count then
+          break
+        end
+      end
+
+      if existing_count >= expected_count then
+        return true
+      end
+    end
+
+    return false
+  end
+
   function ic:room_for_item(name, stack)
     assert(type(name) == "string", "expected inventory list name")
 
     local list = self.m_data[name]
 
     if list then
-      local remaining_count = stack.count
+      local remaining_count = stack:get_count()
+      local expected_name = stack:get_name()
 
       for _, item_stack in pairs(list) do
         if item_stack:is_empty() then
           remaining_count = remaining_count - math.min(item_stack:get_stack_max(), remaining_count)
-        elseif item_stack.name == stack.name then
+        elseif item_stack:get_name() == expected_name then
           remaining_count = math.max(remaining_count - item_stack:get_free_space(), 0)
         end
 

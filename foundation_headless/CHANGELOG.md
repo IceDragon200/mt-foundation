@@ -1,3 +1,7 @@
+# 2.1.0
+
+* Added `foundation.com.PlayerRef`
+
 # 2.0.0
 
 * New dedicated namespace `foundation.com.headless`
