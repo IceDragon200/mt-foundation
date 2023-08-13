@@ -10,7 +10,7 @@ case:describe("is_quaternion/1", function (t2)
   end)
 
   t2:test("vector4 is not a Quaternion", function (t3)
-    local v4 = foundation.com.Vector4.zero()
+    local q = foundation.com.Vector4.zero()
     t3:refute(subject.is_quaternion(q))
   end)
 end)
