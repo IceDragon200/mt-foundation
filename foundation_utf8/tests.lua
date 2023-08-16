@@ -34,6 +34,19 @@ case:describe("next_codepoint/1", function (t2)
   end)
 end)
 
+case:describe("each_codepoint/2", function (t2)
+  t2:test("can iterate over each character in a string", function (t3)
+    local idx = 0
+    local result = {}
+    mod.each_codepoint("さよなら", function (char)
+      idx = idx + 1
+      result[idx] = char
+    end)
+
+    t3:assert_table_eq(result, {"さ", "よ", "な", "ら"})
+  end)
+end)
+
 case:describe("codepoints/1", function (t2)
   t2:test("correctly returns all codepoints in an empty string", function (t3)
     t3:assert_table_eq({}, mod.codepoints(""))

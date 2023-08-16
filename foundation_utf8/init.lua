@@ -4,7 +4,7 @@
 --   For dealing with utf-8 strings and converting codepoints
 --
 -- https://www.ietf.org/rfc/rfc3629.txt
-local mod = foundation.new_module("foundation_utf8", "1.1.0")
+local mod = foundation.new_module("foundation_utf8", "1.2.0")
 
 -- @namespace foundation.com.utf8
 
@@ -66,9 +66,26 @@ function utf8.next_codepoint(str, start)
   return nil, nil
 end
 
--- Returns a table with all the codepoints in the string
---
--- @spec codepoints(str: String, start: Integer): String[]
+--- Returns a table with all the codepoints in the string
+---
+--- @spec each_codepoint(str: String, callback: (char: String, start: Integer, tail: Integer) => void, start: Integer): String[]
+function utf8.each_codepoint(str, callback, start)
+  local codepoint
+  local tail
+  local i = 0
+
+  start = start or 1
+  codepoint, tail = utf8.next_codepoint(str, start)
+  while codepoint do
+    i = i + 1
+    callback(codepoint, start, tail)
+    codepoint, tail = utf8.next_codepoint(str, tail + 1)
+  end
+end
+
+--- Returns a table with all the codepoints in the string
+---
+--- @spec codepoints(str: String, start: Integer): String[]
 function utf8.codepoints(str, start)
   local codepoint
   local tail

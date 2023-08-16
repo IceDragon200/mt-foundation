@@ -1,3 +1,7 @@
+# 1.34.0
+
+* Added `string_each_char/2` for iterating over a string's characters
+
 # 1.33.0
 
 * Moved `metaref_*` functions to `foundation_mt` since they are minetest specific.

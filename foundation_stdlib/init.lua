@@ -1,7 +1,7 @@
 --
 -- Foundation Standard Library (STDLIB)
 --
-local mod = foundation.new_module("foundation_stdlib", "1.33.0")
+local mod = foundation.new_module("foundation_stdlib", "1.34.0")
 
 mod:require("lib/encoding_tables.lua")
 

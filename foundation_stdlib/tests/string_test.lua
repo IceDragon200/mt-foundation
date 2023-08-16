@@ -186,6 +186,18 @@ case:describe("string_remove_spaces", function (t2)
   end)
 end)
 
+case:describe("string_each_char", function (t2)
+  t2:test("can iterate over each character in a string", function (t3)
+    local idx = 0
+    local result = {}
+    m.string_each_char("ABC", function (char)
+      idx = idx + 1
+      result[idx] = char
+    end)
+    t3:assert_table_eq(result, {"A", "B", "C"})
+  end)
+end)
+
 case:describe("binary_splice", function (t2)
   t2:test("can splice a byte into a string", function (t3)
     t3:assert_eq("\x04\x01\x02", m.binary_splice("\x00\x01\x02", 1, 1, 4))
