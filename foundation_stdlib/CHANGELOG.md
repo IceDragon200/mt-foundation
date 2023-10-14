@@ -1,3 +1,7 @@
+# 1.35.0
+
+* Added `ansi_format/2` for decorating a string with ansi escape sequences
+
 # 1.34.0
 
 * Added `string_each_char/2` for iterating over a string's characters

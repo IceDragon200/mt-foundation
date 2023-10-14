@@ -1,7 +1,7 @@
 --
 -- Foundation Standard Library (STDLIB)
 --
-local mod = foundation.new_module("foundation_stdlib", "1.34.0")
+local mod = foundation.new_module("foundation_stdlib", "1.35.0")
 
 mod:require("lib/encoding_tables.lua")
 
@@ -30,6 +30,7 @@ mod:require("lib/color.lua")
 mod:require("lib/waves.lua")
 mod:require("lib/easers.lua")
 mod:require("lib/tweener.lua")
+mod:require("lib/ansi.lua")
 
 if foundation.com.Luna then
   mod:require("tests.lua")
