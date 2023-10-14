@@ -65,6 +65,7 @@ do
     end
   end
 
+  --- @spec #set_stack(name: String, index: Integer, item_stack: ItemStack): Boolean
   function ic:set_stack(name, index, item_stack)
     assert(type(name) == "string", "expected inventory list name")
     assert(type(index) == "number", "expected list index")
@@ -78,10 +79,10 @@ do
       end
 
       list[index] = item_stack
-      return
+      return true
     end
 
-    error("set_stack/3: undefined behaviour - no list present")
+    return false
   end
 
   function ic:get_stack(name, index)
@@ -96,7 +97,8 @@ do
 
       return list[index]
     end
-    error("get_stack/2: undefined behaviour")
+
+    return ItemStack()
   end
 
   function ic:set_list(name, list)
