@@ -57,7 +57,7 @@ do
   end
 
   function ic:set_inventory_formspec(formspec)
-    minetest.log("info", "set_inventory_formspec", self.name)
+    minetest.log("info", "set_inventory_formspec/1 name=" .. self.name)
     self.inventory_formspec = formspec
 
     local listeners = self._listeners["set_inventory_formspec"]

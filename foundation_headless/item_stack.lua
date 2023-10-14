@@ -135,6 +135,7 @@ do
     return self.count == 0
   end
 
+  --- @spec #add_item(other: ItemStack): ItemStack
   function ic:add_item(other)
     local can_merge = self.count == 0 or self.name == ""
 
@@ -167,12 +168,14 @@ do
     return other
   end
 
+  --- @spec #peek_item(count: Integer): ItemStack
   function ic:peek_item(count)
     local dest = self:__copy()
     dest.count = count
     return dest
   end
 
+  --- @spec #take_item(count: Integer): ItemStack
   function ic:take_item(count)
     local max_takeable = math.max(math.min(count, self.count), 0)
 
@@ -189,12 +192,17 @@ do
     return dest
   end
 
+  --- @spec #equals(other: ItemStack): Boolean
   function ic:equals(other)
     if self.name ~= other.name then
       return false
     end
 
     if self.count ~= other.count then
+      return false
+    end
+
+    if self.wear ~= other.wear then
       return false
     end
 

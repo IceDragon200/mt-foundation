@@ -1,3 +1,9 @@
+# 2.1.1
+
+* Bug fix for `InvRef#set_size/2` not correctly resizing inventory lists if it existed previously
+* Bug fix for `ItemStack#equals/1` not checking wear
+* Bug fix for `PlayerRef#set_inventory_formspec/1` using minetest.log incorrectly
+
 # 2.1.0
 
 * Added `foundation.com.PlayerRef`

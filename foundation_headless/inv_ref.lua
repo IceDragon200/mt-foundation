@@ -43,22 +43,20 @@ do
     assert(type(name) == "string", "expected inventory list name")
 
     if size > 0 then
-      if not self.m_data[name] then
-        self.m_data[name] = {}
-      end
+      local old_size = self.m_sizes[name]
+      local old_inv = self.m_data[name]
 
+      local inv = {}
       self.m_sizes[name] = size
+      self.m_data[name] = inv
 
-      local inv = self.m_data[name]
-      local isize = #inv
-
-      if isize < size then
-        for i = isize+1,size do
-          inv[i] = ItemStack()
+      if old_inv then
+        for i = 1,size do
+          inv[i] = old_inv[i] or ItemStack()
         end
       else
-        for i = size,isize do
-          inv[i] = nil
+        for i = 1,size do
+          inv[i] = ItemStack()
         end
       end
     else
@@ -75,7 +73,7 @@ do
 
     local list = self.m_data[name]
     if list then
-      if index < 0 or index > self.m_sizes[name] then
+      if index <= 0 or index > self.m_sizes[name] then
         error("index out of range")
       end
 
@@ -92,7 +90,7 @@ do
 
     local list = self.m_data[name]
     if list then
-      if index < 0 or index > self.m_sizes[name] then
+      if index <= 0 or index > self.m_sizes[name] then
         error("index out of range")
       end
 
