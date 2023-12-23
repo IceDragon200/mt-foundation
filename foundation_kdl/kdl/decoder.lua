@@ -1,4 +1,4 @@
--- @namespace foudation_kdl.KDL.Decoder
+--- @namespace foudation_kdl.KDL.Decoder
 local KDL = foundation_kdl.KDL
 
 local List = assert(foundation.com.List)
@@ -554,9 +554,9 @@ local function decode_all(state)
   end
 end
 
--- Decodes a given string or list of tokens into a KDL document (list of nodes)
---
--- @spec decode(String | Token[]): (Boolean, Node[])
+--- Decodes a given string or list of tokens into a KDL document (list of nodes)
+---
+--- @spec decode(String | Token[]): (Boolean, Node[])
 function Decoder.decode(blob)
   local tokens
   local err

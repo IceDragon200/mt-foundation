@@ -3,6 +3,7 @@ local table_merge = assert(foundation.com.table_merge)
 local StringBuffer = assert(foundation.com.StringBuffer)
 local TokenBuffer = assert(foundation.com.TokenBuffer)
 
+--- @namespace foundation_kdl.KDL.Lexer
 local Lexer = {}
 
 local SPACE_CHARACTER = {
@@ -418,6 +419,7 @@ local function tokenize_all(state)
   return true, state
 end
 
+--- @spec tokenize(blob: String): (Boolean, TokenBuffer, rest: String)
 function Lexer.tokenize(blob)
   local buffer = StringBuffer:new(blob, 'r')
 
