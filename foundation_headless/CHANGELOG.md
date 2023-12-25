@@ -1,3 +1,7 @@
+# 2.2.0
+
+* Added `foundation.com.headless.World` class, which is a minimal implementation of the minetest get/set_node functions.
+
 # 2.1.1
 
 * Bug fix for `InvRef#set_size/2` not correctly resizing inventory lists if it existed previously
