@@ -6,17 +6,17 @@
 -- https://www.ietf.org/rfc/rfc3629.txt
 local mod = foundation.new_module("foundation_utf8", "1.2.0")
 
--- @namespace foundation.com.utf8
+--- @namespace foundation.com.utf8
 
 local utf8 = {}
 
--- Returns the length of the next codepoint, only the first character is
--- analyzed, so this can be used in parsing to determine the number of bytes
--- that should be parsed next.
---
--- If the string has no bytes then `nil` is returned for the length instead.
---
--- @spec next_codepoint_length(str: String, start: Integer): Integer | nil
+--- Returns the length of the next codepoint, only the first character is
+--- analyzed, so this can be used in parsing to determine the number of bytes
+--- that should be parsed next.
+---
+--- If the string has no bytes then `nil` is returned for the length instead.
+---
+--- @spec next_codepoint_length(str: String, start: Integer): Integer | nil
 function utf8.next_codepoint_length(str, start)
   start = start or 1
   local byte = string.byte(str, start)
@@ -37,11 +37,11 @@ function utf8.next_codepoint_length(str, start)
   return nil
 end
 
--- Returns the next codepoints start and tail position so the character can be
--- extracted or just to determine if it actually exists
--- The length of the character can be determined by subtracting the start from the tail + 1
---
--- @spec next_codepoint_pos(str: String, start: Integer): (Integer, Integer) | (nil, nil)
+--- Returns the next codepoints start and tail position so the character can be
+--- extracted or just to determine if it actually exists
+--- The length of the character can be determined by subtracting the start from the tail + 1
+---
+--- @spec next_codepoint_pos(str: String, start: Integer): (Integer, Integer) | (nil, nil)
 function utf8.next_codepoint_pos(str, start)
   start = start or 1
   local len = utf8.next_codepoint_length(str, start)
@@ -51,10 +51,10 @@ function utf8.next_codepoint_pos(str, start)
   return nil, nil
 end
 
--- Returns the next codepoint in the string, the start position can be
--- specified to allow reading from an arbitrary position.
---
--- @spec next_codepoint(str: String, start?: Integer): (String, Integer) | (nil, Integer)
+--- Returns the next codepoint in the string, the start position can be
+--- specified to allow reading from an arbitrary position.
+---
+--- @spec next_codepoint(str: String, start?: Integer): (String, Integer) | (nil, Integer)
 function utf8.next_codepoint(str, start)
   local tail
   start, tail = utf8.next_codepoint_pos(str, start)
@@ -103,9 +103,9 @@ function utf8.codepoints(str, start)
   return result
 end
 
--- Reports the length of the string in terms of characters (not byte size)
---
--- @spec size(str: String): Integer
+--- Reports the length of the string in terms of characters (not byte size)
+---
+--- @spec size(str: String): Integer
 function utf8.size(str)
   local start
   local tail
@@ -118,13 +118,13 @@ function utf8.size(str)
   return size
 end
 
--- @alias len = size
+--- @alias len = size
 utf8.len = utf8.size
 
--- @alias byte_size = .string.len
+--- @alias byte_size = .string.len
 utf8.byte_size = string.len
 
--- @alias byte_len = byte_size
+--- @alias byte_len = byte_size
 utf8.byte_len = string.len
 
 foundation.com.utf8 = utf8
