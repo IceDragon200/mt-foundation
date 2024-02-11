@@ -1,16 +1,16 @@
--- @namespace foundation.com
+--- @namespace foundation.com
 local format_pretty_unit = assert(foundation.com.format_pretty_unit)
 
---
--- A limited implementation of OpenTrace for benchmarking code paths
---
--- @class Trace
+---
+--- A limited implementation of OpenTrace for benchmarking code paths
+---
+--- @class Trace
 local Trace = foundation.com.Class:extends("foundation.com.Trace")
 local ic = Trace.instance_class
 
 local g_span_id = 0
 
--- @spec &sum_traces(traces: Trace[], acc: Trace[]): Table
+--- @spec &sum_traces(traces: Trace[], acc: Trace[]): Table
 function Trace:sum_traces(traces, acc)
   acc = acc or {}
 
@@ -19,11 +19,13 @@ function Trace:sum_traces(traces, acc)
     map[trace.name] = trace
   end
 
+  local entry
   for _,trace in ipairs(traces) do
-    if not map[trace.name] then
-      map[trace.name] = self:new(trace.name)
+    entry = map[trace.name]
+    if not entry then
+      entry = self:new(trace.name)
+      map[trace.name] = entry
     end
-    local entry = map[trace.name]
 
     if entry.d then
       entry.d = entry.d + trace.d
@@ -59,11 +61,11 @@ function Trace:sum_traces(traces, acc)
   return result
 end
 
--- @spec #initialize(name: String): void
+--- @spec #initialize(name: String): void
 function ic:initialize(name)
   g_span_id = g_span_id + 1
   self.id = g_span_id
-  self.name = name
+  self.name = assert(name, "expected a name for trace")
   self.span_index = 0
   self.spans = {}
   self.s = minetest.get_us_time()
@@ -71,34 +73,35 @@ function ic:initialize(name)
   self.d = nil
 end
 
--- @spec #clear(): void
+--- @spec #clear(): void
 function ic:clear()
   self.spans = {}
   self.span_index = 0
 end
 
--- @spec #span_start(name: String): Trace
+--- @spec #span_start(name: String): Trace
 function ic:span_start(name)
+  assert(name, "expected a span name")
   local span = Trace:new(name)
   self.span_index = self.span_index + 1
   self.spans[self.span_index] = span
   return span
 end
 
--- @spec #span_end(): void
+--- @spec #span_end(): void
 function ic:span_end()
   self.e = minetest.get_us_time()
   self.d = self.e - self.s
 end
 
--- @spec #span(name: String, callback: Function/0): void
+--- @spec #span(name: String, callback: Function/0): void
 function ic:span(name, callback)
   local span = self:span_start(name)
   callback()
   span:span_end()
 end
 
--- @spec #format_traces(prefix: String, acc: String[]): String[]
+--- @spec #format_traces(prefix: String, acc: String[]): String[]
 function ic:format_traces(prefix, acc)
   acc = acc or {}
   local d = '_'
@@ -124,7 +127,7 @@ function ic:format_traces(prefix, acc)
   return acc
 end
 
--- @spec #inspect(prefix: String, acc?: String[]): void
+--- @spec #inspect(prefix: String, acc?: String[]): void
 function ic:inspect(prefix, acc)
   acc = self:format_traces(prefix, acc or {})
   print(table.concat(acc))
