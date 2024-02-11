@@ -1,3 +1,15 @@
+# 1.36.0
+
+New ANSI helper functions and updated ansi_format functions:
+* Renamed `foundation.com.ansi_start/1` to `foundation.com.ansi_format_start/1`
+* Renamed `foundation.com.ansi_end/0` to `foundation.com.ansi_format_end/0`
+* Added `foundation.com.ansi_clear_line_trailing/0`
+* Added `foundation.com.ansi_clear_line_leading/0`
+* Added `foundation.com.ansi_clear_line/0`
+* Added `foundation.com.ansi_clear_screen_trailing/0`
+* Added `foundation.com.ansi_clear_screen_leading/0`
+* Added `foundation.com.ansi_clear_screen/0`
+
 # 1.35.0
 
 * Added `ansi_format/2` for decorating a string with ansi escape sequences

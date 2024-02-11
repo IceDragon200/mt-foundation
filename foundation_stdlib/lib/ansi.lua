@@ -64,7 +64,31 @@ local RESET_ANSI_CODE = {
   strikethrough = "29",
 }
 
-function foundation.com.ansi_start(options)
+function foundation.com.ansi_clear_line_trailing()
+  return "\x1B[0K"
+end
+
+function foundation.com.ansi_clear_line_leading()
+  return "\x1B[1K"
+end
+
+function foundation.com.ansi_clear_line()
+  return "\x1B[2K"
+end
+
+function foundation.com.ansi_clear_screen_trailing()
+  return "\x1B[0J"
+end
+
+function foundation.com.ansi_clear_screen_leading()
+  return "\x1B[1J"
+end
+
+function foundation.com.ansi_clear_screen()
+  return "\x1B[2J"
+end
+
+function foundation.com.ansi_format_start(options)
   local codes = {}
   local code
   local sub
@@ -102,14 +126,11 @@ function foundation.com.ansi_start(options)
   return "\x1B[" .. table.concat(codes, ";") .. "m"
 end
 
-function foundation.com.ansi_end()
+function foundation.com.ansi_format_end()
   return "\x1B[0m"
 end
 
-local ansi_start = foundation.com.ansi_start
-local ansi_end = foundation.com.ansi_end
-
 --- @spec #ansi_format(inner: String, options: Table): String
 function foundation.com.ansi_format(inner, options)
-  return ansi_start(options) .. inner .. ansi_end()
+  return foundation.com.ansi_format_start(options) .. inner .. foundation.com.ansi_format_end()
 end
