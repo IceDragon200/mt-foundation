@@ -1,3 +1,12 @@
+# 1.36.1
+
+* Added `foundation.com.ansi_move_cursor_home/0`
+* Added `foundation.com.ansi_move_cursor_up/1`
+* Added `foundation.com.ansi_move_cursor_down/1`
+* Added `foundation.com.ansi_move_cursor_right/1`
+* Added `foundation.com.ansi_move_cursor_left/1`
+* Added `foundation.com.ansi_move_cursor_to/2`
+
 # 1.36.0
 
 New ANSI helper functions and updated ansi_format functions:

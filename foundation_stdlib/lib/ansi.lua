@@ -64,6 +64,30 @@ local RESET_ANSI_CODE = {
   strikethrough = "29",
 }
 
+function foundation.com.ansi_move_cursor_home()
+  return "\x1B[H"
+end
+
+function foundation.com.ansi_move_cursor_up(lines)
+  return "\x1B[" .. lines .. "A"
+end
+
+function foundation.com.ansi_move_cursor_down(lines)
+  return "\x1B[" .. lines .. "B"
+end
+
+function foundation.com.ansi_move_cursor_right(columns)
+  return "\x1B[" .. columns .. "C"
+end
+
+function foundation.com.ansi_move_cursor_left(columns)
+  return "\x1B[" .. columns .. "D"
+end
+
+function foundation.com.ansi_move_cursor_to(line, column)
+  return "\x1B[" .. line .. ";" .. column .. "H"
+end
+
 function foundation.com.ansi_clear_line_trailing()
   return "\x1B[0K"
 end
