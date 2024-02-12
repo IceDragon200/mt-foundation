@@ -1,5 +1,66 @@
 --- @namespace foundation.com.headless
 
+local DNR_VALUES = {
+  {4250.0 + 125.0, 175.0},
+  {4500.0 + 125.0, 175.0},
+  {4750.0 + 125.0, 250.0},
+  {5000.0 + 125.0, 350.0},
+  {5250.0 + 125.0, 500.0},
+  {5500.0 + 125.0, 675.0},
+  {5750.0 + 125.0, 875.0},
+  {6000.0 + 125.0, 1000.0},
+  {6250.0 + 125.0, 1000.0},
+}
+
+local function time_to_daynight_ratio(time_of_day, smooth)
+  local t = time_of_day
+  if t < 0.0 then
+    t = t + (math.floor(-t) / 24000) * 24000.0
+  end
+
+  if t >= 24000.0 then
+    t = t - (math.floor(t) / 24000) * 24000.0;
+  end
+
+  if t > 12000.0 then
+    t = 24000.0 - t
+  end
+
+  if not smooth then
+    local lastt = DNR_VALUES[1][1]
+    local t0
+    local switch_t
+    for i = 2, 9 do
+      t0 = DNR_VALUES[i][1]
+      switch_t = (t0 + lastt) / 2.0
+      lastt = t0
+      if switch_t > t then
+        return DNR_VALUES[i][2]
+      end
+    end
+
+    return 1000
+  end
+
+  if t <= 4625.0 then -- 4500 + 125
+    return DNR_VALUES[0][2]
+  elseif t >= 6125.0 then -- 6000 + 125
+    return 1000
+  end
+
+  local td0
+  local f
+  for i = 1, 9 do
+    if DNR_VALUES[i][1] > t then
+      td0 = DNR_VALUES[i][1] - DNR_VALUES[i - 1][1]
+      f = (t - DNR_VALUES[i - 1][1]) / td0
+      return f * DNR_VALUES[i][2] + (1.0 - f) * DNR_VALUES[i - 1][2]
+    end
+  end
+
+  return 1000
+end
+
 --- @class World
 local World = foundation.com.Class:extends("foundation.com.headless.World")
 do
@@ -140,12 +201,41 @@ do
     error("get_meta/1: undefined behaviour")
   end
 
-  function ic:get_node_light(pos)
+  function ic:get_node_light(pos, timeofday)
     local entry = self.data[core.hash_node_position(pos)]
 
     if entry then
       return entry.light
     end
+
+    return 0
+  end
+
+  function ic:get_natural_light(pos, timeofday)
+    local entry = self.data[core.hash_node_position(pos)]
+
+    if entry then
+      local daylight = entry.param1 % 0xf
+      if daylight ~= 0 then
+        local time_of_day
+        if timeofday then
+          time_of_day = math.floor(24000 * timeofday) % 24000
+        else
+          time_of_day = 12000
+        end
+
+        local dnr = time_to_daynight_ratio(time_of_day, true)
+
+        if daylight == math.floor(entry.param1 / 16) then
+          --- @TODO actually calculate some daylight
+          daylight = 12
+        end
+
+        return math.floor(dnr * daylight / 1000)
+      end
+    end
+
+    return 0
   end
 end
 
