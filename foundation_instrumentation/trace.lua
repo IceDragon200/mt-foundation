@@ -127,10 +127,10 @@ function ic:format_traces(prefix, acc)
   return acc
 end
 
---- @spec #inspect(prefix: String, acc?: String[]): void
+--- @spec #inspect(prefix: String, acc?: String[]): String
 function ic:inspect(prefix, acc)
   acc = self:format_traces(prefix, acc or {})
-  print(table.concat(acc))
+  return table.concat(acc)
 end
 
 foundation.com.Trace = Trace

@@ -20,5 +20,5 @@ span:span_end()
 trace:span_end()
 
 -- Print the result to the console
-trace:inspect()
+print(trace:inspect())
 ```
