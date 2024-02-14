@@ -1,3 +1,9 @@
+# 1.37.0
+
+* Added `foundation.com.number_sign/1`
+* Added `foundation.com.plot_line2/5`
+* Added `foundation.com.plot_line3/7`
+
 # 1.36.1
 
 * Added `foundation.com.ansi_move_cursor_home/0`

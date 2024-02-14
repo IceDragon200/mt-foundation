@@ -1,5 +1,6 @@
--- Reference: https://gist.github.com/fnky/458719343aabd01cfb17a3a4f7296797
+--- @namespace foundation.com
 
+-- Reference: https://gist.github.com/fnky/458719343aabd01cfb17a3a4f7296797
 local ANSI_CODE = {
   bold = "1",
   dim = "2",
@@ -64,54 +65,112 @@ local RESET_ANSI_CODE = {
   strikethrough = "29",
 }
 
+--- @type ANSIColorName:
+---   "black" |
+---   "red" |
+---   "green" |
+---   "yellow" |
+---   "blue" |
+---   "magenta" |
+---   "cyan" |
+---   "white" |
+---   "default" |
+---   "bright_black" |
+---   "bright_red" |
+---   "bright_green" |
+---   "bright_yellow" |
+---   "bright_blue" |
+---   "bright_magenta" |
+---   "bright_cyan" |
+---   "bright_white"
+
+--- @type ANSIFormatOptions: {
+---   bold: Boolean?,
+---   dim: Boolean?,
+---   italic: Boolean?,
+---   underline: Boolean?,
+---   blinking: Boolean?,
+---   reverse: Boolean?,
+---   hidden: Boolean?,
+---   strikethrough: Boolean?,
+---   fg: ANSIColorName,
+---   bg: ANSIColorName,
+--- }
+
+--- @since "1.36.1"
+--- @spec ansi_move_cursor_home(): String
 function foundation.com.ansi_move_cursor_home()
   return "\x1B[H"
 end
 
+--- @since "1.36.1"
+--- @spec ansi_move_cursor_up(lines: Integer): String
 function foundation.com.ansi_move_cursor_up(lines)
   return "\x1B[" .. lines .. "A"
 end
 
+--- @since "1.36.1"
+--- @spec ansi_move_cursor_down(lines: Integer): String
 function foundation.com.ansi_move_cursor_down(lines)
   return "\x1B[" .. lines .. "B"
 end
 
+--- @since "1.36.1"
+--- @spec ansi_move_cursor_right(columns: Integer): String
 function foundation.com.ansi_move_cursor_right(columns)
   return "\x1B[" .. columns .. "C"
 end
 
+--- @since "1.36.1"
+--- @spec ansi_move_cursor_left(columns: Integer): String
 function foundation.com.ansi_move_cursor_left(columns)
   return "\x1B[" .. columns .. "D"
 end
 
+--- @since "1.36.1"
+--- @spec ansi_move_cursor_to(line: Integer, column: Integer): String
 function foundation.com.ansi_move_cursor_to(line, column)
   return "\x1B[" .. line .. ";" .. column .. "H"
 end
 
+--- @since "1.36.0"
+--- @spec ansi_clear_line_trailing(): String
 function foundation.com.ansi_clear_line_trailing()
   return "\x1B[0K"
 end
 
+--- @since "1.36.0"
+--- @spec ansi_clear_line_leading(): String
 function foundation.com.ansi_clear_line_leading()
   return "\x1B[1K"
 end
 
+--- @since "1.36.0"
+--- @spec ansi_clear_line(): String
 function foundation.com.ansi_clear_line()
   return "\x1B[2K"
 end
 
+--- @since "1.36.0"
+--- @spec ansi_clear_screen_trailing(): String
 function foundation.com.ansi_clear_screen_trailing()
   return "\x1B[0J"
 end
 
+--- @since "1.36.0"
+--- @spec ansi_clear_screen_leading(): String
 function foundation.com.ansi_clear_screen_leading()
   return "\x1B[1J"
 end
 
+--- @since "1.36.0"
+--- @spec ansi_clear_screen(): String
 function foundation.com.ansi_clear_screen()
   return "\x1B[2J"
 end
 
+--- @since "1.36.0"
+--- @spec ansi_format_start(ANSIFormatOptions): String
 function foundation.com.ansi_format_start(options)
   local codes = {}
   local code
@@ -150,11 +209,14 @@ function foundation.com.ansi_format_start(options)
   return "\x1B[" .. table.concat(codes, ";") .. "m"
 end
 
+--- @since "1.36.0"
+--- @spec ansi_format_end(): String
 function foundation.com.ansi_format_end()
   return "\x1B[0m"
 end
 
---- @spec #ansi_format(inner: String, options: Table): String
+--- @since "1.35.0"
+--- @spec ansi_format(inner: String, options: ANSIFormatOptions): String
 function foundation.com.ansi_format(inner, options)
   return foundation.com.ansi_format_start(options) .. inner .. foundation.com.ansi_format_end()
 end
