@@ -87,7 +87,7 @@ do
 
         if nodedef then
           if nodedef.on_destruct then
-            nodedef.on_destruct(pos)
+            nodedef.on_destruct(vector.copy(pos))
           end
         end
       end
@@ -101,7 +101,7 @@ do
             param1 = old_entry.param1,
             param2 = old_entry.param2,
           }
-          nodedef.after_destruct(pos, old_node)
+          nodedef.after_destruct(vector.copy(pos), old_node)
         end
       end
     end
@@ -117,7 +117,7 @@ do
     local nodedef = core.registered_items[node.name]
     if nodedef then
       if nodedef.on_construct then
-        nodedef.on_construct(pos)
+        nodedef.on_construct(vector.copy(pos))
       end
     else
       print("WARNING: node=" .. node.name .. " does not exist")
