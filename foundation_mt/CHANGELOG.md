@@ -1,3 +1,8 @@
+# 2.1.0
+
+* Added `foundation.com.copy_node/1`
+* Added `foundation.com.node_to_string/1`
+
 # 2.0.0
 
 * Inherited `foundation.com.InventoryList` module

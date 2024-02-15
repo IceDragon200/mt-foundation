@@ -1,7 +1,7 @@
 --
 -- Foundation MT, contains some various utilities for general minetest stuff
 --
-local mod = foundation.new_module("foundation_mt", "2.0.0")
+local mod = foundation.new_module("foundation_mt", "2.1.0")
 
 --- @namespace foundation.com
 mod:require("helpers.lua")

@@ -36,3 +36,28 @@ function foundation.com.get_inventory_drops(pos, inventory, drops)
     end
   end
 end
+
+--- Copies a NodeRef, you could also just use table_copy, but this guarantees only the NodeRef
+--- fields are being copied and set.
+---
+--- @since "2.1.0"
+--- @spec copy_node(node: NodeRef): NodeRef
+function foundation.com.copy_node(node)
+  return {
+    name = node.name,
+    param1 = node.param1,
+    param2 = node.param2,
+  }
+end
+
+--- Formats a NodeRef as a string for logging purposes
+---
+--- @since "2.1.0"
+--- @spec node_to_string(node?: NodeRef): String
+function foundation.com.node_to_string(node)
+  if node then
+    return node.name .. "," .. (node.param1 or "N/A") .. "," .. (node.param2 or "N/A")
+  else
+    return "N/A,N/A,N/A"
+  end
+end
