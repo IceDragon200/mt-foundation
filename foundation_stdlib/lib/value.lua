@@ -1,6 +1,37 @@
--- @namespace foundation.com
+--- @namespace foundation.com
 
--- @spec is_blank(value: Any): Boolean
+--- Similar to minetest's dump/1, but doesn't make it pretty, in other words, it's junked output.
+---
+--- @since "1.38.0"
+--- @spec value_inspect(Any): String
+function foundation.com.value_inspect(value, depth)
+  depth = depth or 0
+  if depth > 20 then
+    return "&recursive?"
+  end
+
+  local ty = type(value)
+  if ty == "table" then
+    local result = {}
+    for key, value in pairs(value) do
+      table.insert(
+        result,
+        foundation.com.value_inspect(key, depth + 1) ..
+        "=" ..
+        foundation.com.value_inspect(value, depth + 1)
+      )
+    end
+    return "{" .. table.concat(result, ",") .. "}"
+  elseif ty == "string" then
+    --- TODO: do this properly, bleh
+    return "\"" .. tostring(value) .. "\""
+  -- elseif ty == "boolean" or ty == "boolean" or ty == "number" then
+  else
+    return tostring(value)
+  end
+end
+
+--- @spec is_blank(value: Any): Boolean
 function foundation.com.is_blank(value)
   if value == nil then
     return true
@@ -13,10 +44,10 @@ end
 
 local is_blank = foundation.com.is_blank
 
---
--- Takes a list of arguments, and returns the first non-blank one
---
--- @spec first_present(...Any): Any
+---
+--- Takes a list of arguments, and returns the first non-blank one
+---
+--- @spec first_present(...Any): Any
 function foundation.com.first_present(...)
   for _, value in ipairs({...}) do
     if not is_blank(value) then
@@ -26,9 +57,9 @@ function foundation.com.first_present(...)
   return nil
 end
 
---
---
--- @spec deep_equals(Value, Value): Boolean
+---
+---
+--- @spec deep_equals(Value, Value): Boolean
 local function deep_equals(a, b, depth)
   depth = depth or 0
   if depth > 20 then

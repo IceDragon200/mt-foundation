@@ -1,3 +1,7 @@
+# 1.38.0
+
+* Added `foundation.com.value_inspect/1`
+
 # 1.37.0
 
 * Added `foundation.com.number_sign/1`
