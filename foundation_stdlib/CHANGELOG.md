@@ -1,3 +1,25 @@
+# 1.40.0
+
+* Added `Quaternion.dot/2` and `Quaternion#dot/1`
+* Added `Quaternion.slerp/4` and `Quaternion#slerp/3`
+* Added `Vector2.normalize/2` and `Vector2#normalize/1`
+* Added `Vector3.normalize/2` and `Vector3#normalize/1`
+* Added `Vector4.normalize/2` and `Vector4#normalize/1`
+* Added `Vector2.slerp/4` and `Vector2#slerp/3`
+* Added `Vector3.slerp/4` and `Vector3#slerp/3`
+* Added `Vector4.slerp/4` and `Vector4#slerp/3`
+* Added optional `places` argument to `Vector2.round/2` making it `Vector2.round/3`
+* Added optional `places` argument to `Vector3.round/2` making it `Vector3.round/3`
+* Added optional `places` argument to `Vector4.round/2` making it `Vector4.round/3`
+* Added optional `places` argument to `number_round/1` making it `number_round/2`
+
+# 1.39.0
+
+The following were typoed, thanks to autocompletion, they weren't noticed until now.
+
+* Renamed `integer_crawford_base32_be_encode/3` > `integer_crockford_base32_be_encode/3`
+* Renamed `integer_crawford_base32_le_encode/3` > `integer_crockford_base32_le_encode/3`
+
 # 1.38.0
 
 * Added `foundation.com.value_inspect/1`

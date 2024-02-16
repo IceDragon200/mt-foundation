@@ -1,6 +1,6 @@
--- @namespace foundation.com
+--- @namespace foundation.com
 
--- @const HEX_UPPERCASE_ENCODE_TABLE: { [Integer]: String }
+--- @const HEX_UPPERCASE_ENCODE_TABLE: { [Integer]: String }
 foundation.com.HEX_UPPERCASE_ENCODE_TABLE = {
   [0] = "0",
   [1] = "1",
@@ -20,10 +20,10 @@ foundation.com.HEX_UPPERCASE_ENCODE_TABLE = {
   [15] = "F",
 }
 
--- @alias HEX_TABLE = HEX_UPPERCASE_ENCODE_TABLE
+--- @alias HEX_TABLE = HEX_UPPERCASE_ENCODE_TABLE
 foundation.com.HEX_TABLE = foundation.com.HEX_UPPERCASE_ENCODE_TABLE
 
--- @const HEX_TO_DEC: { [String]: Integer }
+--- @const HEX_TO_DEC: { [String]: Integer }
 foundation.com.HEX_TO_DEC = {}
 for dec, hex in pairs(foundation.com.HEX_UPPERCASE_ENCODE_TABLE) do
   foundation.com.HEX_TO_DEC[hex] = dec
@@ -35,13 +35,13 @@ foundation.com.HEX_TO_DEC["d"] = 13
 foundation.com.HEX_TO_DEC["e"] = 14
 foundation.com.HEX_TO_DEC["f"] = 15
 
--- @const HEX_BYTE_TO_DEC: { [Integer]: Integer }
+--- @const HEX_BYTE_TO_DEC: { [Integer]: Integer }
 foundation.com.HEX_BYTE_TO_DEC = {}
 for hex_char, dec in pairs(foundation.com.HEX_TO_DEC) do
   foundation.com.HEX_BYTE_TO_DEC[string.byte(hex_char, 1, 1)] = dec
 end
 
--- @const CROCKFORD_BASE32_ENCODE_TABLE: { [Integer]: String }
+--- @const CROCKFORD_BASE32_ENCODE_TABLE: { [Integer]: String }
 foundation.com.CROCKFORD_BASE32_ENCODE_TABLE = {
   [0] = "0",
   [1] = "1",
@@ -77,6 +77,7 @@ foundation.com.CROCKFORD_BASE32_ENCODE_TABLE = {
   [31] = "Z",
 }
 
+--- @const CROCKFORD_BASE32_DECODE_TABLE: { [String]: Integer }
 foundation.com.CROCKFORD_BASE32_DECODE_TABLE = {
   ["0"] = 0,
   ["O"] = 0,

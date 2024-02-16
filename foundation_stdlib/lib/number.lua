@@ -81,8 +81,8 @@ function foundation.com.integer_base16_le_encode(integer, len)
   return table.concat(result)
 end
 
---- @spec integer_crawford_base32_be_encode(Integer, len: Integer, return_table?: Boolean): String
-function foundation.com.integer_crawford_base32_be_encode(integer, len, return_table)
+--- @spec integer_crockford_base32_be_encode(Integer, len: Integer, return_table?: Boolean): String
+function foundation.com.integer_crockford_base32_be_encode(integer, len, return_table)
   local bits = len * 8
   local segments = math.ceil(bits / 5)
   local result = {}
@@ -101,8 +101,8 @@ function foundation.com.integer_crawford_base32_be_encode(integer, len, return_t
   end
 end
 
---- @spec integer_crawford_base32_le_encode(Integer, len: Integer, return_table?: Boolean): String
-function foundation.com.integer_crawford_base32_le_encode(integer, len, return_table)
+--- @spec integer_crockford_base32_le_encode(Integer, len: Integer, return_table?: Boolean): String
+function foundation.com.integer_crockford_base32_le_encode(integer, len, return_table)
   local bits = len * 8
   local segments = math.ceil(bits / 5)
   local result = {}
@@ -121,14 +121,28 @@ function foundation.com.integer_crawford_base32_le_encode(integer, len, return_t
   end
 end
 
---- @spec number_round(Number): Integer
-function foundation.com.number_round(num)
-  local floor = math.floor(num)
-  local norm = num - floor
-  if norm >= 0.5 then
-    return floor + 1
+--- @spec number_round(num: Number): Integer
+--- @since "1.40.0"
+--- @spec number_round(num: Number, places: Integer): Integer
+function foundation.com.number_round(num, places)
+  if places and places > 0 then
+    local pow = math.pow(10, places)
+    local floor = math.floor(num * pow)
+    local norm = num - floor
+
+    if norm >= 0.5 then
+      return (floor + 1) / pow
+    else
+      return floor / pow
+    end
   else
-    return floor
+    local floor = math.floor(num)
+    local norm = num - floor
+    if norm >= 0.5 then
+      return floor + 1
+    else
+      return floor
+    end
   end
 end
 

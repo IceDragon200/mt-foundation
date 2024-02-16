@@ -94,6 +94,13 @@ function m.length(a)
   return math.sqrt(a.w * a.w + a.x * a.x + a.y * a.y + a.z * a.z)
 end
 
+--- @since "1.40.0"
+--- @spec dot(q1: Quaternion, q2: Quaternion): Number
+--- @spec #dot(q2: Quaternion): Number
+function m.dot(q1, q2)
+  return q1.w * q2.w + q1.x * q2.x + q1.y * q2.y + q1.z * q2.z
+end
+
 --- @since "1.30.0"
 --- @mutative dest
 --- @spec conjugate(dest: Quaternion, q1: Quaternion): Quaternion
@@ -125,7 +132,7 @@ end
 function m.normalize(dest, q1)
   local w, x, y, z = m.unwrap(q1)
   local len = math.sqrt(w * w + x * x + y * y + z * z)
-  return m.divide(dest, d1, len)
+  return m.divide(dest, q1, len)
 end
 
 --- @since "1.30.0"
@@ -196,6 +203,28 @@ function m.divide(dest, q1, q2)
   dest.y = q1y / q2y
   dest.z = q1z / q2z
   return dest
+end
+
+--- http://number-none.com/product/Understanding%20Slerp,%20Then%20Not%20Using%20It/
+---
+--- @since "1.40.0"
+--- @mutative dest
+--- @spec slerp(dest: Quaternion, q1: Quaternion, q2: Quaternion, t: Number): Quaternion
+--- @spec #slerp(q1: Quaternion, q2: Quaternion, t: Number): Quaternion
+function m.slerp(dest, q1, q2, t)
+  local dot = m.dot(q1, q2)
+  if dot < -1 then
+    dot = -1
+  elseif dot > 1 then
+    dot = 1
+  end
+  local tmp = m.multiply({}, q1, dot)
+  tmp = m.subtract(tmp, q2, tmp)
+  tmp = m.normalize(tmp, tmp)
+  local theta = math.acos(dot) * t
+  dest = m.multiply(dest, q1, math.cos(theta))
+  tmp = m.multiply(tmp, tmp, math.sin(theta))
+  return m.add(dest, dest, tmp)
 end
 
 --- @since "1.30.0"

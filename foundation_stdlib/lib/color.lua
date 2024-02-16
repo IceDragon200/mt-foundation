@@ -1,4 +1,4 @@
--- @namespace foundation.com.Color
+--- @namespace foundation.com.Color
 
 local byte_to_hexpair = assert(foundation.com.byte_to_hexpair)
 local hexpair_to_byte = assert(foundation.com.string_hex_pair_to_byte)
@@ -13,14 +13,14 @@ local Color = {
 
 }
 
--- @type Byte: Integer/8
---
--- @type Color: {
---   r: Byte,
---   g: Byte,
---   b: Byte,
---   a: Byte,
--- }
+--- @type Byte: Integer/8
+---
+--- @type Color: {
+---   r: Byte,
+---   g: Byte,
+---   b: Byte,
+---   a: Byte,
+--- }
 
 local function color_channel_clamp(a)
   return math.max(math.min(math.floor(a), 255), 0)
@@ -54,13 +54,13 @@ local function channel_hard_light(a, b)
   return color_channel_clamp(r * 255)
 end
 
---
--- @spec new(r: Byte, g: Byte, b: Byte, a?: Byte): Color
+---
+--- @spec new(r: Byte, g: Byte, b: Byte, a?: Byte): Color
 function Color.new(r, g, b, a)
   return { r = r, g = g, b = b, a = a or 255 }
 end
 
--- @spec copy(Color): Color
+--- @spec copy(Color): Color
 function Color.copy(color)
   return {
     r = color.r,
@@ -70,7 +70,7 @@ function Color.copy(color)
   }
 end
 
--- @spec lerp(a: Color, b: Color, d: Number): Color
+--- @spec lerp(a: Color, b: Color, d: Number): Color
 function Color.lerp(a, b, d)
   return {
     r = color_channel_clamp(a.r + (b.r - a.r) * d),
@@ -80,7 +80,7 @@ function Color.lerp(a, b, d)
   }
 end
 
--- @spec add(Color, Color): Color
+--- @spec add(Color, Color): Color
 function Color.add(a, b)
   return {
     r = color_channel_clamp((a.r * a.a / 255) + (b.r * b.a / 255), 255),
@@ -90,7 +90,7 @@ function Color.add(a, b)
   }
 end
 
--- @spec sub(Color, Color): Color
+--- @spec sub(Color, Color): Color
 function Color.sub(a, b)
   return {
     r = color_channel_clamp((a.r * a.a / 255) - (b.r * b.a / 255), 0),
@@ -100,7 +100,7 @@ function Color.sub(a, b)
   }
 end
 
--- @spec mult(Color, Color): Color
+--- @spec mult(Color, Color): Color
 function Color.mult(a, b)
   return {
     r = color_channel_clamp((a.r * a.a / 255) * (b.r * b.a / 255) / 255),
@@ -110,7 +110,7 @@ function Color.mult(a, b)
   }
 end
 
--- @spec blend_overlay(Color, Color): Color
+--- @spec blend_overlay(Color, Color): Color
 function Color.blend_overlay(a, b)
   return {
     r = channel_overlay(a.r, b.r),
@@ -120,7 +120,7 @@ function Color.blend_overlay(a, b)
   }
 end
 
--- @spec blend_hard_light(Color, Color): Color
+--- @spec blend_hard_light(Color, Color): Color
 function Color.blend_hard_light(a, b)
   return {
     r = channel_hard_light(a.r, b.r),
@@ -130,7 +130,7 @@ function Color.blend_hard_light(a, b)
   }
 end
 
--- @spec blend_multiply(Color, Color): Color
+--- @spec blend_multiply(Color, Color): Color
 function Color.blend_multiply(a, b)
   return {
     r = color_channel_clamp(a.r * b.r / 255),
@@ -140,12 +140,12 @@ function Color.blend_multiply(a, b)
   }
 end
 
--- @spec to_grayscale_value(Color): Integer
+--- @spec to_grayscale_value(Color): Integer
 function Color.to_grayscale_value(color)
   return color_channel_clamp(0.299 * color.r + 0.587 * color.g + 0.114 * color.b)
 end
 
--- @spec to_grayscale(Color): Color
+--- @spec to_grayscale(Color): Color
 function Color.to_grayscale(color)
   local y = Color.to_grayscale_value(color)
   return {
@@ -156,7 +156,7 @@ function Color.to_grayscale(color)
   }
 end
 
--- @spec to_string32(Color): String
+--- @spec to_string32(Color): String
 function Color.to_string32(color)
   local result = "#" ..
     byte_to_hexpair(color.r) ..
@@ -167,7 +167,7 @@ function Color.to_string32(color)
   return result
 end
 
--- @spec to_string24(Color): String
+--- @spec to_string24(Color): String
 function Color.to_string24(color)
   local result = "#" ..
     byte_to_hexpair(color.r) ..
@@ -177,7 +177,7 @@ function Color.to_string24(color)
   return result
 end
 
--- @spec to_string16(Color): String
+--- @spec to_string16(Color): String
 function Color.to_string16(color)
   local result = "#" ..
     nibble_to_hex(math.floor(color.r / 16)) ..
@@ -188,7 +188,7 @@ function Color.to_string16(color)
   return result
 end
 
--- @spec to_string12(Color): String
+--- @spec to_string12(Color): String
 function Color.to_string12(color)
   local result = "#" ..
     nibble_to_hex(math.floor(color.r / 16)) ..
@@ -198,9 +198,9 @@ function Color.to_string12(color)
   return result
 end
 
--- Converts the given colorstring into a Color table or nil if it was named but doesn't exist.
---
--- @spec from_colorstring(colorstring: String): Color | nil
+--- Converts the given colorstring into a Color table or nil if it was named but doesn't exist.
+---
+--- @spec from_colorstring(colorstring: String): Color | nil
 function Color.from_colorstring(colorstring)
   if colorstring:sub(1, 1) == "#" then
     local rest = colorstring:sub(2)
@@ -267,11 +267,11 @@ function Color.from_colorstring(colorstring)
   end
 end
 
---
--- Takes any value and may or may not return a valid color string.
---
--- @exception
--- @spec maybe_to_colorstring(value: Any): String
+---
+--- Takes any value and may or may not return a valid color string.
+---
+--- @exception
+--- @spec maybe_to_colorstring(value: Any): String
 function Color.maybe_to_colorstring(value)
   if type(value) == "string" then
     return value
@@ -286,7 +286,7 @@ function Color.maybe_to_colorstring(value)
   end
 end
 
--- @spec maybe_to_color(value: String | Table | Color): Color
+--- @spec maybe_to_color(value: String | Table | Color): Color
 function Color.maybe_to_color(value)
   if type(value) == "string" then
     return Color.from_colorstring(value)
