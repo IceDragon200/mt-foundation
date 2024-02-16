@@ -7,25 +7,27 @@
 -- Try InventoryPacker instead for a smaller serialized footprint.
 --
 
--- @namespace foundation.com.InventorySerializer
---
--- @type DumpedItemStack: {
---   name: String,
---   count: Integer,
---   wear: Integer,
---   meta: Table,
--- }
---
--- @type DumpedInventory: {
---   size: Integer,
---   data: DumpedItemStack,
--- }
+--- @namespace foundation.com.InventorySerializer
+
+---
+--- @type DumpedItemStack: {
+---   name: String,
+---   count: Integer,
+---   wear: Integer,
+---   meta: Table,
+--- }
+
+---
+--- @type DumpedInventory: {
+---   size: Integer,
+---   data: DumpedItemStack,
+--- }
 local is_blank = assert(foundation.com.is_blank)
 
 local dump_list
 local load_list
 
--- @spec description(DumpedInventory): DumpedItemStack
+--- @spec description(DumpedInventory): DumpedItemStack
 local function description(dumped_list)
   local count = dumped_list.size
   local used = 0
@@ -37,7 +39,7 @@ local function description(dumped_list)
   return used .. " / " .. count
 end
 
--- @spec dump_item_stack(ItemStack): DumpedItemStack
+--- @spec dump_item_stack(ItemStack): DumpedItemStack
 local function dump_item_stack(item_stack)
   local item_name = item_stack:get_name()
   local count = item_stack:get_count()
@@ -61,7 +63,7 @@ local function dump_item_stack(item_stack)
   }
 end
 
--- @spec dump_list(ItemStack[]): DumpedInventory
+--- @spec dump_list(ItemStack[]): DumpedInventory
 function dump_list(list)
   local result = {
     size = 0,
@@ -78,7 +80,7 @@ function dump_list(list)
   return result
 end
 
--- @spec load_item_stack(DumpedItemStack): ItemStack
+--- @spec load_item_stack(DumpedItemStack): ItemStack
 local function load_item_stack(source_stack)
   local item_stack = ItemStack({
     name = source_stack.name,
@@ -108,9 +110,9 @@ local function load_item_stack(source_stack)
   return item_stack
 end
 
--- Loads a dumped inventory list from dump_list/1
---
--- @spec load_list(DumpedInventory, target_list: ItemStack[]): ItemStack[]
+--- Loads a dumped inventory list from dump_list/1
+---
+--- @spec load_list(DumpedInventory, target_list: ItemStack[]): ItemStack[]
 function load_list(dumped, target_list)
   assert(dumped, "expected dumped inventory list")
   assert(target_list, "expected a target inventory list")
