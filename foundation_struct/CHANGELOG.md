@@ -1,3 +1,7 @@
+# 1.8.0
+
+* Added `List#find_index/1`
+
 # 1.7.0
 
 * Added `RingBuffer#has_items/0`

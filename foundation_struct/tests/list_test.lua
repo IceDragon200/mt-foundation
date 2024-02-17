@@ -590,6 +590,38 @@ case:describe("#find/2", function (t2)
   end)
 end)
 
+case:describe("#find_index/1", function (t2)
+  t2:test("can find an element that matches criteria", function (t3)
+    local t = m:new({
+      1,
+      2,
+      3
+    })
+
+    t3:assert_eq(
+      t:find_index(function (elm, _index)
+        return elm == 2
+      end),
+      2
+    )
+  end)
+
+  t2:test("correctly returns default when find fails", function (t3)
+    local t = m:new({
+      1,
+      2,
+      3
+    })
+
+    t3:assert_eq(
+      t:find_index(function (elm, _index)
+        return elm == 4
+      end),
+      -1
+    )
+  end)
+end)
+
 case:describe("#filter/2", function (t2)
   t2:test("only includes truthy elements from callback", function (t3)
     local t = m:new({

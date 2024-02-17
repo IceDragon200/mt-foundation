@@ -590,6 +590,18 @@ function ic:find(default, callback)
   end)
 end
 
+--- @since "1.8.0"
+--- @spec #find_index(callback: (item: T, index: Integer) => Boolean): Integer
+function ic:find_index(callback)
+  return self:reduce_while(-1, function (item, index, acc)
+    if callback(item, index) then
+      return false, index
+    else
+      return true, acc
+    end
+  end)
+end
+
 --- @since "1.6.0"
 --- @spec #bsearch_by(predicate: (value: T, idx: Integer) => Integer): T | nil
 function ic:bsearch_by(predicate)
