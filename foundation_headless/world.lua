@@ -61,6 +61,14 @@ local function time_to_daynight_ratio(time_of_day, smooth)
   return 1000
 end
 
+local function pretty_node(node)
+  return node.name .. "[" .. (node.param1 or "nil") .. "," .. (node.param2 or "nil") .. "]"
+end
+
+local function pretty_vec3(vec3)
+  return "(" .. vec3.x .. "," .. vec3.y .. "," .. vec3.z .. ")"
+end
+
 --- @class World
 local World = foundation.com.Class:extends("foundation.com.headless.World")
 do
@@ -74,7 +82,7 @@ do
     assert(pos, "expected position")
     assert(node, "expected node")
 
-    --print("core.set_node", pretty_vec3(pos), pretty_node(node))
+    print("core.set_node", pretty_vec3(pos), pretty_node(node))
 
     local node_id = core.hash_node_position(pos)
     local old_entry = self.data[node_id]
@@ -106,7 +114,7 @@ do
       end
     end
 
-    self.data[node_id] = {
+    local entry = {
       id = core.get_content_id(node.name),
       param1 = node.param1 or 0,
       param2 = node.param2 or 0,
@@ -114,13 +122,19 @@ do
       light = 15,
     }
 
+    -- if node.name ~= core.get_name_from_content_id(entry.id) then
+    --   error("sanity check failed, content id did not resolve to expected name expected=" .. node.name .. " got=" .. core.get_name_from_content_id(entry.id))
+    -- end
+
+    self.data[node_id] = entry
+
     local nodedef = core.registered_items[node.name]
     if nodedef then
       if nodedef.on_construct then
         nodedef.on_construct(vector.copy(pos))
       end
     else
-      print("WARNING: node=" .. node.name .. " does not exist")
+      minetest.log("warning", "node=" .. node.name .. " does not exist")
     end
   end
 
@@ -167,6 +181,18 @@ do
     }
   end
 
+  --- @spec #get_node_raw(x: Number, y: Number, z: Number):
+  ---   (content_id: Number, param1: Number, param2: Number, pos_ok: Boolean)
+  function ic:get_node_raw(x, y, z)
+    local entry = self.data[core.hash_node_position({ x = x, y = y, z = z })]
+
+    if entry then
+      return entry.id, entry.param1, entry.param2, true
+    end
+    return 127, 0, 0, false
+  end
+
+  --- @spec #get_node(Vector3): NodeRef
   function ic:get_node(pos)
     local entry = self.data[core.hash_node_position(pos)]
 
@@ -181,6 +207,7 @@ do
     return { name = "ignore", param1 = 0, param2 = 0 }
   end
 
+  --- @spec #get_node_or_nil(Vector3): NodeRef | nil
   function ic:get_node_or_nil(pos)
     local node = self:get_node(pos)
 
