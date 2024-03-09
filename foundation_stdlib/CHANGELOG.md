@@ -1,3 +1,7 @@
+# 1.40.1
+
+* Added `foundation.com.BINARY_PREFIXES` for `foudation.com.format_pretty_unit/3`
+
 # 1.40.0
 
 * Added `Quaternion.dot/2` and `Quaternion#dot/1`
