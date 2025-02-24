@@ -254,3 +254,142 @@ function foundation.com.string_each_char(str, callback)
     end
   end
 end
+
+--- Compares two strings (case-insensitive for ASCII) and determins if they are equal.
+---
+--- @since "1.41.0"
+--- @spec string_ascii_iequals(a: String, b: String): Boolean
+function foundation.com.string_ascii_iequals(a, b)
+  local alen = #a
+  local blen = #b
+
+  local ac
+  local bc
+
+  local acn
+  local bcn
+
+  if alen == blen then
+    for i = 1,alen do
+      ac = string.byte(a, i)
+      bc = string.byte(b, i)
+
+      if ((ac >= 65 and ac <= 90) or (ac >= 97 and ac <= 122)) and
+         ((bc >= 65 and bc <= 90) or (bc >= 97 and bc <= 122)) then
+        acn = ac
+        bcn = bc
+        if acn >= 97 then
+          acn = acn - 97
+        else
+          acn = acn - 65
+        end
+        if bcn >= 97 then
+          bcn = bcn - 97
+        else
+          bcn = bcn - 65
+        end
+        if acn ~= bcn then
+          return false
+        end
+      else
+        if ac ~= bc then
+          return false
+        end
+      end
+    end
+  else
+    return false
+  end
+
+  return true
+end
+
+--- Determines if string includes the provided pattern string.
+---
+--- @since "1.41.0"
+--- @spec string_ascii_icontains(base: String, pattern: String): Boolean
+function foundation.com.string_ascii_icontains(base, pattern)
+  local alen = #base
+  local blen = #pattern
+
+  if blen == 0 then
+    return true
+  end
+
+  if alen == blen then
+    return foundation.com.string_ascii_iequals(base, pattern)
+  end
+
+  local ac
+  local bc
+
+  local acn
+  local bcn
+
+  local match_start = 1
+  local matched = 0
+
+  if alen >= blen then
+    local i = 1
+    local j = 1
+    while i <= alen do
+      ac = string.byte(base, i)
+      bc = string.byte(pattern, j)
+
+      if ((ac >= 65 and ac <= 90) or (ac >= 97 and ac <= 122)) and
+         ((bc >= 65 and bc <= 90) or (bc >= 97 and bc <= 122)) then
+        acn = ac
+        bcn = bc
+
+        if acn >= 97 then
+          acn = acn - 97
+        else
+          acn = acn - 65
+        end
+
+        if bcn >= 97 then
+          bcn = bcn - 97
+        else
+          bcn = bcn - 65
+        end
+
+        if acn == bcn then
+          matched = matched + 1
+          if not match_start then
+            match_start = i
+          end
+          i = i + 1
+          j = j + 1
+        else
+          matched = 0
+          i = match_start + 1
+          match_start = i
+          j = 1
+        end
+      else
+        if ac == bc then
+          i = i + 1
+          matched = matched + 1
+          if not match_start then
+            match_start = i
+          end
+          i = i + 1
+          j = j + 1
+        else
+          matched = 0
+          i = match_start + 1
+          match_start = i
+          j = 1
+        end
+      end
+
+      if matched == blen then
+        break
+      end
+    end
+  else
+    return false
+  end
+
+  return matched == blen
+end

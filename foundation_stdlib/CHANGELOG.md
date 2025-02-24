@@ -1,3 +1,8 @@
+# 1.41.0
+
+* Added `foundation.com.string_ascii_iequals/2`
+* Added `foundation.com.string_ascii_icontains/2`
+
 # 1.40.1
 
 * Added `foundation.com.BINARY_PREFIXES` for `foudation.com.format_pretty_unit/3`
