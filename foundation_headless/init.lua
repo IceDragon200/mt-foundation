@@ -1,7 +1,7 @@
 --
 -- Foundation Headless
 --
-local mod = foundation.new_module("foundation_headless", "2.2.0")
+local mod = foundation.new_module("foundation_headless", "2.2.1")
 
 --- @namespace foundation.com.headless
 foundation.com.headless = foundation.com.headless or {}

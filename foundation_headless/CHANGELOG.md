@@ -1,3 +1,7 @@
+# 2.2.1
+
+* Set `breath_max` in player properties
+
 # 2.2.0
 
 * Added `foundation.com.headless.World` class, which is a minimal implementation of the minetest get/set_node functions.

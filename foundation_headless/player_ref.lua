@@ -8,7 +8,7 @@ do
   function ic:initialize(name)
     self._listeners = {}
     self.hp = 20
-    self.breath = 20
+    self.breath = core.PLAYER_MAX_BREATH_DEFAULT
     self.name = name
     self.hotbar_index = 1
     self.inventory = foundation.com.headless.InvRef:new()
@@ -21,6 +21,7 @@ do
     self.lighting = {}
     self.properties = {
       eye_height = 1.625,
+      breath_max = core.PLAYER_MAX_BREATH_DEFAULT,
     }
     self.look_dir = vector.new(0, 0, 0)
     self.pos = vector.new(0, 0, 0)
