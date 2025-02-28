@@ -75,6 +75,10 @@ do
   local ic = World.instance_class
 
   function ic:initialize()
+    self.g_object_id = 0
+
+    self._removed_saos = {}
+    self.saos = {}
     self.data = {}
   end
 
@@ -263,6 +267,130 @@ do
     end
 
     return 0
+  end
+
+  function ic:update(dtime)
+    local pos
+    local pos2
+    local pos3
+    local dir
+    local node
+    local nodedef
+    for id, sao in pairs(self.saos) do
+      if sao.removed then
+        self._removed_saos[id] = true
+      else
+        pos = sao:get_pos()
+        sao:update_physics(dtime)
+        pos2 = sao:get_pos()
+        dir = vector.direction(pos, pos2)
+
+        if dir.y > 0 then
+          --- entity is ascending
+        elseif dir.y < 0 then
+          --- entity is descending
+          pos3 = vector.copy(pos2)
+          node = core.get_node_or_nil(pos3)
+          if node then
+            nodedef = core.registered_nodes[node.name]
+            if nodedef.collision_box then
+              -- TODO
+            end
+          end
+        end
+        sao:update(dtime)
+      end
+
+      if sao.removed then
+        self._removed_saos[id] = true
+      end
+    end
+
+    if next(self._removed_saos) then
+      for id, _ in pairs(self._removed_saos) do
+        self.saos[id] = nil
+      end
+      self._removed_saos = {}
+    end
+  end
+
+  local INITIAL_PROPERTY_KEY = {
+    "hp_max",
+    "breath_max",
+    "physical",
+    "collide_with_objects",
+    "collisionbox",
+    "selectionbox",
+    "pointable",
+    "visual",
+    "mesh",
+    "visual_size",
+    "textures",
+    "colors",
+    "spritediv",
+    "initial_sprite_basepos",
+    "is_visible",
+    "makes_footstep_sound",
+    "stepheight",
+    "eye_height",
+    "automatic_rotate",
+    "automatic_face_movement_dir",
+    "backface_culling",
+    "glow",
+    "nametag",
+    "nametag_color",
+    "automatic_face_movement_max_rotation_per_sec",
+    "infotext",
+    "static_save",
+    "wield_item",
+    "zoom_fov",
+    "use_texture_alpha",
+    "shaded",
+    "damage_texture_modifier",
+    "show_on_minimap",
+  }
+
+  function ic:add_entity(pos, name, staticdata)
+    staticdata = staticdata or ""
+    assert(type(name) == "string", "expected a name")
+    self.g_object_id = self.g_object_id + 1
+    local id = self.g_object_id
+    local lua_entity_def = core.registered_entities[name]
+    local entity = setmetatable({}, { __index = lua_entity_def })
+    local sao = foundation.com.headless.LuaEntity:new(entity, pos)
+    entity.object = sao
+    self.saos[id] = sao
+
+    for _, key in ipairs(INITIAL_PROPERTY_KEY) do
+      if lua_entity_def[key] then
+        print("WARN: lua entity name=" .. name .. " contains key=" .. key .. " which is an initial property")
+        sao._properties[key] = lua_entity_def[key]
+      end
+    end
+
+    if lua_entity_def.initial_properties then
+      sao._properties = foundation.com.table_merge(
+        sao._properties,
+        lua_entity_def.initial_properties
+      )
+    end
+
+    if lua_entity_def.on_activate then
+      lua_entity_def.on_activate(entity, staticdata, 0)
+    end
+    return sao
+  end
+
+  function ic:get_objects_inside_radius(center, radius)
+    local result = {}
+    local i = 0
+    for _id, sao in pairs(self.saos) do
+      if vector.distance(center, sao._pos) <= radius then
+        i = i + 1
+        result[i] = sao
+      end
+    end
+    return result
   end
 end
 

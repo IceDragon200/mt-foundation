@@ -1,32 +1,31 @@
 --- @namespace foundation.com.headless
 
 --- @class PlayerRef
-local PlayerRef = foundation.com.Class:extends("foundation.com.headless.PlayerRef")
+local PlayerRef = foundation.com.headless.ObjectRef:extends("foundation.com.headless.PlayerRef")
 do
   local ic = PlayerRef.instance_class
 
   function ic:initialize(name)
-    self._listeners = {}
-    self.hp = 20
-    self.breath = core.PLAYER_MAX_BREATH_DEFAULT
-    self.name = name
-    self.hotbar_index = 1
-    self.inventory = foundation.com.headless.InvRef:new()
-    self.meta = foundation.com.headless.MetaDataRef:new()
-    self.hud_id = 0
-    self.hud = {}
-    self.hud_flags = {}
-    self.physics_overrides = {}
-    self.armor_groups = {}
-    self.lighting = {}
-    self.properties = {
+    ic._super.initialize(self)
+
+    self._breath = core.PLAYER_MAX_BREATH_DEFAULT
+    self._name = name
+    self._hotbar_index = 1
+    self._inventory = foundation.com.headless.InvRef:new()
+    self._meta = foundation.com.headless.MetaDataRef:new()
+    self._hud_id = 0
+    self._hud = {}
+    self._hud_flags = {}
+    self._physics_overrides = {}
+    self._armor_groups = {}
+    self._lighting = {}
+    self._properties = {
       eye_height = 1.625,
       breath_max = core.PLAYER_MAX_BREATH_DEFAULT,
     }
-    self.look_dir = vector.new(0, 0, 0)
-    self.pos = vector.new(0, 0, 0)
+    self._look_dir = vector.new(0, 0, 0)
 
-    self.inventory:set_size("main", 8)
+    self._inventory:set_size("main", 8)
   end
 
   -- Callbacks, only used for the mock
@@ -50,109 +49,91 @@ do
   end
 
   function ic:get_meta()
-    return self.meta
+    return self._meta
   end
 
   function ic:get_inventory()
-    return self.inventory
+    return self._inventory
   end
 
   function ic:set_inventory_formspec(formspec)
-    minetest.log("info", "set_inventory_formspec/1 name=" .. self.name)
-    self.inventory_formspec = formspec
+    minetest.log("info", "set_inventory_formspec/1 name=" .. self._name)
+    self._inventory_formspec = formspec
 
     local listeners = self._listeners["set_inventory_formspec"]
 
     if listeners then
       for callback, _ in pairs(listeners) do
-        callback(self, self.inventory_formspec)
+        callback(self, self._inventory_formspec)
       end
     end
   end
 
   function ic:get_inventory_formspec()
-    return self.inventory_formspec
+    return self._inventory_formspec
   end
 
   function ic:hud_set_hotbar_image(image)
-    self.hotbar_image = image
+    self._hotbar_image = image
   end
 
   function ic:hud_set_hotbar_selected_image(image)
-    self.hotbar_selected_image = image
+    self._hotbar_selected_image = image
   end
 
   function ic:hud_set_hotbar_itemcount(count)
-    self.hotbar_itemcount = count
+    self._hotbar_itemcount = count
   end
 
   function ic:get_player_name()
-    return self.name
+    return self._name
   end
 
   function ic:hud_add(def)
     --print("TODO: hud_add", dump(def))
-    self.hud_id = self.hud_id + 1
-    self.hud[self.hud_id] = def
-    return self.hud_id
+    self._hud_id = self._hud_id + 1
+    self._hud[self._hud_id] = def
+    return self._hud_id
   end
 
   function ic:hud_get_flags()
-    return self.hud_flags
+    return self._hud_flags
   end
 
   function ic:hud_set_flags(flags)
-    self.hud_flags = flags
+    self._hud_flags = flags
   end
 
   function ic:set_physics_override(physics_overrides)
-    self.physics_overrides = physics_overrides
+    self._physics_overrides = physics_overrides
   end
 
   function ic:get_physics_override()
-    return self.physics_overrides
-  end
-
-  function ic:get_hp()
-    return self.hp
-  end
-
-  function ic:set_hp(hp)
-    self.hp = assert(hp)
+    return self._physics_overrides
   end
 
   function ic:get_breath()
-    return self.breath
+    return self._breath
   end
 
   function ic:get_armor_groups()
-    return self.armor_groups
-  end
-
-  function ic:get_properties()
-    return self.properties
-  end
-
-  function ic:set_properties(properties)
-    for key, value in pairs(properties) do
-      self.properties[key] = value
-    end
-  end
-
-  function ic:get_pos()
-    return vector.copy(self.pos)
+    return self._armor_groups
   end
 
   function ic:get_look_dir()
-    return vector.copy(self.look_dir)
+    return vector.copy(self._look_dir)
   end
 
   function ic:get_wielded_item()
-    return self.inventory:get_stack("main", self.hotbar_index)
+    return self._inventory:get_stack("main", self._hotbar_index)
   end
 
   function ic:set_lighting(object)
-    self.lighting = object
+    self._lighting = object
+  end
+
+  function ic:is_player()
+    return true
   end
 end
 

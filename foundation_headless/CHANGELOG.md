@@ -1,3 +1,7 @@
+# 2.3.0
+
+* Implement `ObjectRef` which is now a base for players and lua entities.
+
 # 2.2.1
 
 * Set `breath_max` in player properties
