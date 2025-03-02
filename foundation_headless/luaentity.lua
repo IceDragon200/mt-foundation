@@ -37,6 +37,10 @@ do
     end
   end
 
+  function ic:is_valid()
+    return not self._removed
+  end
+
   function ic:remove()
     self._removed = true
   end

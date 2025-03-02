@@ -205,6 +205,10 @@ do
   function ic:get_effective_observers()
   end
 
+  function ic:is_valid()
+    return true
+  end
+
   function ic:is_player()
     return false
   end

@@ -1,3 +1,7 @@
+# 2.3.1
+
+* Added `ObjectRef#is_valid`
+
 # 2.3.0
 
 * Implement `ObjectRef` which is now a base for players and lua entities.
