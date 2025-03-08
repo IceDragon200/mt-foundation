@@ -26,6 +26,21 @@ function ic:initialize(data, mode)
   self:open(mode)
 end
 
+--- Clears the buffer and resets all positions back to the start
+---
+--- @since "2.4.0"
+--- @spec #truncate(): void
+function ic:truncate()
+  assert(self.m_mode == "w" or self.m_mode == "rw", "expected write mode")
+  self.m_data = ""
+  self.m_size = 0
+  self.m_cursor = 1
+  self.m_lazy_data = {
+    size = 0,
+    data = {},
+  }
+end
+
 --- Flushes a lazy buffer if it exists
 ---
 --- @since "2.3.0"

@@ -1,3 +1,7 @@
+# 2.4.0
+
+* Added `foundation.com.StringBuffer#truncate/0`
+
 # 2.3.0
 
 * Added `foundation.com.StringBuffer#flush/0`
