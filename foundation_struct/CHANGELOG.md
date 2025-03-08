@@ -1,3 +1,7 @@
+# 1.9.0
+
+* Added `List#reverse_concat/1`
+
 # 1.8.0
 
 * Added `List#find_index/1`

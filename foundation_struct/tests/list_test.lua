@@ -199,7 +199,7 @@ case:describe("#push/1+", function (t2)
 end)
 
 case:describe("#concat/1", function (t2)
-  t2:test("can concatenate with an empty lists", function (t3)
+  t2:test("can concatenate with empty lists", function (t3)
     local a = m:new()
     local b = m:new()
 
@@ -225,6 +225,56 @@ case:describe("#concat/1", function (t2)
 
     t3:assert_eq(6, a:size())
     t3:assert_table_eq({1, 2, 3, "a", "b", "c"}, a:data())
+  end)
+
+  t2:test("can concatenate a table with items into another list with items", function (t3)
+    local a = m:new({ 1, 2, 3 })
+    local b = { "a", "b", "c" }
+
+    a:concat(b)
+
+    t3:assert_eq(6, a:size())
+    t3:assert_table_eq({1, 2, 3, "a", "b", "c"}, a:data())
+  end)
+end)
+
+case:describe("#reverse_concat/1", function (t2)
+  t2:test("can concatenate with empty lists", function (t3)
+    local a = m:new()
+    local b = m:new()
+
+    a:reverse_concat(b)
+
+    t3:assert_eq(0, a:size())
+  end)
+
+  t2:test("can concatenate a list with items into an empty list", function (t3)
+    local a = m:new()
+    local b = m:new({ "a", "b", "c" })
+
+    a:reverse_concat(b)
+    t3:assert_eq(3, a:size())
+    t3:assert_table_eq({"c", "b", "a"}, a:data())
+  end)
+
+  t2:test("can concatenate a list with items into another list with items", function (t3)
+    local a = m:new({ 1, 2, 3 })
+    local b = m:new({ "a", "b", "c" })
+
+    a:reverse_concat(b)
+
+    t3:assert_eq(6, a:size())
+    t3:assert_table_eq({1, 2, 3, "c", "b", "a"}, a:data())
+  end)
+
+  t2:test("can concatenate a table", function (t3)
+    local a = m:new({ 1, 2, 3 })
+    local b = { "a", "b", "c" }
+
+    a:reverse_concat(b)
+
+    t3:assert_eq(6, a:size())
+    t3:assert_table_eq({1, 2, 3, "c", "b", "a"}, a:data())
   end)
 end)
 

@@ -258,6 +258,31 @@ function ic:concat(other)
   end
 end
 
+--- Concatenates one list into the target list but the elements are reversed.
+---
+--- @since "1.9.0"
+--- @spec #reverse_concat(other: List<T> | Table | ListCastable<T>): self
+function ic:reverse_concat(other)
+  if Class.is_object(other) then
+    if other:is_instance_of(List) then
+      return self:_reverse_concat_list(other)
+    elseif other.to_list then
+      return self:_reverse_concat_list(other:to_list())
+    else
+      error("unexpected object")
+    end
+  elseif type(other) == "table" then
+    local len = #other
+    for i = 1,len do
+      self.m_cursor = self.m_cursor + 1
+      self.m_data[self.m_cursor] = other[len - i + 1]
+    end
+    return self
+  else
+    error("unexpected value")
+  end
+end
+
 function ic:_concat_list(list)
   local data = list.m_data
   local len = list.m_cursor
@@ -266,6 +291,19 @@ function ic:_concat_list(list)
     for i = 1,len do
       self.m_cursor = self.m_cursor + 1
       self.m_data[self.m_cursor] = data[i]
+    end
+  end
+  return self
+end
+
+function ic:_reverse_concat_list(list)
+  local data = list.m_data
+  local len = list.m_cursor
+
+  if len > 0 then
+    for i = 1,len do
+      self.m_cursor = self.m_cursor + 1
+      self.m_data[self.m_cursor] = data[len - i + 1]
     end
   end
   return self
