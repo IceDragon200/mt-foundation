@@ -19,7 +19,9 @@ local ic = StringBuffer.instance_class
 ---
 --- @spec #initialize(data: String, mode?: String): void
 function ic:initialize(data, mode)
-  assert(type(data) == "string", "expected a string for data")
+  if type(data) ~= "string" then
+    error("expected a string for data (got type=" .. type(data) .. ")")
+  end
   ic._super.initialize(self)
   self.m_data = data
   self.m_size = #self.m_data
