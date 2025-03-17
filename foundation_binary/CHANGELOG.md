@@ -1,3 +1,7 @@
+# 2.1.0
+
+* Added `BinaryBuffer#reopen/1`
+
 # 2.0.0
 
 * ByteBuf is now a module that has different implementations

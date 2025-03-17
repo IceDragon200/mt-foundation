@@ -73,7 +73,7 @@ function ic:close()
   self.m_mode = nil
 end
 
--- @spec #open(mode: String): void
+--- @spec #open(mode: String): void
 function ic:open(mode)
   self.m_cursor = 1
   self.m_mode = mode
@@ -81,6 +81,12 @@ function ic:open(mode)
   if self.m_mode == 'a' then
     self.m_cursor = 1 + self.m_size
   end
+end
+
+--- @spec #reopen(mode)
+function ic:reopen(mode)
+  self:close()
+  self:open(mode)
 end
 
 -- @spec #tell(): Integer
