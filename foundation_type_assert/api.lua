@@ -10,7 +10,7 @@ local m = assert(foundation.com.assert)
 ---
 --- @spec is_string(value: Any, message: String): (value: String)
 function m.is_string(value, message)
-  assert(type(value) == "string", message)
+  assert(type(value) == "string", message or "expected a string")
   return value
 end
 
@@ -23,7 +23,7 @@ end
 ---
 --- @spec is_boolean(value: Any, message: String): (value: Boolean)
 function m.is_boolean(value, message)
-  assert(type(value) == "boolean", message)
+  assert(type(value) == "boolean", message or "expected a boolean")
   return value
 end
 
@@ -36,7 +36,7 @@ end
 ---
 --- @spec is_number(value: Any, message: String): (value: Number)
 function m.is_number(value, message)
-  assert(type(value) == "number", message)
+  assert(type(value) == "number", message or "expected a number")
   return value
 end
 
@@ -49,7 +49,7 @@ end
 ---
 --- @spec is_table(value: Any, message: String): (value: Table)
 function m.is_table(value, message)
-  assert(type(value) == "table", message)
+  assert(type(value) == "table", message or "expected a table")
   return value
 end
 
@@ -65,13 +65,13 @@ end
 ---
 --- @spec is_array(value: Any, message: String): (value: Table)
 function m.is_array(value, message)
-  assert(type(value) == "table", message)
+  assert(type(value) == "table", message or "expected a table (array)")
   if not next(value) then
     --- if the table is empty, it can double as an empty array
     return value
   end
   -- we're just checking if there is an element 1, which is good enough generally
-  assert(value[1] ~= nil, message)
+  assert(value[1] ~= nil, message or "expected at least the first element of array")
   return value
 end
 
@@ -85,6 +85,6 @@ end
 --- @since "1.1.0"
 --- @spec is_function(value: Any, message: String): (value: Function)
 function m.is_function(value, message)
-  assert(type(value) == "function", message)
+  assert(type(value) == "function", message or "expected a function")
   return value
 end
