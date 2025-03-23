@@ -74,3 +74,17 @@ function m.is_array(value, message)
   assert(value[1] ~= nil, message)
   return value
 end
+
+--- Asserts that the given value is a function, if true the function is returned as is.
+--- If the value is not a table, an assertion error is raised instead.
+---
+--- Usage:
+---
+---    foundation.com.assert.is_function(value)
+---
+--- @since "1.1.0"
+--- @spec is_function(value: Any, message: String): (value: Function)
+function m.is_function(value, message)
+  assert(type(value) == "function", message)
+  return value
+end
