@@ -135,6 +135,11 @@ do
   function ic:is_player()
     return true
   end
+
+  function ic:set_local_animation(idle, walk, dig, walk_while_dig, frame_speed)
+    frame_speed = frame_speed or 30
+    --
+  end
 end
 
 foundation.com.headless.PlayerRef = PlayerRef
