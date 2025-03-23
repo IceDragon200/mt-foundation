@@ -1,11 +1,11 @@
--- @namespace foundation.com.ByteBuf
+--- @namespace foundation.com.ByteBuf
 local ByteDecoder = assert(foundation.com.ByteDecoder)
 local bit = assert(foundation.com.bit, "expected bit module")
 
 local ByteBuf = {}
 local ic
 
--- @class Base
+--- @class Base
 ByteBuf.Base = foundation.com.Class:extends("ByteBuf.Base")
 do
   ic = ByteBuf.Base.instance_class
@@ -150,42 +150,6 @@ do
       error("expected an integer (got "..type..")")
     end
     return self:w_uv(stream, 1, int)
-  end
-
-  -- Floating Point Values - IEEE754
-  -- http://eng.umb.edu/~cuckov/classes/engin341/Reference/IEEE754.pdf
-  -- http://sandbox.mc.edu/~bennet/cs110/flt/ftod.html
-  -- http://sandbox.mc.edu/~bennet/cs110/flt/dtof.html
-  -- TODO: still a work in progress
-  --
-  -- @spec #w_fv(Stream, exponent_bits: Integer, mantissa_bits: Integer, flt: Float):
-  --   (Integer, error: String | nil)
-  function ic:w_fv(stream, exponent_bits, mantissa_bits, flt)
-    -- local sign = 0
-    -- if flt < 0 then
-    --   sign = 1
-    -- end
-
-    local int = math.floor(flt)
-    flt = flt - int
-
-    local mantissa_fract = 0
-
-    local m = flt
-    for i = 0,mantissa_bits do
-      m = m * 2
-      if m >= 1 then
-        m = m - 1
-        mantissa_fract = bit.bor(mantissa_fract, bit.lshift(1, i))
-      end
-    end
-
-    local e = int
-    local exponent = 1
-    while e > 1 do
-      e = bit.rshift(e, 1)
-      exponent = exponent + 1
-    end
   end
 
   -- @spec #w_f16(Stream, flt: Float): (bytes_written: Integer, err: Error)
@@ -596,12 +560,12 @@ do
   end
 end
 
--- @class Little extends ByteBuf.Base
+--- @class Little extends ByteBuf.Base
 ByteBuf.Little = ByteBuf.Base:extends("ByteBuf.Little")
 do
   ic = ByteBuf.Little.instance_class
 
-  -- @spec #w_iv(Stream, len: Integer, int: Integer): (bytes_written: Integer, error?: Error)
+  --- @spec #w_iv(Stream, len: Integer, int: Integer): (bytes_written: Integer, error?: Error)
   function ic:w_iv(stream, len, int)
     local r = int
     local num_bytes = 0
@@ -637,7 +601,7 @@ do
     return num_bytes
   end
 
-  -- @spec #w_uv(Stream, len: Integer, int: Integer): (Integer, error: String | nil)
+  --- @spec #w_uv(Stream, len: Integer, int: Integer): (Integer, error: String | nil)
   function ic:w_uv(stream, len, int)
     local type = type(int)
     if type ~= "number" then
@@ -662,7 +626,7 @@ do
     return num_bytes
   end
 
-  -- @spec #r_iv(Stream, len: Integer): (result: Integer, bytes_read: Integer)
+  --- @spec #r_iv(Stream, len: Integer): (result: Integer, bytes_read: Integer)
   function ic:r_iv(stream, len)
     local bytes, read_len = self:read(stream, len)
     if read_len < len then
@@ -672,7 +636,7 @@ do
     return ByteDecoder:d_iv(bytes, len)
   end
 
-  -- @spec #r_uv(Stream, len: Integer): (result: Integer, bytes_read: Integer)
+  --- @spec #r_uv(Stream, len: Integer): (result: Integer, bytes_read: Integer)
   function ic:r_uv(stream, len)
     local bytes, read_len = self:read(stream, len)
     if read_len < len then
@@ -680,8 +644,46 @@ do
     end
     return ByteDecoder:d_uv(bytes, len)
   end
+
+  --- Floating Point Values - IEEE754
+  --- http://eng.umb.edu/~cuckov/classes/engin341/Reference/IEEE754.pdf
+  --- http://sandbox.mc.edu/~bennet/cs110/flt/ftod.html
+  --- http://sandbox.mc.edu/~bennet/cs110/flt/dtof.html
+  --- TODO: still a work in progress
+  ---
+  --- @spec #w_fv(Stream, exponent_bits: Integer, mantissa_bits: Integer, flt: Float):
+  ---   (Integer, error: String | nil)
+  function ic:w_fv(stream, exponent_bits, mantissa_bits, flt)
+    local sign = 0
+    if flt < 0 then
+      sign = 1
+      --- absolute
+      flt = -flt
+    end
+
+    local int = math.floor(flt)
+    flt = flt - int
+
+    local mantissa_fract = 0
+
+    local m = flt
+    for i = 0,mantissa_bits do
+      m = m * 2
+      if m >= 1 then
+        m = m - 1
+        mantissa_fract = bit.bor(mantissa_fract, bit.lshift(1, i))
+      end
+    end
+
+    local e = int
+    local exponent = 1
+    while e > 1 do
+      e = bit.rshift(e, 1)
+      exponent = exponent + 1
+    end
+  end
 end
 
 foundation.com.ByteBuf = ByteBuf
--- @const little: Little
+--- @const little: Little
 foundation.com.ByteBuf.little = ByteBuf.Little:new()

@@ -95,9 +95,10 @@ function LE:e_iv(len, int)
   local r = int
   local i = 0
   local result = {}
+  local byte
   for j = 1,(len - 1) do
     i = j
-    local byte = bit.band(r, 255)
+    byte = bit.band(r, 255)
     result[i] = byte
     r = bit.rshift(r, 8)
   end
@@ -116,9 +117,9 @@ function LE:e_uv(len, int)
   assert(int >= 0, "expected integer to be greater than or equal to 0")
   local r = int
   local result = {}
-
+  local byte
   for i = 1,len do
-    local byte = bit.band(r, 255)
+    byte = bit.band(r, 255)
     result[i] = byte
     r = bit.rshift(r, 8)
   end
@@ -134,8 +135,9 @@ function BE:e_iv(len, int)
   local r = int
   local i = len
   local result = {}
+  local byte
   for j = 1,(len - 1) do
-    local byte = bit.band(r, 255)
+    byte = bit.band(r, 255)
     result[i] = byte
     i = i - 1
     r = bit.rshift(r, 8)
@@ -156,8 +158,9 @@ function BE:e_uv(len, int)
   local result = {}
 
   local j = len
+  local byte
   for i = 1,len do
-    local byte = bit.band(r, 255)
+    byte = bit.band(r, 255)
     -- 1+ is to compensate for lua's array offset
     result[j] = byte
     j = j - 1

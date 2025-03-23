@@ -33,6 +33,18 @@ case:describe("#write/1", function (t2)
   end)
 end)
 
+-- case:describe("#w_f32/1", function (t2)
+--   t2:test("can write a float32 value", function (t3)
+--     local buf = StringBuffer:new("", "w")
+
+--     subject:w_f32(buf, 12.224421)
+
+--     buf:reopen("r")
+
+--     t3:assert_eq(12.224421, subject:r_f32(buf))
+--   end)
+-- end)
+
 case:execute()
 case:display_stats()
 case:maybe_error()
