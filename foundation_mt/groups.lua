@@ -66,7 +66,7 @@ end
 --
 -- @spec item_has_group(name: String, group_name: String, optional_rank: Integer): Boolean
 function Groups.item_has_group(name, group_name, optional_rank)
-  local rank = minetest.get_item_group(name, group_name)
+  local rank = core.get_item_group(name, group_name)
   if rank and rank > 0 then
     if optional_rank then
       return rank >= optional_rank
