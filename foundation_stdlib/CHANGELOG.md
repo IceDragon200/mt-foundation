@@ -1,3 +1,9 @@
+# 1.42.0
+
+* Added `foundation.com.Color.from_rgba_f/4`
+* Added `foundation.com.Color.from_rgb_hsl_f/3`
+* Added `foundation.com.Color.from_cmyk_f/4`
+
 # 1.41.0
 
 * Added `foundation.com.string_ascii_iequals/2`

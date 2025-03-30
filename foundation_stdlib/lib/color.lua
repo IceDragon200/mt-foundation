@@ -198,6 +198,60 @@ function Color.to_string12(color)
   return result
 end
 
+local function hue_to_rgb(q, p, t)
+  if t < 0 then t = t + 1 end
+  if t > 1 then t = t - 1 end
+  if t < 1/6 then return p + (q - p) * 6 * t end
+  if t < 1/2 then return q end
+  if t < 2/3 then return p + (q - p) * (2/3 - t) * 6 end
+  return p
+end
+
+--- Create a color from normalized components (i.e. 0..1)
+---
+--- @spec from_rgba_f(r: Float, g: Float, b: Float, a: Float): Color
+function Color.from_rgba_f(r, g, b, a)
+  a = a or 1
+
+  return Color.new(
+    color_channel_clamp(r * 255),
+    color_channel_clamp(g * 255),
+    color_channel_clamp(b * 255),
+    color_channel_clamp(a * 255)
+  )
+end
+
+--- Create a Color from HSL normalized components.
+---
+--- @spec from_rgb_hsl_f(h: Float, s: Float, l: Float): Color
+function Color.from_rgb_hsl_f(h, s, l)
+  if s <= 0 then
+    local v = math.floor(l * 255)
+    return Color.new(v, v, v, 255)
+  end
+
+  local q = l + s * (1 - math.abs(2 * l - 1))
+  local p = 2 * l - q
+
+  local r = hue_to_rgb(q, p, t + 1/3)
+  local g = hue_to_rgb(q, p, t)
+  local b = hue_to_rgb(q, p, t - 1/3)
+
+  return Color.from_rgba_f(r, g, b, 1)
+end
+
+--- Converts a CMYK normalized components to a Color.
+---
+--- @spec from_cmyk_f(c: Float, m: Float, y: Float, k: Float): Color
+function Color.from_cmyk_f(c, m, y, k)
+  local ki = 1 - k
+  local r = (1 - c) * ki
+  local g = (1 - m) * ki
+  local b = (1 - y) * ki
+
+  return Color.from_rgba_f(r, g, b, 1)
+end
+
 --- Converts the given colorstring into a Color table or nil if it was named but doesn't exist.
 ---
 --- @spec from_colorstring(colorstring: String): Color | nil
