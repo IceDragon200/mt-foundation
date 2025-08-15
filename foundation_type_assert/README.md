@@ -14,5 +14,5 @@ assert(type(obj) == "string")
 Then you probably want type assertions:
 
 ```lua
-foundation.com.assert.is_string(obj)
+foundation.com.assertions.is_string(obj)
 ```

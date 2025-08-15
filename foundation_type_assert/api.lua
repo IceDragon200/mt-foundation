@@ -1,12 +1,12 @@
---- @namespace foundation.com.assert
-local m = assert(foundation.com.assert)
+--- @namespace foundation.com.assertions
+local m = assert(foundation.com.assertions)
 
 --- Asserts that the given value is a string, if true the string is returned as is.
 --- If the value is not a string, an assertion error is raised instead.
 ---
 --- Usage:
 ---
----    foundation.com.assert.is_string(value)
+---    foundation.com.assertions.is_string(value)
 ---
 --- @spec is_string(value: Any, message: String): (value: String)
 function m.is_string(value, message)
@@ -19,7 +19,7 @@ end
 ---
 --- Usage:
 ---
----    foundation.com.assert.is_boolean(value)
+---    foundation.com.assertions.is_boolean(value)
 ---
 --- @spec is_boolean(value: Any, message: String): (value: Boolean)
 function m.is_boolean(value, message)
@@ -32,7 +32,7 @@ end
 ---
 --- Usage:
 ---
----    foundation.com.assert.is_number(value)
+---    foundation.com.assertions.is_number(value)
 ---
 --- @spec is_number(value: Any, message: String): (value: Number)
 function m.is_number(value, message)
@@ -45,7 +45,7 @@ end
 ---
 --- Usage:
 ---
----    foundation.com.assert.is_table(value)
+---    foundation.com.assertions.is_table(value)
 ---
 --- @spec is_table(value: Any, message: String): (value: Table)
 function m.is_table(value, message)
@@ -61,7 +61,7 @@ end
 ---
 --- Usage:
 ---
----    foundation.com.assert.is_array(value)
+---    foundation.com.assertions.is_array(value)
 ---
 --- @spec is_array(value: Any, message: String): (value: Table)
 function m.is_array(value, message)
@@ -80,7 +80,7 @@ end
 ---
 --- Usage:
 ---
----    foundation.com.assert.is_function(value)
+---    foundation.com.assertions.is_function(value)
 ---
 --- @since "1.1.0"
 --- @spec is_function(value: Any, message: String): (value: Function)
