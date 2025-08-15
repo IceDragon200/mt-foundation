@@ -12,10 +12,10 @@ foundation.com.formspec = foundation.com.formspec or {}
 local api = {}
 local vector2 = foundation.com.Vector2
 
--- @type Raw<T>: {
---   __raw: T,
--- }
---
+--- @type Raw<T>: {
+---   __raw: T,
+--- }
+---
 
 local LIST_SPACING = 0.25
 
@@ -38,7 +38,7 @@ local function to_color(item)
   end
 end
 
--- @private.spec to_text(String | Number | Boolean | Table | Function/0): String
+--- @private.spec to_text(String | Number | Boolean | Table | Function/0): String
 local function to_text(item)
   if item == nil then
     return ""
@@ -54,7 +54,7 @@ local function to_text(item)
   return minetest.formspec_escape(tostring(item))
 end
 
--- @private.spec maybe_rect_to_args(Table | Any): String
+--- @private.spec maybe_rect_to_args(Table | Any): String
 local function maybe_rect_to_args(arg)
   if type(arg) == "table" then
     if arg.w and arg.h then
@@ -69,22 +69,22 @@ local function maybe_rect_to_args(arg)
   end
 end
 
--- @spec calc_inventory_offset(size: Integer): Integer
+--- @spec calc_inventory_offset(size: Integer): Integer
 function api.calc_inventory_offset(size)
   return size + LIST_SPACING * math.max(size, 0)
 end
 
--- @spec calc_inventory_size(size: Integer): Integer
+--- @spec calc_inventory_size(size: Integer): Integer
 function api.calc_inventory_size(size)
   return size + LIST_SPACING * math.max(size - 1, 0)
 end
 
--- Calculates the size[] that a form needs to be to contain the given inventory
--- The inventory is specified by its size (cols and rows) a vector2 is returned
--- where x is the width of the form and y is the height.
--- Note that this does not compensate for margins outside the inventory.
---
--- @spec calc_form_inventory_size(cols: Integer, rows: Integer): Vector2
+--- Calculates the size[] that a form needs to be to contain the given inventory
+--- The inventory is specified by its size (cols and rows) a vector2 is returned
+--- where x is the width of the form and y is the height.
+--- Note that this does not compensate for margins outside the inventory.
+---
+--- @spec calc_form_inventory_size(cols: Integer, rows: Integer): Vector2
 function api.calc_form_inventory_size(cols, rows)
   return vector2.new(
     cols + LIST_SPACING * math.max(cols - 1, 0),
@@ -92,25 +92,26 @@ function api.calc_form_inventory_size(cols, rows)
   )
 end
 
--- Utility function for specifying a text element that should be interpolated
--- raw and not escaped
---
--- @spec raw(T): Raw<T>
+--- Utility function for specifying a text element that should be interpolated
+--- raw and not escaped
+---
+--- @spec raw(T): Raw<T>
 function api.raw(item)
   return {__raw=item}
 end
 
--- Tells the API that the value should be replaced with whatever its expected default is
+--- Tells the API that the value should be replaced with whatever its expected default is
+--- @spec default(): Table
 function api.default()
   return {__default=true}
 end
 
--- @spec formspec_version(Integer): String
+--- @spec formspec_version(Integer): String
 function api.formspec_version(version)
   return "formspec_version["..version.."]"
 end
 
--- @spec size(w: Number, h: Number, fixed_size?: Boolean): String
+--- @spec size(w: Number, h: Number, fixed_size?: Boolean): String
 function api.size(w, h, fixed_size)
   if fixed_size == nil then
     return "size["..w..","..h.."]"
@@ -119,27 +120,27 @@ function api.size(w, h, fixed_size)
   end
 end
 
--- @spec position(x: Number, y: Number): String
+--- @spec position(x: Number, y: Number): String
 function api.position(x, y)
   return "position["..x..","..y.."]"
 end
 
--- @spec anchor(x: Number, y: Number): String
+--- @spec anchor(x: Number, y: Number): String
 function api.anchor(x, y)
   return "anchor["..x..","..y.."]"
 end
 
--- @spec no_prepend(): String
+--- @spec no_prepend(): String
 function api.no_prepend()
   return "no_prepend[]"
 end
 
--- @spec real_coordinates(Boolean): String
+--- @spec real_coordinates(Boolean): String
 function api.real_coordinates(is_enabled)
   return "real_coordinates["..to_bool(is_enabled).."]"
 end
 
--- @spec container(x: Number, y: Number, Function/0): String
+--- @spec container(x: Number, y: Number, Function/0): String
 function api.container(x, y, callback)
   local result = "container["..x..","..y.."]"
   if callback then
@@ -149,25 +150,25 @@ function api.container(x, y, callback)
   end
 end
 
--- @spec container_end(): String
+--- @spec container_end(): String
 function api.container_end()
   return "container_end[]"
 end
 
---
--- Params:
--- * `orientation` [String] - "vertical" or "horizontal"
---
--- @spec scroll_container(
---   x: Number,
---   y: Number,
---   w: Number,
---   h: Number,
---   scrollbar_id: String,
---   orientation: String,
---   scroll_factor: Number,
---   callback?: Function/0
--- ): String
+---
+--- Params:
+--- * `orientation` [String] - "vertical" or "horizontal"
+---
+--- @spec scroll_container(
+---   x: Number,
+---   y: Number,
+---   w: Number,
+---   h: Number,
+---   scrollbar_id: String,
+---   orientation: String,
+---   scroll_factor: Number,
+---   callback?: Function/0
+--- ): String
 function api.scroll_container(x, y, w, h, scollbar_id, orientation, scroll_factor, callback)
   scroll_factor = scroll_factor or 0.1
 
@@ -188,6 +189,15 @@ function api.scroll_container_end()
   return "scroll_container_end[]"
 end
 
+--- @spec list(
+---   inventory_location: String,
+---   list_name: String,
+---   x: Number,
+---   y: Number,
+---   w: Number,
+---   h: Number,
+---   start_index: Integer
+--- ): String
 function api.list(inventory_location, list_name, x, y, w, h, start_index)
   start_index = start_index or 0
 
