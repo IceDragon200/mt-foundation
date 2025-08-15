@@ -6,7 +6,7 @@
   You are free to copy and use this module/class
 
 ]]
--- @namespace foundation.com
+--- @namespace foundation.com
 local HEX_TABLE = {
   [0] = "0",
   [1] = "1",
@@ -84,6 +84,40 @@ local function table_equals(a, b)
       return false
     end
   end
+  return true
+end
+
+--- @private_spec table_matches(a: Any, pattern: Any): Boolean
+local function table_matches(a, pattern)
+  local sa = {a}
+  local sai = 1
+  local sb = {pattern}
+  local sbi = 1
+
+  while sai > 0 and sbi > 0 do
+    local ea = sa[sai]
+    local eb = sb[sbi]
+    -- i.e. pop from the stack
+    sai = sai - 1
+    sbi = sbi - 1
+
+    local ta = type(ea)
+    local tb = type(eb)
+
+    if ta == tb then
+      if ta == "table" then
+        for key, value in pairs(eb) do
+          sai = sai + 1
+          sbi = sbi + 1
+          sa[sai] = ea[key]
+          sb[sbi] = value
+        end
+      end
+    else
+      return false
+    end
+  end
+
   return true
 end
 
@@ -415,6 +449,18 @@ function ic:assert_table_eq(a, b, message)
   self:assert(table_equals(a, b), message)
 end
 
+--- Performs a partial matching of given value with the provided pattern.
+---
+--- @since "1.3.0"
+--- @spec #assert_matches(value: Any, pattern: Any, message?: String): void
+function ic:assert_matches(value, pattern, message)
+  message = message or function ()
+    return ("expected to match:\n\t given: " .. self:neat_dump(value) ..
+            "\n\tpattern: " .. self:neat_dump(pattern))
+  end
+  self:assert(table_matches(value, pattern), message)
+end
+
 function ic:assert_deep_eq(a, b, message)
   message = message or function ()
     return ("expected to be equal to:\n" .. self:pretty_diff(a, b))
@@ -452,6 +498,28 @@ function ic:refute_eq(a, b, message)
     return ("expected " .. self:neat_dump(a) .. " to not be equal to " .. self:neat_dump(b))
   end
   self:refute(a == b, message)
+end
+
+--- @since "1.3.0"
+function ic:refute_deep_eq(a, b, message)
+  message = message or function ()
+    return ("expected to be not-equal to:\n" .. self:pretty_diff(a, b))
+  end
+
+  self:refute(deep_equals(a, b), message)
+end
+
+--- Performs a partial matching of given value with the provided pattern and returns true if it
+--- does not match.
+---
+--- @since "1.3.0"
+--- @spec #refute_matches(value: Any, pattern: Any, message?: String): void
+function ic:refute_matches(value, pattern, message)
+  message = message or function ()
+    return ("expected to not match:\n\t given: " .. self:neat_dump(value) ..
+            "\n\tpattern: " .. self:neat_dump(pattern))
+  end
+  self:refute(table_matches(value, pattern), message)
 end
 
 function ic:execute(depth, prefix, tags)

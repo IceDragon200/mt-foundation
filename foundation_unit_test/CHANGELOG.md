@@ -1,3 +1,9 @@
+# `1.3.0`
+
+* Added `#assert_matches/{2,3}` this performs a partial match of the first parameter with the second as a pattern of sorts, at the moment, only tables are partially matched, all other values are treated as opaque
+* Added `#refute_matches/{2,3}` does the opposite of assert_matches, if the objects do not match it is considered passed
+* Added `#refute_deep_eq/{2,3}` opposite of `#assert_deep_eq/{2,3}`
+
 # `1.2.0`
 
 * `assert/1+` returns value that was passed in to mimic lua's assert
