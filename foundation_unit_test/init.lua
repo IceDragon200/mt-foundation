@@ -6,3 +6,5 @@
 local mod = foundation.new_module("foundation_unit_test", "1.3.0")
 
 mod:require("luna.lua")
+
+mod:require("tests.lua")
