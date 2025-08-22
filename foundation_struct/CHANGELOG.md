@@ -1,3 +1,7 @@
+# 1.10.0
+
+* Added `foundation.com.MinHeap` structure
+
 # 1.9.0
 
 * Added `List#reverse_concat/1`
