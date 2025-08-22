@@ -86,7 +86,7 @@ do
     assert(pos, "expected position")
     assert(node, "expected node")
 
-    print("core.set_node", pretty_vec3(pos), pretty_node(node))
+    -- print("core.set_node", pretty_vec3(pos), pretty_node(node))
 
     local node_id = core.hash_node_position(pos)
     local old_entry = self.data[node_id]
