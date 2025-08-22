@@ -1,3 +1,7 @@
+# 1.43.0
+
+* Added `foundation.com.random_addr16/{2,3,4}` for generating hex-like addresses for other mods.
+
 # 1.42.0
 
 * Added `foundation.com.Color.from_rgba_f/4`
