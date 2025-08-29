@@ -311,6 +311,8 @@ do
 
   --- @spec #describe(name: String, func: DescribeFunction): void
   function ic:describe(name, func)
+    assert(type(name) == "string", "expected a context name")
+    assert(type(func) == "function", "expected a context function")
     local luna = self._class:new(name)
     luna.reporter = self.reporter
     table.insert(self.tests, {"describe", name, luna})

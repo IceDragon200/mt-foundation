@@ -6,7 +6,7 @@ local Luna = assert(foundation.com.Luna)
 do
   local case = Luna:new("Luna.self_test")
 
-  case:describe("assert/1", function (t2)
+  case:describe("#assert/1", function (t2)
     t2:test("can assert any truthy values", function (t3)
       t3:assert("")
       t3:assert(true)
@@ -15,7 +15,7 @@ do
     end)
   end)
 
-  case:describe("assert_eq/2", function (t2)
+  case:describe("#assert_eq/2", function (t2)
     t2:test("can compare two values and determines if they are equal", function (t3)
       t3:assert_eq(nil, nil)
       t3:assert_eq(true, true)
@@ -28,7 +28,7 @@ do
     end)
   end)
 
-  case:describe("assert_table_eq/2", function (t2)
+  case:describe("#assert_table_eq/2", function (t2)
     t2:test("can compare two tables by their root values", function (t3)
       t3:assert_table_eq(
         {a = 1, b = 1, c = 1},
@@ -48,14 +48,14 @@ do
     end)
   end)
 
-  case:describe("refute/1", function (t2)
+  case:describe("#refute/1", function (t2)
     t2:test("can assert that a falsy value is false", function (t3)
       t3:refute(false)
       t3:refute(nil)
     end)
   end)
 
-  case:describe("refute_eq/2", function (t2)
+  case:describe("#refute_eq/2", function (t2)
     t2:test("can assert falsy comparisons", function (t3)
       t3:refute_eq(nil, false)
       t3:refute_eq(true, false)
