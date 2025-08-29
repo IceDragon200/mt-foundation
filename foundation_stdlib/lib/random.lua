@@ -1,4 +1,5 @@
 --- @namespace foundation.com
+local string_split = assert(foundation.com.string_split)
 
 --- Any random number generator that exposes a next/{0,2} function.
 ---
@@ -6,10 +7,10 @@
 ---   next: (min?: Integer, max?: Integer) => Integer,
 --- }
 
-local STRING_POOL16 = "ABCDEF0123456789"
-local STRING_POOL32 = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567"
-local STRING_POOL36 = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-local STRING_POOL62 = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+local STRING_POOL16 = string_split("ABCDEF0123456789")
+local STRING_POOL32 = string_split("ABCDEFGHIJKLMNOPQRSTUVWXYZ234567")
+local STRING_POOL36 = string_split("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
+local STRING_POOL62 = string_split("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
 
 -- Only 32 bit operations to mirror the luajit one
 -- Maps the bit position to the power of 2
@@ -21,7 +22,7 @@ for i = 0,BITS do
 end
 
 --- @since "1.43.0"
---- @spec random_addr(
+--- @spec random_addr16(
 ---   element_size: 1..32,
 ---   element_count: Integer,
 ---   seperator?: String,
@@ -48,7 +49,7 @@ function foundation.com.random_addr16(element_size, element_count, seperator, rn
     for j = 1,d do
       b = e % 16
       e = math.floor(e / 16)
-      result[ri + d - j] = string.sub(STRING_POOL16, b + 1, b + 1)
+      result[ri + d - j] = STRING_POOL16[b + 1]
     end
     ri = ri + d - 1
 
@@ -74,7 +75,7 @@ function foundation.com.random_string(length, pool, rng)
     else
       pos = math.random(pool_size - 1)
     end
-    result[i] = string.sub(pool, pos, pos)
+    result[i] = pool[pos]
   end
   return table.concat(result)
 end
