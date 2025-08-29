@@ -1,3 +1,9 @@
+# 1.44.0
+
+* Added `foundation.com.number_truncate/1` for truncating numbers to their nearest whole number based on its own sign
+* Added `foundation.com.number_truncate_by_sign/2` for truncating numbers to their nearest whole number by given sign
+* Added `foundation.com.Vector{2,3,4}.truncate/2` for truncating numbers to their nearest whole number by given sign
+
 # 1.43.0
 
 * Added `foundation.com.random_addr16/{2,3,4}` for generating hex-like addresses for other mods.

@@ -121,6 +121,26 @@ function foundation.com.integer_crockford_base32_le_encode(integer, len, return_
   end
 end
 
+--- @since "1.44.0"
+--- @spec number_truncate_by_sign(num: Number, sign: Number): Integer
+function foundation.com.number_truncate_by_sign(num, sign)
+  if sign > 0 then
+    return math.floor(num)
+  else
+    return math.ceil(num)
+  end
+end
+
+--- @since "1.44.0"
+--- @spec number_truncate(num: Number): Integer
+function foundation.com.number_truncate(num)
+  if num > 0 then
+    return math.floor(num)
+  else
+    return math.ceil(num)
+  end
+end
+
 --- @spec number_round(num: Number): Integer
 --- @since "1.40.0"
 --- @spec number_round(num: Number, places: Integer): Integer

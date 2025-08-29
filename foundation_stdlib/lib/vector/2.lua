@@ -103,6 +103,16 @@ function m.ceil(dest, v2)
   return dest
 end
 
+--- @since "1.44.0"
+--- @spec truncate(dest: Vector2, v2: Vector2): Vector2
+--- @spec #truncate(v2: Vector2): Vector3
+function m.truncate(dest, v2)
+  local v2x, v2y = m.unwrap(v2)
+  dest.x = number_truncate(v2x, places)
+  dest.y = number_truncate(v2y, places)
+  return dest
+end
+
 --- @spec round(dest: Vector2, v2: Vector2): Vector2
 --- @spec #round(v2: Vector2): Vector2
 --- @since "1.40.0"

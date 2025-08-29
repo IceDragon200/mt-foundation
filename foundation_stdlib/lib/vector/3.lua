@@ -1,4 +1,5 @@
 local number_round = assert(foundation.com.number_round)
+local number_truncate = assert(foundation.com.number_truncate)
 
 --- @namespace foundation.com.Vector3
 local xyz = {"x", "y", "z"}
@@ -104,6 +105,17 @@ function m.ceil(dest, v2)
   dest.x = math.ceil(v2x)
   dest.y = math.ceil(v2y)
   dest.z = math.ceil(v2z)
+  return dest
+end
+
+--- @since "1.44.0"
+--- @spec truncate(dest: Vector3, v2: Vector3): Vector3
+--- @spec #truncate(v2: Vector3): Vector3
+function m.truncate(dest, v2)
+  local v2x, v2y, v2z = m.unwrap(v2)
+  dest.x = number_truncate(v2x, places)
+  dest.y = number_truncate(v2y, places)
+  dest.z = number_truncate(v2z, places)
   return dest
 end
 
