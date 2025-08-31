@@ -1,3 +1,12 @@
+# 1.46.0
+
+* Moved `foundation.com.maybe_start_node_timer` to `foundation_mt`, where it belongs
+
+# 1.45.0
+
+* Added `foundation.com.table_put_new/3` sets a key-value pair but only if the existing value is nil
+* Added `foundation.com.table_put_new_lazy/3` sets the key-value pair but only if the existing value is nil, using the result from the given function
+
 # 1.44.0
 
 * Added `foundation.com.number_truncate/1` for truncating numbers to their nearest whole number based on its own sign

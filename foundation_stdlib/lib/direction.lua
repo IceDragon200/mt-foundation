@@ -439,21 +439,7 @@ function Directions.vdir_to_wallmounted_facedir(dir)
   return nil
 end
 
-function Directions.facedir_wallmount_after_place_node(pos, _placer, _itemstack, pointed_thing)
-  assert(pointed_thing, "expected a pointed thing")
-  local above = pointed_thing.above
-  local under = pointed_thing.under
-  local dir = {
-    x = above.x - under.x,
-    y = above.y - under.y,
-    z = above.z - under.z
-  }
-  local node = minetest.get_node(pos)
-  node.param2 = Directions.vdir_to_wallmounted_facedir(dir)
-  minetest.swap_node(pos, node)
-end
-
--- @spec rotate_position_by_facedir(Vector3, from_facedir: Facedir, to_facedir: Facedir): Vector3
+--- @spec rotate_position_by_facedir(Vector3, from_facedir: Facedir, to_facedir: Facedir): Vector3
 function Directions.rotate_position_by_facedir(p, from_facedir, to_facedir)
   if from_facedir == to_facedir then
     return p

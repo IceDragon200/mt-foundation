@@ -1,3 +1,7 @@
+# 3.0.0
+
+* Added foundation.tetra support
+
 # 2.1.0
 
 * Added `foundation.com.copy_node/1`

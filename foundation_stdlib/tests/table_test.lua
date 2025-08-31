@@ -305,6 +305,39 @@ case:describe("table_reject/2", function (t2)
   end)
 end)
 
+case:describe("table_put_new/3", function (t2)
+  case:test("can set a new pair in table", function (t3)
+    local subject = {}
+
+    m.table_put_new(subject, "hi", 1)
+    m.table_put_new(subject, "hi", 2)
+
+    t3:assert_matches(subject, {
+      hi = 1,
+    })
+  end)
+end)
+
+case:describe("table_put_new_lazy/3", function (t2)
+  case:test("can set a new pair in table", function (t3)
+    local subject = {}
+    local executed = false
+
+    m.table_put_new_lazy(subject, "hi", function ()
+      return 1
+    end)
+    m.table_put_new_lazy(subject, "hi", function ()
+      executed = true
+      return 2
+    end)
+
+    t3:refute(executed, "second callback was NOT suppose to be invoked")
+    t3:assert_matches(subject, {
+      hi = 1,
+    })
+  end)
+end)
+
 case:execute()
 case:display_stats()
 case:maybe_error()

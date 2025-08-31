@@ -39,7 +39,7 @@ _is_foundation_module: Boolean = true
 -- The given version string (e.g. "0.0.0")
 VERSION: String
 
--- An instance of the minetest translator object for the mod
+-- An instance of the luanti translator object for the mod
 S: Translator
 
 -- The root path to the mod, used by the require function

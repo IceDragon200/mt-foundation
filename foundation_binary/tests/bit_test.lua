@@ -6,7 +6,7 @@ for _, bit_module_name in ipairs({"bit", "native_bit", "local_bit"}) do
   if m then
     bit_modules[bit_module_name] = m
   else
-    minetest.log("warning", "foundation.com." .. bit_module_name .. " is not available for testing")
+    core.log("warning", "foundation.com." .. bit_module_name .. " is not available for testing")
   end
 end
 

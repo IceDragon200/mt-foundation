@@ -1,5 +1,6 @@
 --- @namespace foundation.com
 local format_pretty_unit = assert(foundation.com.format_pretty_unit)
+local get_us_time = assert(core.get_us_time)
 
 ---
 --- A limited implementation of OpenTrace for benchmarking code paths
@@ -91,7 +92,7 @@ do
     self.name = assert(name, "expected a name for trace")
     self.span_index = 0
     self.spans = {}
-    self.s = minetest.get_us_time()
+    self.s = get_us_time()
     self.e = nil
     self.d = nil
   end
@@ -113,7 +114,7 @@ do
 
   --- @spec #span_end(): void
   function ic:span_end()
-    self.e = minetest.get_us_time()
+    self.e = get_us_time()
     self.d = self.e - self.s
   end
 

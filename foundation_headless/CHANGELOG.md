@@ -1,3 +1,7 @@
+# 3.0.0
+
+* Added `tetra` namespace, this mirrors parts of the core node space functions, allowing a fourth dimension to the positional vectors.
+
 # 2.3.1
 
 * Added `ObjectRef#is_valid`
@@ -12,13 +16,13 @@
 
 # 2.2.0
 
-* Added `foundation.com.headless.World` class, which is a minimal implementation of the minetest get/set_node functions.
+* Added `foundation.com.headless.World` class, which is a minimal implementation of the core `get_node/set_node` functions.
 
 # 2.1.1
 
 * Bug fix for `InvRef#set_size/2` not correctly resizing inventory lists if it existed previously
 * Bug fix for `ItemStack#equals/1` not checking wear
-* Bug fix for `PlayerRef#set_inventory_formspec/1` using minetest.log incorrectly
+* Bug fix for `PlayerRef#set_inventory_formspec/1` using `core.log/2` incorrectly
 
 # 2.1.0
 

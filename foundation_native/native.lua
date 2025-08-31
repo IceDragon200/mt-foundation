@@ -1,10 +1,10 @@
 local ffi = foundation.com.ffi
 if not ffi then
-  minetest.log(
+  core.log(
     "warning",
     "ffi is unavailable, foundation.com native extensions cannot be loaded"
   )
-  minetest.log(
+  core.log(
     "warning",
     "foundation.com will fallback to lua based implementations for some functions"
   )
@@ -17,11 +17,11 @@ pcall(function ()
 end)
 
 if not foundation_utils then
-  minetest.log(
+  core.log(
     "warning",
     "foundation_utils shared object is not available, skipping implementation"
   )
-  minetest.log(
+  core.log(
     "warning",
     "WARN: Some functions will be slightly slower, should be fine for the most part.\n\n"
   )

@@ -3,32 +3,32 @@ local table_equals = assert(foundation.com.table_equals)
 
 foundation.com.schematic_helpers = {}
 
---
--- @type YSliceSchematic: {
---   size: Vector3,
---   data: [
---     {
---       name: String,
---       param1: Integer,
---       param2: Integer,
---       prob: Integer,
---       force_place: Boolean
---     }
---   ],
---   yslice_prob: [
---     {
---       ypos: Integer,
---       prob: Integer
---     }
---   ]
--- }
---
+---
+--- @type YSliceSchematic: {
+---   size: Vector3,
+---   data: [
+---     {
+---       name: String,
+---       param1: Integer,
+---       param2: Integer,
+---       prob: Integer,
+---       force_place: Boolean
+---     }
+---   ],
+---   yslice_prob: [
+---     {
+---       ypos: Integer,
+---       prob: Integer
+---     }
+---   ]
+--- }
+---
 
--- It's like the same schematic format, but the data is down bottom up
--- that is y,z,x.
--- While minetest's schematics expect z,y,x
---
--- @spec from_y_slices(YSliceSchematic): Schematic
+--- It's like the same schematic format, but the data is down bottom up
+--- that is y,z,x.
+--- While luanti's schematics expect z,y,x
+---
+--- @spec from_y_slices(YSliceSchematic): Schematic
 function foundation.com.schematic_helpers.from_y_slices(schematic)
   local result = {}
   result.size = schematic.size
@@ -109,7 +109,7 @@ function ic:get_size()
   local z2 = 0
 
   for node_id,_swatch_id in pairs(self.data) do
-    local pos = minetest.get_position_from_hash(node_id)
+    local pos = core.get_position_from_hash(node_id)
 
     if x1 > pos.x then
       x1 = pos.x
@@ -199,9 +199,9 @@ end
 function ic:put_node(pos, swatch_id)
   if swatch_id then
     assert(self.palette[swatch_id], "expected node to be registered for swatch")
-    self.data[minetest.hash_node_position(pos)] = swatch_id
+    self.data[core.hash_node_position(pos)] = swatch_id
   else
-    self.data[minetest.hash_node_position(pos)] = nil
+    self.data[core.hash_node_position(pos)] = nil
   end
   return self
 end
@@ -211,7 +211,7 @@ end
 --
 -- @spec #get_swatch_at(pos: Vector3): (swatch_id: Integer | nil)
 function ic:get_swatch_at(pos)
-  return self.data[minetest.hash_node_position(pos)]
+  return self.data[core.hash_node_position(pos)]
 end
 
 local function calculate_range(pos1, pos2)
@@ -290,7 +290,7 @@ function ic:blit(pos, builder, sel_pos1, sel_pos2)
         other_swatch_map[swatch_id] = self:find_or_add_palette_node(builder.palette[swatch_id])
       end
 
-      local old_pos = minetest.get_position_from_hash(node_id)
+      local old_pos = core.get_position_from_hash(node_id)
 
       local new_pos = vector.add(pos, old_pos)
 
@@ -353,10 +353,10 @@ function ic:to_yslice_schematic()
   return result
 end
 
---
--- Converts the builder data to a minetest schematic
---
--- @spec #to_schematic(): Schematic
+---
+--- Converts the builder data to a minetest schematic
+---
+--- @spec #to_schematic(): Schematic
 function ic:to_schematic()
   local y_slice_schematic = self:to_yslice_schematic()
 
@@ -365,10 +365,10 @@ end
 
 foundation.com.schematic_helpers.Builder = Builder
 
---
--- Creates a new builder instance
---
--- @spec build(): Builder
+---
+--- Creates a new builder instance
+---
+--- @spec build(): Builder
 function foundation.com.schematic_helpers.build()
   return foundation.com.schematic_helpers.Builder:new()
 end

@@ -1,11 +1,11 @@
 local mod = foundation.new_module("foundation_binary", "2.1.0")
 
-local insec = minetest.request_insecure_environment()
+local insec = core.request_insecure_environment()
 if insec then
   foundation_binary.native_bit = insec.require("bit")
   foundation_binary.ffi = insec.require("ffi")
 else
-  minetest.log(
+  core.log(
     "warn",
     "foundation_binary requested an insecure environment but got nothing." ..
     " Some modules may be unavailable."

@@ -138,7 +138,7 @@ do
         nodedef.on_construct(vector.copy(pos))
       end
     else
-      minetest.log("warning", "node=" .. node.name .. " does not exist")
+      core.log("warning", "node=" .. node.name .. " does not exist")
     end
   end
 
@@ -290,7 +290,7 @@ do
         elseif dir.y < 0 then
           --- entity is descending
           pos3 = vector.copy(pos2)
-          node = core.get_node_or_nil(pos3)
+          node = self:get_node_or_nil(pos3)
           if node then
             nodedef = core.registered_nodes[node.name]
             if nodedef.collision_box then

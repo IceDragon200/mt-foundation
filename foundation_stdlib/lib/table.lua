@@ -186,9 +186,33 @@ end
 --- You really shouldn't need this under normal circumstances.
 ---
 --- @mutative t
---- @spec table_put(t: Table, k: Any, v: Any): Table
+--- @spec table_put(t: Table, key: Any, value: Any): Table
 function foundation.com.table_put(t, key, value)
   t[key] = value
+  return t
+end
+
+--- Sets a key-value in the specified table but only if no existing pair exists.
+---
+--- @since "1.45.0"
+--- @mutative t
+--- @spec table_put_new(t: Table, key: Any, value: Any): Table
+function foundation.com.table_put_new(t, key, value)
+  if t[key] == nil then
+    t[key] = value
+  end
+  return t
+end
+
+--- Sets a key-value in the specified table but only if no existing pair exists.
+---
+--- @since "1.45.0"
+--- @mutative t
+--- @spec table_put_new_lazy(t: Table, key: Any, func: () => Any): Table
+function foundation.com.table_put_new_lazy(t, key, func)
+  if t[key] == nil then
+    t[key] = func()
+  end
   return t
 end
 

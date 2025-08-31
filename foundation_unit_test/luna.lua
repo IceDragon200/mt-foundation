@@ -1,7 +1,7 @@
 --[[
 
   Luna is a test framework to replace knife.test,
-  this has been extracted from my own personal project for use in minetest.
+  this has been extracted from my own personal project for use in luanti.
 
   You are free to copy and use this module/class
 
@@ -554,9 +554,9 @@ do
       elseif test[1] == "test" then
         local test_func = test[3]
         --self.reporter:report("* " .. prefix, test[2])
-        local x_us = minetest.get_us_time()
+        local x_us = core.get_us_time()
         local success, err = xpcall(test_func, debug.traceback, self, test_tags)
-        local y_us = minetest.get_us_time()
+        local y_us = core.get_us_time()
         local diff_us = y_us - x_us
         local diff = diff_us / 1000000.0
         local elapsed = format_pretty_unit(diff, "s")

@@ -10,7 +10,7 @@ end
 
 -- @spec get_item_groups(name: String): Table
 function Groups.get_item_groups(name)
-  local item = minetest.registered_items[name]
+  local item = core.registered_items[name]
   if item then
     return item.groups or NO_GROUPS
   end

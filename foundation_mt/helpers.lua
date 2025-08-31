@@ -19,14 +19,15 @@ function foundation.com.recover_hp(entity, amount, reason)
   return used_amount
 end
 
---- A copy of minetest default's get_inventory_drops
+--- A copy of luanti default's get_inventory_drops
 ---
 --- Adds an inventory's items to a given drops list
 ---
 --- @mutative drops
 --- @spec get_inventory_drops(pos: Vector3, inventory: InventoryRef, drops: ItemStack[]): void
 function foundation.com.get_inventory_drops(pos, inventory, drops)
-  local inv = minetest.get_meta(pos):get_inventory()
+  local meta = tetra.get_meta(pos)
+  local inv = meta:get_inventory()
   local n = #drops
   for i = 1, inv:get_size(inventory) do
     local stack = inv:get_stack(inventory, i)

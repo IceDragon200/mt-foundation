@@ -11,9 +11,9 @@ local function cycle_pack(term)
 end
 
 local function cycle_file_pack(term)
-  local dirname = minetest.get_worldpath() .. "/tmp"
+  local dirname = core.get_worldpath() .. "/tmp"
   local filename = dirname .. "/test.apack"
-  minetest.mkdir(dirname)
+  core.mkdir(dirname)
 
   local stream = io.open(filename, "w")
   ascii_file_pack(stream, term)

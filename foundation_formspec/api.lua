@@ -3,8 +3,8 @@
 -- interpolating items into a formspec element and you start missing commas,
 -- semi-colons or even brackets in larger formspecs.
 --
-
 local Color = assert(foundation.com.Color)
+local formspec_escape = assert(core.formspec_escape)
 
 --- @namespace foundation.com.formspec.api
 foundation.com.formspec = foundation.com.formspec or {}
@@ -51,7 +51,7 @@ local function to_text(item)
   elseif type(item) == "function" then
     return item()
   end
-  return minetest.formspec_escape(tostring(item))
+  return formspec_escape(tostring(item))
 end
 
 --- @private.spec maybe_rect_to_args(Table | Any): String

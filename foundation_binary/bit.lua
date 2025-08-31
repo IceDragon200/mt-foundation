@@ -330,7 +330,7 @@ foundation.com.local_bit.ror = ror
 foundation.com.local_bit.rshift = rshift
 
 if foundation_binary.native_bit then
-  minetest.log("info", "using native bit module")
+  core.log("info", "using native bit module")
   -- native bit module is available, wrapper that mofo up
   foundation.com.bit.tohex = foundation_binary.native_bit.tohex
   foundation.com.bit.arshift = foundation_binary.native_bit.arshift
@@ -344,7 +344,7 @@ if foundation_binary.native_bit then
   foundation.com.bit.ror = foundation_binary.native_bit.ror
   foundation.com.bit.rshift = foundation_binary.native_bit.rshift
 else
-  minetest.log("info", "using local bit module")
+  core.log("info", "using local bit module")
   foundation.com.bit.tohex = foundation.com.local_bit.tohex
   foundation.com.bit.arshift = foundation.com.local_bit.arshift
   foundation.com.bit.band = foundation.com.local_bit.band

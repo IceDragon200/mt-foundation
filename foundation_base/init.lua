@@ -42,21 +42,21 @@ end
 --
 -- @spec #register_node(name: String, entry: Table): Table
 function FoundationModule:register_node(name, entry)
-  return minetest.register_node(self:make_name(name), entry)
+  return core.register_node(self:make_name(name), entry)
 end
 
 -- Helper function for registering a craftitem under the parent mod
 --
 -- @spec #register_craftitem(name: String, entry: Table): Table
 function FoundationModule:register_craftitem(name, entry)
-  return minetest.register_craftitem(self:make_name(name), entry)
+  return core.register_craftitem(self:make_name(name), entry)
 end
 
 -- Helper function for registering a tool under the parent mod
 --
 -- @spec #register_tool(name: String, entry: Table): Table
 function FoundationModule:register_tool(name, entry)
-  return minetest.register_tool(self:make_name(name), entry)
+  return core.register_tool(self:make_name(name), entry)
 end
 
 -- Helper function for performing a dofile with the mod's path
@@ -84,8 +84,8 @@ function foundation.new_private_module(name, version, default)
   mod._name = name
   mod._is_foundation_module = true
   mod.VERSION = version
-  mod.S = minetest.get_translator(name)
-  mod.modpath = minetest.get_modpath(minetest.get_current_modname())
+  mod.S = core.get_translator(name)
+  mod.modpath = core.get_modpath(core.get_current_modname())
   mod.loaded_files = {}
   setmetatable(mod, { __index = FoundationModule })
 

@@ -21,7 +21,7 @@ local MySchema = foundation.com.MetaSchema:new("MySchema", nil, {
 
 do
   --- some meta somehow
-  local meta = minetest.get_node(pos)
+  local meta = foundation.tetra.get_meta(pos)
 
   MySchema:set_field(meta, "my_schema", "name", "Egg")
   MySchema:set(meta, "my_schema", {

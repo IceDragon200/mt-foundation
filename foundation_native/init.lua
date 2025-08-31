@@ -1,10 +1,10 @@
 local mod = foundation.new_module("foundation_native", "1.0.0")
 
-local insec = minetest.request_insecure_environment()
+local insec = core.request_insecure_environment()
 if insec then
   foundation.com.ffi = insec.require("ffi")
 else
-  minetest.log(
+  core.log(
     "warn",
     "foundation_native requested an insecure environment to require ffi, but got nothing." ..
     " Some modules will be disabled or implemented in lua."
@@ -53,7 +53,7 @@ if foundation.com.native_utils then
     end)
   end
 
-  minetest.log("info", "using FFI string_hex functions")
+  core.log("info", "using FFI string_hex functions")
   foundation.com.string_hex_decode = foundation.com.ffi_string_hex_decode
   foundation.com.string_hex_encode = foundation.com.ffi_string_hex_encode
   foundation.com.string_hex_escape = foundation.com.ffi_string_hex_escape

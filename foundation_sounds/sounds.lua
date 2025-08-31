@@ -82,7 +82,7 @@ function ic:play(name, params)
       max_hear_distance = sound_params.max_hear_distance,
       exclude_player = sound_params.exclude_player,
     }
-    local handle = minetest.sound_play(spec, parameters, entry.ephemeral)
+    local handle = core.sound_play(spec, parameters, entry.ephemeral)
     return true, handle
   end
   return false, nil
