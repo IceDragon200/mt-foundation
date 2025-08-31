@@ -93,3 +93,11 @@ tetra.get_node_level = assert(core.get_node_level)
 ---   level: Number
 --- ): Float
 tetra.set_node_level = assert(core.set_node_level)
+--- @spec tetra(
+---   pos1: WorldVector,
+---   pos2: WorldVector,
+---   objects: Boolean,
+---   liquids: Boolean,
+---   pointabilities: Boolean
+--- ): Raycast
+tetra.raycast = assert(core.raycast)

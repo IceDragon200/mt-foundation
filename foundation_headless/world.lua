@@ -269,6 +269,15 @@ do
     return 0
   end
 
+  function ic:raycast(pos1, pos2, objects, liquids, pointabilities)
+    -- local cast = core.__Raycast:new(pos1, pos2, objects, liquids, pointabilities)
+    -- cast.__world = self
+    -- return cast
+    return function ()
+      return nil
+    end
+  end
+
   function ic:update(dtime)
     local pos
     local pos2

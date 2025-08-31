@@ -1,4 +1,5 @@
 local Raycast = foundation.com.Class:extends("Raycast")
+
 do
   local ic = assert(Raycast.instance_class)
 
@@ -16,6 +17,11 @@ do
     self.objects = objects
     self.liquids = liquids
     self.pointabilities = pointabilities
+  end
+
+  --- @spec #next(): PointedThing
+  function ic:next()
+    return nil
   end
 end
 
