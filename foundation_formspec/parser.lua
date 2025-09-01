@@ -1,5 +1,9 @@
 --- @namespace foundation.com.formspec.api
-local StringBuffer = assert(foundation.com.StringBuffer)
+local StringBuffer = foundation.com.StringBuffer
+if not StringBuffer then
+  core.log("error", "StringBuffer is unavailable, cannot create formspec parser")
+end
+
 local List = assert(foundation.com.List)
 
 foundation.com.formspec = foundation.com.formspec or {}
