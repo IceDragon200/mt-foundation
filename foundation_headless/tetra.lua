@@ -38,6 +38,8 @@ tetra.get_natural_light = assert(core.get_natural_light)
 tetra.place_node = assert(core.place_node)
 --- @spec dig_node(pos: WorldVector, digger: ObjectRef): void
 tetra.dig_node = assert(core.dig_node)
+--- @spec node_dig(pos: WorldVector, node: NodeRef, digger: ObjectRef): void
+tetra.node_dig = assert(core.node_dig)
 --- @spec punch_node(pos: WorldVector, puncher: ObjectRef): void
 tetra.punch_node = assert(core.punch_node)
 --- @spec check_for_falling(pos: WorldVector): void
@@ -105,3 +107,11 @@ tetra.set_node_level = assert(core.set_node_level)
 ---   pointabilities: Boolean
 --- ): Raycast
 tetra.raycast = assert(core.raycast)
+--- @spec get_node_drops(
+---   node: NodeRef,
+---   tool_name?: String,
+---   tool?: ItemStack,
+---   digger?: ObjectRef,
+---   pos?: WorldVector,
+--- ): (item_strings: String[])
+tetra.get_node_drops = assert(core.get_node_drops)
