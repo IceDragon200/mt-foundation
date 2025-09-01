@@ -10,6 +10,8 @@ tetra.is_foundation = true
 
 --- @type WorldVector = Vector3 | Vector4
 
+--- @spec is_protected(pos: WorldVector, name: String): Boolean
+tetra.is_protected = assert(core.is_protected)
 --- @spec set_node(pos: WorldVector, node: NodeRef): void
 tetra.set_node = assert(core.set_node)
 --- @spec add_node(pos: WorldVector, node: NodeRef): void
@@ -38,6 +40,8 @@ tetra.place_node = assert(core.place_node)
 tetra.dig_node = assert(core.dig_node)
 --- @spec punch_node(pos: WorldVector, puncher: ObjectRef): void
 tetra.punch_node = assert(core.punch_node)
+--- @spec check_for_falling(pos: WorldVector): void
+tetra.check_for_falling = assert(core.check_for_falling)
 --- @spec spawn_falling_node(pos: WorldVector): void
 tetra.spawn_falling_node = assert(core.spawn_falling_node)
 --- @spec find_nodes_with_meta(pos1: WorldVector, pos2: WorldVector): WorldVector[]
