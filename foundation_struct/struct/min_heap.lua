@@ -148,6 +148,29 @@ do
       return nil, nil
     end
   end
+
+  --- Dumps the internal state which can be persisted (assuming the contents could be
+  --- persisted to begin with).
+  ---
+  --- @since "1.11.0"
+  --- @spec #dump_data(): Table
+  function ic:dump_data()
+    return {
+      cursor = self.m_cursor,
+      data = self.m_data,
+      weights = self.m_weights,
+    }
+  end
+
+  --- Loads the data dumped from `dump_data/0`, to rebuild state
+  ---
+  --- @since "1.11.0"
+  --- @spec #load_data(data: Table): void
+  function ic:load_data(data)
+    self.m_cursor = data.cursor
+    self.m_data = data.data
+    self.m_weights = data.weights
+  end
 end
 
 foundation.com.MinHeap = MinHeap

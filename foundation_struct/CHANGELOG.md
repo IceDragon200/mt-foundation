@@ -1,3 +1,7 @@
+# 1.11.0
+
+* Added `dump_data/0` and `load_data/1` to List, MinHeap and RingBuffer to facilitate persistence
+
 # 1.10.0
 
 * Added `foundation.com.MinHeap` structure
