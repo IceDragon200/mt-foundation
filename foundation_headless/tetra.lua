@@ -115,3 +115,7 @@ tetra.raycast = assert(core.raycast)
 ---   pos?: WorldVector,
 --- ): (item_strings: String[])
 tetra.get_node_drops = assert(core.get_node_drops)
+--- @spec get_objects_inside_radius(center: WorldVector, radius: Number): ObjectRef[]
+tetra.get_objects_inside_radius = assert(core.get_objects_inside_radius)
+--- @spec objects_inside_radius(center: WorldVector, radius: Number): Iterator<ObjectRef>
+tetra.objects_inside_radius = assert(core.objects_inside_radius)

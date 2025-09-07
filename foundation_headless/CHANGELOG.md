@@ -1,3 +1,8 @@
+# 3.1.0
+
+* Added `tetra.get_objects_inside_radius/2`
+* Added `tetra.objects_inside_radius/2`
+
 # 3.0.0
 
 * Added `tetra` namespace, this mirrors parts of the core node space functions, allowing a fourth dimension to the positional vectors.
