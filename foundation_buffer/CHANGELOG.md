@@ -1,3 +1,11 @@
+# 2.5.0
+
+* Added `foundation.com.StringBuffer#fill/2`
+* Added `foundation.com.StringBuffer#fill_bytes/2`
+* Added `foundation.com.StringBuffer#peek_byte/0`
+* Added `foundation.com.TokenBuffer#peek_token/1`
+* Added `foundation.com.TokenBuffer#scan_raw/1` - a non-prefixed version of scan for time-critical uses
+
 # 2.4.0
 
 * Added `foundation.com.StringBuffer#truncate/0`
