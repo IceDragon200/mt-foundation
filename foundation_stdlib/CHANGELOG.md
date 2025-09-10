@@ -1,3 +1,7 @@
+# 1.47.0
+
+* Added `foundation.com.string_to_boolean/1`
+
 # 1.46.0
 
 * Moved `foundation.com.maybe_start_node_timer` to `foundation_mt`, where it belongs

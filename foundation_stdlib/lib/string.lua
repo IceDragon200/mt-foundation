@@ -393,3 +393,17 @@ function foundation.com.string_ascii_icontains(base, pattern)
 
   return matched == blen
 end
+
+--- Converts string to a boolean.
+--- Only true, TRUE, false and FALSE are supported.
+---
+--- @since "1.47.0"
+--- @spec string_to_boolean(str: String): Boolean | nil
+function foundation.com.string_to_boolean(str)
+  if str == "true" or str == "TRUE" then
+    return true
+  elseif str == "false" or str == "FALSE" then
+    return false
+  end
+  return nil
+end
