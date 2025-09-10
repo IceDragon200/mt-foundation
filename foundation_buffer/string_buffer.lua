@@ -527,6 +527,13 @@ do
     end
     return true, nil
   end
+
+  --- @since "2.5.0"
+  --- @spec #to_string(): String
+  function ic:to_string()
+    self:flush()
+    return self.m_data
+  end
 end
 
 foundation.com.StringBuffer = StringBuffer

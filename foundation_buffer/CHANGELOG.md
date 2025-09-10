@@ -1,5 +1,6 @@
 # 2.5.0
 
+* Added `foundation.com.StringBuffer#to_string/0`
 * Added `foundation.com.StringBuffer#fill/2`
 * Added `foundation.com.StringBuffer#fill_bytes/2`
 * Added `foundation.com.StringBuffer#peek_byte/0`
