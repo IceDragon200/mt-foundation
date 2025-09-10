@@ -1,6 +1,10 @@
+# 3.1.0
+
+* Added `foundation.com.parse_chat_command_params/1`
+
 # 3.0.0
 
-* Added foundation.tetra support
+* Added `foundation.tetra` support
 
 # 2.1.0
 

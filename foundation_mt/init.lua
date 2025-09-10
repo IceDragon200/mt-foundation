@@ -1,7 +1,7 @@
 --
 -- Foundation MT, contains some various utilities for general luanti stuff
 --
-local mod = foundation.new_module("foundation_mt", "3.0.0")
+local mod = foundation.new_module("foundation_mt", "3.1.0")
 
 --- @namespace foundation.com
 mod:require("helpers.lua")
