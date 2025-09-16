@@ -1,6 +1,10 @@
 # 3.1.0
 
 * Added `foundation.com.parse_chat_command_params/1`
+* Added `foundation.com.chat_command_type` helper module
+  * Added `number/2` - to retrieve the first element of the tuple specified by arg as a number
+  * Added `string/2` - same as `number/2` but for strings
+  * Added `boolean/2` - same as `number/2` but for booleans
 
 # 3.0.0
 

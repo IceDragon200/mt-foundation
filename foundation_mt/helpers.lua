@@ -2,12 +2,12 @@
 
 local UTF8 = foundation.com.utf8
 local string_split = assert(foundation.com.string_split)
+local string_to_boolean = assert(foundation.com.string_to_boolean)
 
 --- Token type from parse_chat_command_params/1
---- @type ChatCommandToken: {
----   (type: String),
----   (value: Any),
----   { pos = Integer }
+--- @type ChatCommandTuple: {
+---   size: Integer,
+---   data: String[],
 --- }
 
 local DQUOTE_ESCAPES = {
@@ -95,7 +95,7 @@ end
 --- Note that is does not automatically handle numeric items, you will need to cast them yourself.
 ---
 --- @since "3.1.0"
---- @spec parse_chat_command_params(params: String): ChatCommandToken[]
+--- @spec parse_chat_command_params(params: String): ChatCommandTuple[]
 function foundation.com.parse_chat_command_params(params)
   local codepoints
   if UTF8 then
@@ -240,4 +240,43 @@ function foundation.com.node_to_string(node)
   else
     return "N/A,N/A,N/A"
   end
+end
+
+--- Helper module for retrieveing the first element in a parsed command tuple list
+---
+--- @since "3.1.0"
+--- @namespace foundation.com.chat_command_type
+foundation.com.chat_command_type = foundation.com.chat_command_type or {}
+
+--- Retrieves the first element of the `arg` positioned tuple as a number.
+---
+--- @spec number(result: ChatCommandTuple[], arg: Integer): Number
+function foundation.com.chat_command_type.number(result, arg)
+  local tup = result[arg]
+  if tup then
+    return tonumber(tup.data[1])
+  end
+  return nil
+end
+
+--- Retrieves the first element of the `arg` positioned tuple as a string.
+---
+--- @spec string(result: ChatCommandTuple[], arg: Integer): Number
+function foundation.com.chat_command_type.string(result, arg)
+  local tup = result[arg]
+  if tup then
+    return tostring(tup.data[1])
+  end
+  return nil
+end
+
+--- Retrieves the first element of the `arg` positioned tuple as a boolean.
+---
+--- @spec boolean(result: ChatCommandTuple[], arg: Integer): Number
+function foundation.com.chat_command_type.boolean(result, arg)
+  local tup = result[arg]
+  if tup then
+    return string_to_boolean(tup.data[1])
+  end
+  return nil
 end
