@@ -1,3 +1,7 @@
+# 3.1.1
+
+* Added missing `World#remove_node/1`
+
 # 3.1.0
 
 * Added `tetra.get_objects_inside_radius/2`

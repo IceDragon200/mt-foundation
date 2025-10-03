@@ -153,7 +153,8 @@ do
 
   function ic:swap_node(pos, node)
     -- print("core.swap_node", pretty_vec3(pos), pretty_node(node), debug.traceback())
-    local entry = self.data[core.hash_node_position(pos)]
+    local hash = core.hash_node_position(pos)
+    local entry = self.data[hash]
     if not entry then
       entry = {
         id = core.get_content_id("air"),
@@ -162,6 +163,7 @@ do
         meta = MetaDataRef(),
         light = 15
       }
+      self.data[hash] = entry
     end
 
     if node.name then
@@ -175,6 +177,17 @@ do
     if node.param2 then
       entry.param2 = node.param2
     end
+  end
+
+  function ic:remove_node(pos)
+    entry = {
+      id = core.get_content_id("air"),
+      param1 = 0,
+      param2 = 0,
+      meta = MetaDataRef(),
+      light = 15
+    }
+    self.data[core.hash_node_position(pos)] = entry
   end
 
   function ic:get_biome_data(pos)
