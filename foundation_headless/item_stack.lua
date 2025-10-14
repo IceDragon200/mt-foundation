@@ -11,7 +11,9 @@ do
     self.name = ""
     self.count = 0
 
-    if type(data) == "string" then
+    if data == "" then
+      --
+    elseif type(data) == "string" then
       local name, count, wear
       name, count, wear = data:match("(%g+:%g+)%s+(%d+)%s+(%d+)")
       if not name then
