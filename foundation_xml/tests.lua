@@ -110,8 +110,34 @@ case:describe("tokenize/1", function (t2)
   end)
 end)
 
+case:describe("decode/1", function (t2)
+  t2:test("can decode an xml payload", function (t3)
+    local subject = [[
+    <!-- A comment of sorts -->
+    <body>
+      <!-- A comment within the sub element -->
+      <A>Data</A>
+      <B>X</B>
+    </body>
+    ]]
+
+    local okay, elm, err = mod.decode(subject)
+    t3:assert(okay)
+    t3:assert_eq(elm.name, "")
+    t3:assert_eq(elm.children:size(), 1)
+    t3:assert_matches(elm.children:first(), {
+      name = "body",
+    })
+
+    local a = elm:find_element_by_name("A")
+    t3:assert_eq(a.children:size(), 1)
+    t3:assert_eq(a.children:first(), "Data")
+    local b = elm:find_element_by_name("B")
+    t3:assert_eq(b.children:size(), 1)
+    t3:assert_eq(b.children:first(), "X")
+  end)
+end)
+
 case:execute()
 case:display_stats()
 case:maybe_error()
-
-error("NOPE")

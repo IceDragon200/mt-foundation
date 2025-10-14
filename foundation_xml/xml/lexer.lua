@@ -3,7 +3,7 @@ local table_merge = assert(foundation.com.table_merge)
 local StringBuffer = assert(foundation.com.StringBuffer)
 local TokenBuffer = assert(foundation.com.TokenBuffer)
 
---- @namespace foundation_kdl.XML.Lexer
+--- @namespace foundation_xml.XML.Lexer
 local Lexer = {}
 
 local SPACE_CHARACTER = {

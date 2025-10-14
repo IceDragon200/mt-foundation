@@ -2,6 +2,7 @@ local XML = assert(foundation_xml.XML)
 local Element = assert(XML.Element)
 local List = assert(foundation.com.List)
 
+--- @namespace foundation_xml.XML.Decoder
 local Decoder = {}
 
 local function skip_comments(state)
@@ -43,10 +44,13 @@ local function decode_default(state)
   local token
   local token2
   local pos
-  local stack = List.new({ state.root })
+  local stack = List:new({ state.root })
 
   while not tokens:isEOB() do
     skip_spaces_and_comments(state)
+    if tokens:isEOB() then
+      break
+    end
 
     if tokens:match_tokens("stag_open", "name") then
       local element = Element:new()
@@ -54,8 +58,8 @@ local function decode_default(state)
       token = tokens:scan_one("name")
       element.name = token[2]
       if skip_spaces(state) then
-        while not buffer:isEOB() do
-          pos = buffer:tell()
+        while not tokens:isEOB() do
+          pos = tokens:tell()
           token = tokens:scan_one("name")
           if token then
             skip_spaces(state)
@@ -88,21 +92,32 @@ local function decode_default(state)
       end
     elseif tokens:match_tokens("etag_open", "name") then
       if stack:size() > 1 then
-        tokens:scan_one("stag_open")
+        tokens:scan_one("etag_open")
         token = tokens:scan_one("name")
         name = token[2]
         if stack:last().name == name then
-          stack:pop()
+          skip_spaces(state)
+          if tokens:scan_one("etag_close") then
+            stack:pop()
+          else
+            return false, "unclosed etag"
+          end
         else
           return false, "mismatch closing element (expected " .. stack:last().name .. " got " .. name .. ")"
         end
       else
         return false, "unexpected end element"
       end
+    elseif tokens:match_tokens("chardata") then
+      token = tokens:scan_one("chardata")
+      stack:last().children:push(token[2])
+    else
+      token = tokens:peek_token()
+      return false, "unexpected token in sequence (got " .. token[1] .. ")"
     end
   end
 
-  return true
+  return true, nil
 end
 
 local function decode_all(state)
@@ -116,12 +131,12 @@ local function decode_all(state)
       if not okay then
         return false, err
       end
-    elseif state.name == "node" then
-      decode_node(state)
     else
       error("unexpected state " .. state.name)
     end
   end
+
+  return true, nil
 end
 
 --- Decodes a given string or list of tokens into a KDL document (list of nodes)
@@ -152,9 +167,12 @@ function Decoder.decode(blob)
     root = Element:new(),
   }
 
-  decode_all(state)
-
-  return true, state.root:data()
+  ok, err = decode_all(state)
+  if ok then
+    return true, state.root, nil
+  else
+    return false, nil, err
+  end
 end
 
 XML.Decoder = Decoder
