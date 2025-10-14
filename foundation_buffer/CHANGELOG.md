@@ -1,3 +1,8 @@
+# 2.6.0
+
+* Added `foundation.com.StringBuffer#peek_utf8_codepoint_scalar/0`
+* Added `foundation.com.StringBuffer#read_utf8_codepoint_scalar/0`
+
 # 2.5.0
 
 * Added `foundation.com.StringBuffer#to_string/0`

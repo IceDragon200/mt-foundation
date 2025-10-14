@@ -4,11 +4,46 @@
 --   For dealing with utf-8 strings and converting codepoints
 --
 -- https://www.ietf.org/rfc/rfc3629.txt
-local mod = foundation.new_module("foundation_utf8", "1.2.0")
+local mod = foundation.new_module("foundation_utf8", "1.3.0")
+
+local fmod = assert(math.fmod)
 
 --- @namespace foundation.com.utf8
 
+local POW_2_6 = math.pow(2, 6)
+local POW_2_12 = math.pow(2, 12)
+local POW_2_18 = math.pow(2, 18)
+
 local utf8 = {}
+
+--- Returns the length of the next codepoint, only the first character is
+--- analyzed, so this can be used in parsing to determine the number of bytes
+--- that should be parsed next.
+---
+--- If the string has no bytes then `nil` is returned for the length instead.
+---
+--- @since "1.3.0"
+--- @spec next_codepoint_length_unsafe(str: String, start: Integer): Integer | nil
+function utf8.next_codepoint_length_unsafe(str, start)
+  start = start or 1
+  local byte = string.byte(str, start)
+  if byte then
+    local len = 1
+    if byte >= 0xF0 and byte <= 0xF7 then
+      -- 0001 0000-0010 FFFF | 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
+      len = 4
+    elseif byte >= 0xE0 and byte <= 0xEF then
+      -- 0000 0800-0000 FFFF | 1110xxxx 10xxxxxx 10xxxxxx
+      len = 3
+
+    elseif byte >= 0xC0 and byte <= 0xDF then -- overlong encoding
+      -- 0000 0080-0000 07FF | 110xxxxx 10xxxxxx
+      len = 2
+    end
+    return len
+  end
+  return nil
+end
 
 --- Returns the length of the next codepoint, only the first character is
 --- analyzed, so this can be used in parsing to determine the number of bytes
@@ -22,19 +57,80 @@ function utf8.next_codepoint_length(str, start)
   local byte = string.byte(str, start)
   if byte then
     local len = 1
-    if byte >= 0xF0 and byte <= 0xF7 then
+    if byte >= 0xF0 and byte <= 0xF4 then
       -- 0001 0000-0010 FFFF | 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
       len = 4
     elseif byte >= 0xE0 and byte <= 0xEF then
       -- 0000 0800-0000 FFFF | 1110xxxx 10xxxxxx 10xxxxxx
       len = 3
-    elseif byte >= 0xC0 and byte <= 0xDF then
+
+    elseif byte >= 0xC2 and byte <= 0xDF then
       -- 0000 0080-0000 07FF | 110xxxxx 10xxxxxx
       len = 2
     end
     return len
   end
   return nil
+end
+
+--- Returns the scalar value of the next codepoint.
+---
+--- @since "1.3.0"
+--- @spec next_codepoint_scalar(str: String, start: Integer): (Integer, Integer) | (nil, nil)
+function utf8.next_codepoint_scalar(str, start)
+  start = start or 1
+  local b1 = string.byte(str, start)
+  if b1 then
+    local scalar = 0
+    local len = 1
+    if b1 >= 0xF0 and b1 <= 0xF4 then
+      -- 0001 0000-0010 FFFF | 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
+      len = 4
+      local b2 = string.byte(str, start + 1)
+      local b3 = string.byte(str, start + 2)
+      local b4 = string.byte(str, start + 3)
+      if b2 and (b2 >= 0x80 and b2 <= 0xBF) and
+         b3 and (b3 >= 0x80 and b3 <= 0xBF) and
+         b4 and (b4 >= 0x80 and b4 <= 0xBF) then
+        scalar =
+          (fmod(b1, 8) * POW_2_18)
+          + (fmod(b2, 64) * POW_2_12)
+          + (fmod(b3, 64) * POW_2_6)
+          + fmod(b4, 64)
+      else
+        return nil, nil
+      end
+    elseif b1 >= 0xE0 and b1 <= 0xEF then
+      -- 0000 0800-0000 FFFF | 1110xxxx 10xxxxxx 10xxxxxx
+      len = 3
+      local b2 = string.byte(str, start + 1)
+      local b3 = string.byte(str, start + 2)
+      if b2 and (b2 >= 0x80 and b2 <= 0xBF) and
+         b3 and (b3 >= 0x80 and b3 <= 0xBF) then
+        scalar =
+          (fmod(b1, 16) * POW_2_12)
+          + (fmod(b2, 64) * POW_2_6)
+          + fmod(b3, 64)
+      else
+        return nil, nil
+      end
+    elseif b1 >= 0xC2 and b1 <= 0xDF then
+      -- 0000 0080-0000 07FF | 110xxxxx 10xxxxxx
+      len = 2
+      local b2 = string.byte(str, start + 1)
+      if b2 and (b2 >= 0x80 and b2 <= 0xBF) then
+        scalar =
+          (fmod(b1, 32) * POW_2_6)
+          + fmod(b2, 64)
+      else
+        return nil, nil
+      end
+    else
+      scalar = b1
+    end
+    return scalar, start + len - 1
+  end
+  return nil, nil
 end
 
 --- Returns the next codepoints start and tail position so the character can be

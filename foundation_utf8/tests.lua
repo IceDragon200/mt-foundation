@@ -3,6 +3,43 @@ local Luna = assert(foundation.com.Luna)
 
 local case = Luna:new("foundation.com.utf8")
 
+case:describe("next_codepoint_scalar/{1,2}", function (t2)
+  t2:test("reports the next codepoint in an empty string", function (t3)
+    local subject = ""
+    local s, i
+    s, i = mod.next_codepoint_scalar(subject)
+    t3:assert_eq(nil, s)
+  end)
+
+  t2:test("reports the next codepoint in an ASCII string", function (t3)
+    local subject = "Hello"
+    local s, i
+    s, i = mod.next_codepoint_scalar(subject)
+    t3:assert_eq(72, s)
+    s, i = mod.next_codepoint_scalar(subject, i + 1)
+    t3:assert_eq(101, s)
+    s, i = mod.next_codepoint_scalar(subject, i + 1)
+    t3:assert_eq(108, s)
+    s, i = mod.next_codepoint_scalar(subject, i + 1)
+    t3:assert_eq(108, s)
+    s, i = mod.next_codepoint_scalar(subject, i + 1)
+    t3:assert_eq(111, s)
+  end)
+
+  t2:test("reports the next codepoint in an UTF-8 string", function (t3)
+    local subject = "さよなら"
+    local s, i
+    s, i = mod.next_codepoint_scalar(subject)
+    t3:assert_eq(0x3055, s)
+    s, i = mod.next_codepoint_scalar(subject, i + 1)
+    t3:assert_eq(0x3088, s)
+    s, i = mod.next_codepoint_scalar(subject, i + 1)
+    t3:assert_eq(0x306A, s)
+    s, i = mod.next_codepoint_scalar(subject, i + 1)
+    t3:assert_eq(0x3089, s)
+  end)
+end)
+
 case:describe("next_codepoint/1", function (t2)
   t2:test("reports the next codepoint in an empty string", function (t3)
     t3:assert_eq(nil, mod.next_codepoint(""))

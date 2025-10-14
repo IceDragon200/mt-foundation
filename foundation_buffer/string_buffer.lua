@@ -418,6 +418,23 @@ do
       end
     end
 
+    --- Reads the next bytes as a utf8 codepoint scalar
+    ---
+    --- @since "2.6.0"
+    --- @spec read_utf8_codepoint_scalar(): (Integer, Integer)
+    function ic:read_utf8_codepoint_scalar()
+      self:check_readable()
+
+      local pos = self.m_cursor
+      local scalar, tail = utf8.next_codepoint(self.m_data, pos)
+      if scalar then
+        self.m_cursor = tail + 1
+        return scalar, self.m_cursor - pos
+      else
+        return '', 0
+      end
+    end
+
     --- Read len number of codepoints and return it as a string
     ---
     --- @since "2.0.0"
@@ -452,6 +469,22 @@ do
       local uni8char = utf8.next_codepoint(self.m_data, pos)
       if uni8char then
         return uni8char, string.len(uni8char)
+      else
+        return '', 0
+      end
+    end
+
+    --- Peeks the next bytes as a utf8 codepoint string
+    ---
+    --- @since "2.6.0"
+    --- @spec peek_utf8_codepoint_scalar(): (String, Integer)
+    function ic:peek_utf8_codepoint_scalar()
+      self:check_readable()
+
+      local pos = self.m_cursor
+      local scalar, tail = utf8.next_codepoint_scalar(self.m_data, pos)
+      if scalar then
+        return scalar, (tail + 1) - pos
       else
         return '', 0
       end
