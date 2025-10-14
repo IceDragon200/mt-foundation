@@ -180,7 +180,7 @@ do
   end
 
   function ic:remove_node(pos)
-    entry = {
+    local entry = {
       id = core.get_content_id("air"),
       param1 = 0,
       param2 = 0,
