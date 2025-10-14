@@ -8,6 +8,7 @@ local Lexer = {}
 
 local SPACE_CHARACTER = {
   -- spaces
+  ['\x09'] = true, -- tab
   ['\x20'] = true, -- space
   -- because unicode escapes do not work in luajit
   ["\xC2\xA0"] = true, -- "\u{00A0}"
