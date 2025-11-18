@@ -1,3 +1,7 @@
+# 1.47.1
+
+* Remove usage of `DIR_DELIM` in path module, windows environments would create paths which are different from the hard-coded `/` throughout foundation.
+
 # 1.47.0
 
 * Added `foundation.com.string_to_boolean/1`

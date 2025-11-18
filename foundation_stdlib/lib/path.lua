@@ -1,12 +1,15 @@
 --- @namespace foundation.com
 local string_split = assert(foundation.com.string_split)
 
+-- Because, windows, and I don't care.
+local dir_delim = "/"
+
 --- @spec path_components(a: String): String[]
 function foundation.com.path_components(a)
   if a == "" then
     return {}
   else
-    local parts = string_split(a, DIR_DELIM)
+    local parts = string_split(a, dir_delim)
     local result = {}
     local i = 0
     local was_blank = false
@@ -36,7 +39,7 @@ function foundation.com.path_dirname(a)
     -- it has 2 or more components
     components[#components] = nil
     if components[2] then
-      return table.concat(components, DIR_DELIM)
+      return table.concat(components, dir_delim)
     else
       if components[1] == "" then
         return "/"
@@ -69,8 +72,8 @@ end
 
 --- @spec path_join(a: String, b: String): String
 function foundation.com.path_join(a, b)
-  a = foundation.com.string_trim_trailing(a, DIR_DELIM)
-  b = foundation.com.string_trim_leading(b, DIR_DELIM)
+  a = foundation.com.string_trim_trailing(a, dir_delim)
+  b = foundation.com.string_trim_leading(b, dir_delim)
 
-  return a .. DIR_DELIM .. b
+  return a .. dir_delim .. b
 end
