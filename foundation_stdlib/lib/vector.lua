@@ -1,8 +1,9 @@
 --- @namespace foundation.com
 
 -- Minetest has pos_to_string, but I believe that floors the vector coords
--- and adds brackets around it this function is intended to keep the
+-- and adds brackets around it, this function is intended to keep the
 -- decimal places and only create a csv
+--- @spec vector_to_string(Vector3): String
 function foundation.com.vector_to_string(vec)
   return vec.x .. "," .. vec.y .. "," .. vec.z
 end
