@@ -119,3 +119,5 @@ tetra.get_node_drops = assert(core.get_node_drops)
 tetra.get_objects_inside_radius = assert(core.get_objects_inside_radius)
 --- @spec objects_inside_radius(center: WorldVector, radius: Number): Iterator<ObjectRef>
 tetra.objects_inside_radius = assert(core.objects_inside_radius)
+--- @spec sound_play(spec: SoundSpec, params: SoundParameters, ephemeral?: Boolean): SoundHandle
+tetra.sound_play = assert(core.sound_play)

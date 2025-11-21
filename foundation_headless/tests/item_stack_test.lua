@@ -1,0 +1,52 @@
+local ItemStack = assert(foundation.com.headless.ItemStack)
+
+local case = foundation.com.Luna:new("foundation.com.headless.ItemStack")
+
+case:describe("#initialize/0", function (t2)
+  t2:test("can initialize an empty item stack", function (t3)
+    local item_stack = ItemStack:new()
+    t3:assert(item_stack:is_empty())
+  end)
+
+  t2:test("can initialize an item stack from an itemstring", function (t3)
+    local item_stack = ItemStack:new("example:item")
+    t3:assert_eq(item_stack:get_name(), "example:item")
+    t3:assert_eq(item_stack:get_count(), 1)
+    t3:assert_eq(item_stack:get_wear(), 0)
+
+    item_stack = ItemStack:new("example:item 12")
+    t3:assert_eq(item_stack:get_name(), "example:item")
+    t3:assert_eq(item_stack:get_count(), 12)
+    t3:assert_eq(item_stack:get_wear(), 0)
+  end)
+
+  t2:test("can initialize an item stack from a table", function (t3)
+    local item_stack = ItemStack:new({ name = "example:item" })
+    t3:assert_eq(item_stack:get_name(), "example:item")
+    t3:assert_eq(item_stack:get_count(), 1)
+    t3:assert_eq(item_stack:get_wear(), 0)
+
+    item_stack = ItemStack:new({ name = "example:item", count = 12, wear = 2 })
+    t3:assert_eq(item_stack:get_name(), "example:item")
+    t3:assert_eq(item_stack:get_count(), 12)
+    t3:assert_eq(item_stack:get_wear(), 2)
+  end)
+
+  t2:test("can initialize an item stack from another item stack", function (t3)
+    local src_item_stack = ItemStack:new({ name = "example:item" })
+    local item_stack = ItemStack:new(src_item_stack)
+    t3:assert_eq(item_stack:get_name(), "example:item")
+    t3:assert_eq(item_stack:get_count(), 1)
+    t3:assert_eq(item_stack:get_wear(), 0)
+
+    src_item_stack = ItemStack:new({ name = "example:item", count = 12, wear = 2 })
+    item_stack = ItemStack:new(src_item_stack)
+    t3:assert_eq(item_stack:get_name(), "example:item")
+    t3:assert_eq(item_stack:get_count(), 12)
+    t3:assert_eq(item_stack:get_wear(), 2)
+  end)
+end)
+
+case:execute()
+case:display_stats()
+case:maybe_error()

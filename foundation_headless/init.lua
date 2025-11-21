@@ -1,7 +1,7 @@
 --
 -- Foundation Headless
 --
-local mod = foundation.new_module("foundation_headless", "3.1.0")
+local mod = foundation.new_module("foundation_headless", "3.3.0")
 
 --- @namespace foundation.com.headless
 foundation.com.headless = foundation.com.headless or {}
@@ -13,6 +13,8 @@ mod:require("inv_ref.lua")
 mod:require("object_ref.lua")
 mod:require("player_ref.lua")
 mod:require("luaentity.lua")
+
+mod:require("craft_registry.lua")
 
 mod:require("world.lua")
 mod:require("raycast.lua")

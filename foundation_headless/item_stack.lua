@@ -133,6 +133,7 @@ do
     return "ItemStack<" .. self:to_string() .. ">"
   end
 
+  --- @spec is_empty(): Boolean
   function ic:is_empty()
     return self.count == 0
   end

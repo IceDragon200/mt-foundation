@@ -32,6 +32,21 @@ case:describe("#set_size/2", function (t2)
   end)
 end)
 
+case:describe("#get_list/1", function (t2)
+  t2:test("can retrieve an inventory list by name", function (t3)
+    local inv = InvRef:new()
+
+    inv:set_size("main", 10)
+    inv:set_stack("main", 1, ItemStack("example:item"))
+
+    t3:assert_eq(inv:get_stack("main", 1):get_name(), "example:item")
+
+    local list = inv:get_list("main")
+    t3:assert(list[1])
+    t3:assert(list[1]:get_name(), "example:item")
+  end)
+end)
+
 case:execute()
 case:display_stats()
 case:maybe_error()

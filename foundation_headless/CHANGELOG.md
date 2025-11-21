@@ -1,3 +1,12 @@
+# 3.3.0
+
+* Added `foundation.com.headless.CraftRegistry` which re-implements the crafts system.
+* Fixed `InvRef#get_list/1` not correctly returning item stacks
+
+# 3.2.0
+
+* Added `tetra.sound_play/{2,3}`
+
 # 3.1.1
 
 * Added missing `World#remove_node/1`

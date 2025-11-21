@@ -101,6 +101,7 @@ do
     return ItemStack()
   end
 
+  --- @spec #set_list(name: String, list: ItemStack[]): void
   function ic:set_list(name, list)
     assert(type(name) == "string", "expected inventory list name")
     assert(type(list) == "table", "expected list")
@@ -114,16 +115,17 @@ do
     end
   end
 
-  -- @spec get_list(name: String): ItemStack[]
+  --- @spec #get_list(name: String): ItemStack[]
   function ic:get_list(name)
     assert(type(name) == "string", "expected inventory list name")
 
     local result = {}
 
     local size = self.m_sizes[name]
-    if size then
+    if size and size > 0 then
+      local list = self.m_data[name]
       for i = 1,size do
-        result[i] = ItemStack(self.m_data[i])
+        result[i] = ItemStack(list[i])
       end
     end
 
