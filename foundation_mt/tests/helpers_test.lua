@@ -3,7 +3,7 @@ local itemstack_deep_equals = assert(foundation.com.itemstack_deep_equals)
 local Luna = assert(foundation.com.Luna)
 local subject = assert(foundation.com.parse_chat_command_params)
 
-local case = Luna:new("foundation.com.InventoryList")
+local case = Luna:new("foundation.com")
 
 case:describe("parse_chat_command_params/1", function (t2)
   t2:test("can parse an empty params", function (t3)

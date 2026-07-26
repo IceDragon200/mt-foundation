@@ -1,7 +1,7 @@
 local Luna = assert(foundation.com.Luna)
 local subject = foundation.com
 
-local case = Luna:new("foundation.com.metaref_*")
+local case = Luna:new("foundation.com")
 
 local function make_metaref()
   local item_stack = ItemStack()

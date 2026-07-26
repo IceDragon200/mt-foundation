@@ -1,7 +1,7 @@
 local Luna = assert(foundation.com.Luna)
 local m = foundation.com
 
-local case = Luna:new("foundation.com.itemstack_*")
+local case = Luna:new("foundation.com")
 
 case:describe("itemstack_deep_equals/2", function (t2)
   t2:test("can compare the same itemstack", function (t3)
