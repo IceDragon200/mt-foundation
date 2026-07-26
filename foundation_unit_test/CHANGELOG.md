@@ -1,3 +1,14 @@
+# `1.4.0`
+
+* Copied balm Luna's new assertion functions over
+  * `#assert_raw_eq/3`
+  * `#assert_raw_neq/3`
+  * `#assert_feq/3`
+  * `#assert_vector/3`
+  * `#refute_raw_eq/3`
+  * `#refute_raw_neq/3`
+  * `#refute_neq/3`
+
 # `1.3.0`
 
 * Added `#assert_matches/{2,3}` this performs a partial match of the first parameter with the second as a pattern of sorts, at the moment, only tables are partially matched, all other values are treated as opaque
