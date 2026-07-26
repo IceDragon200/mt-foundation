@@ -1,3 +1,8 @@
+# 1.6.2
+
+* Added `foundation.com.formspec.api.VERSION` to denote what formspec version the library currently knows of and what would likely be supported, be sure to check for functions you care about.
+* Added `foundation.com.formspec.api.label/5`
+
 # 1.6.0
 
 * Added `foundation.com.formspec.api.model/14`

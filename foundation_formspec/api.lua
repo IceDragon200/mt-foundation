@@ -5,11 +5,16 @@
 --
 local Color = assert(foundation.com.Color)
 local formspec_escape = assert(core.formspec_escape)
+local max = assert(math.max)
+local table_concat = assert(table.concat)
+local table_insert = assert(table.insert)
 
 --- @namespace foundation.com.formspec.api
 foundation.com.formspec = foundation.com.formspec or {}
 
-local api = {}
+local api = {
+  VERSION = 9,
+}
 local vector2 = foundation.com.Vector2
 
 --- @type Raw<T>: {
@@ -26,12 +31,13 @@ local function to_bool(item)
 end
 
 local function to_color(item)
-  if type(item) == "table" then
+  local ty = type(item)
+  if ty == "table" then
     if item.a then
       return Color.to_string32(item)
     end
     return Color.to_string24(item)
-  elseif type(item) == "function" then
+  elseif ty == "function" then
     return item()
   else
     return item
@@ -44,11 +50,12 @@ local function to_text(item)
     return ""
   end
 
-  if type(item) == "table" then
+  local ty = type(item)
+  if ty == "table" then
     if item.__raw then
       return item.__raw
     end
-  elseif type(item) == "function" then
+  elseif ty == "function" then
     return item()
   end
   return formspec_escape(tostring(item))
@@ -71,12 +78,12 @@ end
 
 --- @spec calc_inventory_offset(size: Integer): Integer
 function api.calc_inventory_offset(size)
-  return size + LIST_SPACING * math.max(size, 0)
+  return size + LIST_SPACING * max(size, 0)
 end
 
 --- @spec calc_inventory_size(size: Integer): Integer
 function api.calc_inventory_size(size)
-  return size + LIST_SPACING * math.max(size - 1, 0)
+  return size + LIST_SPACING * max(size - 1, 0)
 end
 
 --- Calculates the size[] that a form needs to be to contain the given inventory
@@ -87,8 +94,8 @@ end
 --- @spec calc_form_inventory_size(cols: Integer, rows: Integer): Vector2
 function api.calc_form_inventory_size(cols, rows)
   return vector2.new(
-    cols + LIST_SPACING * math.max(cols - 1, 0),
-    rows + LIST_SPACING * math.max(rows - 1, 0)
+    cols + LIST_SPACING * max(cols - 1, 0),
+    rows + LIST_SPACING * max(rows - 1, 0)
   )
 end
 
@@ -384,7 +391,7 @@ function api.model(
   local tex
   local ty = type(textures)
   if ty == "table" then
-    tex = to_text(table.concat(textures, ","))
+    tex = to_text(table_concat(textures, ","))
   elseif ty == "string" then
     tex = to_text(textures)
   else
@@ -513,13 +520,13 @@ function api.field_close_on_enter(name, should_close_on_enter)
   return "field_close_on_enter["..name..";"..to_bool(should_close_on_enter).."]"
 end
 
--- @spec textarea(x: Number,
---                y: Number,
---                w: Number,
---                h: Number,
---                name?: String,
---                label: String,
---                default: Any): String
+--- @spec textarea(x: Number,
+---                y: Number,
+---                w: Number,
+---                h: Number,
+---                name?: String,
+---                label: String,
+---                default: Any): String
 function api.textarea(x, y, w, h, name, label, default)
   local args = x..","..y..
     ";"..w..","..h..
@@ -530,9 +537,27 @@ function api.textarea(x, y, w, h, name, label, default)
   return "textarea["..args.."]"
 end
 
-function api.label(x, y, label)
-  local args = x..","..y..";"..to_text(label)
-  return "label["..args.."]"
+--- @spec label(x: Number, y: Number, label: String): String
+--- @spec label(x: Number, y: Number, w: Number, h: Number, label: String): String
+function api.label(...)
+  local n = select("#", ...)
+  if n == 3 then
+    local x = select(1, ...)
+    local y = select(2, ...)
+    local label = select(3, ...)
+    local args = x..","..y..";"..to_text(label)
+    return "label["..args.."]"
+  else n == 5 then
+    local x = select(1, ...)
+    local y = select(2, ...)
+    local w = select(3, ...)
+    local h = select(4, ...)
+    local label = select(5, ...)
+    local args = x..","..y..";"..w..","..h..";"..to_text(label)
+    return "label["..args.."]"
+  else
+    error("wrong number of arguments (given " .. n .. ", expected 3 or 5)")
+  end
 end
 
 --- @spec hypertext(x: Number, y: Number, w: Number, h: Number, name: String, text: String): String
@@ -655,10 +680,10 @@ function api.textlist(x, y, w, h, name, listitems, selected_index, is_transparen
 
   local items = {}
   for _,item in ipairs(listitems) do
-    table.insert(items, to_text(item))
+    table_insert(items, to_text(item))
   end
 
-  args = args..table.concat(items, ",")..";"
+  args = args..table_concat(items, ",")..";"
   if selected_index then
     args = args..selected_index
   end
@@ -695,10 +720,10 @@ function api.tabheader(x, y, w, h, name, captions, current_tab_index, is_transpa
 
   local items = {}
   for _,item in ipairs(captions) do
-    table.insert(items, to_text(item))
+    table_insert(items, to_text(item))
   end
 
-  args = args..";"..table.concat(items, ",")..";"..current_tab_index
+  args = args..";"..table_concat(items, ",")..";"..current_tab_index
 
   args = args..";"
   if is_transparent ~= nil then
@@ -738,10 +763,10 @@ function api.dropdown(x, y, w, h, name, dropdown_items, selected_index, use_inde
 
   local items = {}
   for _,item in ipairs(dropdown_items) do
-    table.insert(items, to_text(item))
+    table_insert(items, to_text(item))
   end
 
-  args = args..";"..table.concat(items, ",")..";"..selected_index
+  args = args..";"..table_concat(items, ",")..";"..selected_index
 
   if use_index_event ~= nil then
     args = args..";"..to_bool(use_index_event)
@@ -781,9 +806,9 @@ function api.scrollbar_options(options)
 
   local items = {}
   for key,value in pairs(options) do
-    table.insert(items, key.."="..value)
+    table_insert(items, key.."="..value)
   end
-  args = args..table.concat(items,";")
+  args = args..table_concat(items,";")
 
   return "scrollbaroptions["..args.."]"
 end
@@ -797,10 +822,10 @@ function api.table(x, y, w, h, name, cells, selected_index)
 
   local items = {}
   for _,item in ipairs(cells) do
-    table.insert(items, to_text(item))
+    table_insert(items, to_text(item))
   end
 
-  args = args..table.concat(items, ",")..";"..selected_index
+  args = args..table_concat(items, ",")..";"..selected_index
 
   return "table["..args.."]"
 end
@@ -814,12 +839,12 @@ function api.table_options(options)
        key == "background" or
        key == "highlight" or
        key == "highlight_text" then
-      table.insert(items, key.."="..to_color(value))
+      table_insert(items, key.."="..to_color(value))
     else
-      table.insert(items, key.."="..value)
+      table_insert(items, key.."="..value)
     end
   end
-  args = args..table.concat(items,";")
+  args = args..table_concat(items,";")
 
   return "tableoptions["..args.."]"
 end
@@ -833,12 +858,12 @@ function api.tablecolumns(types_and_options)
   for type_name,options in pairs(types_and_options) do
     local options_items = {type_name}
     for key,value in pairs(options) do
-      table.insert(options_items, key.."="..to_color(value))
+      table_insert(options_items, key.."="..to_color(value))
     end
-    table.insert(items, table.concat(options_items, ","))
+    table_insert(items, table_concat(options_items, ","))
   end
 
-  args = args..table.concat(items,";")
+  args = args..table_concat(items,";")
 
   return "tablecolumns["..args.."]"
 end
@@ -847,20 +872,20 @@ local function build_style_args(selectors, properties)
   local selector_items = {}
   for name,states in pairs(selectors) do
     if foundation.com.is_table_empty(states) then
-      table.insert(selector_items, name)
+      table_insert(selector_items, name)
     else
-      table.insert(selector_items, name..":"..table.concat(states,"+"))
+      table_insert(selector_items, name..":"..table_concat(states,"+"))
     end
   end
 
-  local selector = table.concat(selector_items, ",")
+  local selector = table_concat(selector_items, ",")
 
   local properties_items = {}
   for name, value in pairs(properties) do
-    table.insert(properties_items, name.."="..value)
+    table_insert(properties_items, name.."="..value)
   end
 
-  local props = table.concat(properties_items, ";")
+  local props = table_concat(properties_items, ";")
 
   return selector..";"..props
 end
