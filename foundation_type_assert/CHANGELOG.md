@@ -1,3 +1,7 @@
+# 1.3.0
+
+* Ported `default_type_message/2` from balm's assertions module
+
 # 1.2.0
 
 * Added alias for foundation.com.assert as foundation.com.assertions

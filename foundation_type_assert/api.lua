@@ -1,6 +1,11 @@
 --- @namespace foundation.com.assertions
 local m = assert(foundation.com.assertions)
 
+--- @private.spec default_type_message(value: Any, expected_type: String): String
+local function default_type_message(value, expected_type)
+  return "expected a " .. expected_type .. " (got " .. type(value) .. " instead)"
+end
+
 --- Asserts that the given value is a string, if true the string is returned as is.
 --- If the value is not a string, an assertion error is raised instead.
 ---
@@ -10,7 +15,9 @@ local m = assert(foundation.com.assertions)
 ---
 --- @spec is_string(value: Any, message: String): (value: String)
 function m.is_string(value, message)
-  assert(type(value) == "string", message or "expected a string")
+  if type(value) ~= "string" then
+    error(message or default_type_message(value, "string"))
+  end
   return value
 end
 
@@ -23,7 +30,9 @@ end
 ---
 --- @spec is_boolean(value: Any, message: String): (value: Boolean)
 function m.is_boolean(value, message)
-  assert(type(value) == "boolean", message or "expected a boolean")
+  if type(value) ~= "boolean" then
+    error(message or default_type_message(value, "boolean"))
+  end
   return value
 end
 
@@ -36,7 +45,9 @@ end
 ---
 --- @spec is_number(value: Any, message: String): (value: Number)
 function m.is_number(value, message)
-  assert(type(value) == "number", message or "expected a number")
+  if type(value) ~= "number" then
+    error(message or default_type_message(value, "number"))
+  end
   return value
 end
 
@@ -49,7 +60,9 @@ end
 ---
 --- @spec is_table(value: Any, message: String): (value: Table)
 function m.is_table(value, message)
-  assert(type(value) == "table", message or "expected a table")
+  if type(value) ~= "table"  then
+    error(message or default_type_message(value, "table"))
+  end
   return value
 end
 
@@ -85,6 +98,8 @@ end
 --- @since "1.1.0"
 --- @spec is_function(value: Any, message: String): (value: Function)
 function m.is_function(value, message)
-  assert(type(value) == "function", message or "expected a function")
+  if type(value) ~= "function" then
+    error(message or default_type_message(value, "function"))
+  end
   return value
 end
