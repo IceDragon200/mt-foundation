@@ -1,3 +1,15 @@
+# 1.12.0
+
+* Added Deque
+* Classes updated to remove their `#copy/0` functions as Class handles it now
+* Added OrderedSet
+* Added `List#shuffle/0`
+* Added `List#delete/1`
+* Added `List#sort/0`
+* Added `List#sort_by/1`
+* Added `List` __concat metamethod
+* Added `List` __len metamethod
+
 # 1.11.0
 
 * Added `dump_data/0` and `load_data/1` to List, MinHeap and RingBuffer to facilitate persistence

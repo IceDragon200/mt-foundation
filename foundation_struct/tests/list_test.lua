@@ -349,6 +349,18 @@ case:describe("#pop_at/1", function (t2)
   end)
 end)
 
+case:describe("#delete/1", function (t2)
+  t2:test("can delete an item at specified position", function (t3)
+    local list = m:new({ "a", 1, "b", 1, "c", 1 })
+
+    t3:assert_eq(6, list:size())
+    list:delete(1)
+    t3:assert_eq(3, list:size())
+    t3:assert_eq("c", list:last())
+    t3:assert_table_eq({"a", "b", "c"}, list:data())
+  end)
+end)
+
 case:describe("#delete_at/1", function (t2)
   t2:test("can delete an item at specified position", function (t3)
     local list = m:new({ "a", "b", "c" })
@@ -838,6 +850,23 @@ case:describe("#bsearch_by/1", function (t2)
       t3:assert_eq(c, nil)
       t3:assert_eq(cidx, nil)
     end
+  end)
+end)
+
+case:describe("@../1", function (t2)
+  t2:test("can concat another list with self, returning a new list", function (t3)
+    local s = m:new({ 1, 2, 3 })
+
+    local s2 = s .. {4, 5, 6}
+
+    t3:assert_table_eq(s:to_table(), { 1, 2, 3 })
+    t3:assert_table_eq(s2:to_table(), { 1, 2, 3, 4, 5, 6 })
+
+    local s3 = s2 .. m:new({7, 8, 9})
+
+    t3:assert_table_eq(s:to_table(), { 1, 2, 3 })
+    t3:assert_table_eq(s2:to_table(), { 1, 2, 3, 4, 5, 6 })
+    t3:assert_table_eq(s3:to_table(), { 1, 2, 3, 4, 5, 6, 7, 8, 9 })
   end)
 end)
 

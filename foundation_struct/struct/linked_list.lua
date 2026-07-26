@@ -62,13 +62,6 @@ do
     end
   end
 
-  --- @spec #copy(): LinkedList<T>
-  function ic:copy()
-    local ll = self._class:alloc()
-    ll:initialize_copy(self)
-    return ll
-  end
-
   --- @spec #to_linked_list(): LinkedList<T>
   function ic:to_linked_list()
     return self

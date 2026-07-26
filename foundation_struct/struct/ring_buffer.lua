@@ -28,21 +28,8 @@ do
   ---
   --- @spec #initialize_copy(other: RingBuffer): void
   function ic:initialize_copy(other)
-    self.m_max_size = other.m_max_size
+    ic._super.initialize_copy(self, other)
     self.m_data = table_copy(other.m_data)
-    self.m_size = other.m_size
-    self.m_head = other.m_head
-    self.m_tail = other.m_tail
-  end
-
-  ---
-  --- Returns a copy of the ring buffer
-  ---
-  --- @spec #copy(): RingBuffer<T>
-  function ic:copy()
-    local other = self._class:alloc()
-    other:initialize_copy(self)
-    return other
   end
 
   ---

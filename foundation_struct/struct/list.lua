@@ -1,7 +1,12 @@
---- @namespace foundation.com
+local min = assert(math.min)
+local random = assert(math.random)
+local floor = assert(math.floor)
+local table_concat = assert(table.concat)
 
 local Class = foundation.com.Class
 local table_copy = assert(foundation.com.table_copy)
+
+--- @namespace foundation.com
 
 --- @type ListCastable<T>: {
 ---   #to_list: Function/0 => T,
@@ -91,17 +96,8 @@ do
   ---
   --- @spec #initialize_copy(other: List): void
   function ic:initialize_copy(other)
+    ic._super.initialize_copy(self, other)
     self.m_data = table_copy(other.m_data)
-    self.m_cursor = other.m_cursor
-  end
-
-  --- Returns a copy of the list
-  ---
-  --- @spec #copy(): List<T>
-  function ic:copy()
-    local list = self._class:alloc()
-    list:initialize_copy(self)
-    return list
   end
 
   --- Returns the underlying data as is, this can be used to effectively unwrap
@@ -134,6 +130,24 @@ do
         tmp = self.m_data[x2]
         self.m_data[x2] = self.m_data[x]
         self.m_data[x] = tmp
+      end
+    end
+    return self
+  end
+
+  --- Randomizes the position of the data within the list.
+  ---
+  --- @since "1.12.0"
+  --- @spec #shuffle(): self
+  function ic:shuffle()
+    -- check if there is more than 1 item in the list to shuffle it
+    if self.m_cursor > 1 then
+      local x2
+      for x = 1,self.m_cursor do
+        x2 = random(self.m_cursor)
+        if x ~= x2 then
+          self.m_data[x], self.m_data[x2] = self.m_data[x2], self.m_data[x]
+        end
       end
     end
     return self
@@ -436,6 +450,30 @@ do
     return nil
   end
 
+  --- Delete the specified value from the list, note that is quite expensive as it
+  --- rebuilds the list's internal structure.
+  --- Note. All instances of `value` are deleted.
+  --- @since "1.12.0"
+  --- @spec #delete(value: T): self
+  function ic:delete(value)
+    local len = self.m_cursor
+    if len > 0 then
+      local data = self.m_data
+
+      self.m_cursor = 0
+      self.m_data = {}
+      local other
+      for x = 1,len do
+        other = data[x]
+        if other ~= value then
+          self.m_cursor = self.m_cursor + 1
+          self.m_data[self.m_cursor] = other
+        end
+      end
+    end
+    return self
+  end
+
   --- Delete an item at the specified position, this is equivalent to a pop(pos)
   --- and discarding the returned value.
   ---
@@ -473,7 +511,7 @@ do
   ---
   --- @spec #join(separator: String): String
   function ic:join(separator)
-    return table.concat(self.m_data, separator)
+    return table_concat(self.m_data, separator)
   end
 
   --- Retrieve item at position
@@ -689,6 +727,67 @@ do
     end)
   end
 
+  --- @since "1.12.0"
+  --- @spec #sort(): self
+  function ic:sort()
+    if self.m_cursor > 0 then
+      local size = self.m_cursor
+      local list = self.m_data
+      local a
+      local b
+
+      for i = 1,size do
+        a = list[i]
+        for j = i,size do
+          b = list[j]
+
+          if a > b then
+            list[i] = b
+            list[j] = a
+            a = b
+          end
+        end
+      end
+    end
+    return self
+  end
+
+  --- @since "1.12.0"
+  --- @spec #sort_by(callback): self
+  function ic:sort_by(callback)
+    if self.m_cursor > 0 then
+      local size = self.m_cursor
+      local list = self.m_data
+      local a
+      local b
+      local weights = {}
+      local tmp
+      local tmp2
+
+      for i = 1,size do
+        weights[i] = callback(list[i], i)
+      end
+
+      for i = 1,size do
+        a = weights[i]
+        for j = i,size do
+          b = weights[j]
+
+          if a > b then
+            tmp = list[i]
+            list[i] = list[j]
+            list[j] = tmp
+            tmp2 = weights[i]
+            weights[i] = weights[j]
+            weights[j] = tmp2
+            a = b
+          end
+        end
+      end
+    end
+    return self
+  end
+
   --- Dumps the internal state which can be persisted (assuming the contents could be
   --- persisted to begin with).
   ---
@@ -708,6 +807,22 @@ do
   function ic:load_data(data)
     self.m_cursor = data.cursor
     self.m_data = data.data
+  end
+end
+
+do
+  local mt = List.__imt
+
+  --- @since "1.12.0"
+  --- @spec @..(other: List<T> | T[]): List<T>
+  function mt:__concat(other)
+    return self:copy():concat(other)
+  end
+
+  --- @since "1.12.0"
+  --- @spec #@(): Number
+  function mt:__len()
+    return self.m_cursor
   end
 end
 
