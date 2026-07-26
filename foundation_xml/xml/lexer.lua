@@ -322,9 +322,11 @@ local function tokenize_attribute_value(state)
 
   local data
   if char == "'" then
-    data = buffer:scan_until("'")
+    data = buffer:scan_upto("'")
+    buffer:skip("'")
   elseif char == "\"" then
-    data = buffer:scan_until("\"")
+    data = buffer:scan_upto("\"")
+    buffer:skip("\"")
   end
 
   if data then

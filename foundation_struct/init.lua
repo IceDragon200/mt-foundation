@@ -4,10 +4,12 @@
 -- Adds wrapper classes for some basic structures
 local mod = foundation.new_module("foundation_struct", "1.12.0")
 
+mod:require("struct/deque.lua")
 mod:require("struct/min_heap.lua")
 mod:require("struct/list.lua")
 mod:require("struct/linked_list.lua")
 mod:require("struct/ring_buffer.lua")
+mod:require("struct/ordered_set.lua")
 
 mod:require("type_casts.lua")
 

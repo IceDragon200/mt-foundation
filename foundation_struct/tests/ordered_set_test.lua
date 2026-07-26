@@ -1,5 +1,5 @@
-local Luna = foundation.com.Luna
-local M = foundation.com.OrderedSet
+local Luna = assert(foundation.com.Luna)
+local M = assert(foundation.com.OrderedSet)
 
 local case = Luna:new("foundation.com.OrderedSet")
 

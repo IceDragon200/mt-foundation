@@ -1,7 +1,7 @@
 local Class = foundation.com.Class
 local table_copy = assert(foundation.com.table_copy)
 
---- @namespace balm.s
+--- @namespace foundation.com
 
 --- @since "1.12.0"
 --- @class Deque<T>

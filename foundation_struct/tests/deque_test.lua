@@ -1,5 +1,5 @@
-local Luna = foundation.com.Luna
-local m = foundation.com.Deque
+local Luna = assert(foundation.com.Luna)
+local m = assert(foundation.com.Deque)
 
 local case = Luna:new("balm.s.Deque")
 

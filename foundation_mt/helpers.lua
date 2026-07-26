@@ -3,6 +3,7 @@
 local UTF8 = foundation.com.utf8
 local string_split = assert(foundation.com.string_split)
 local string_to_boolean = assert(foundation.com.string_to_boolean)
+local table_concat = assert(table.concat)
 
 --- Token type from parse_chat_command_params/1
 --- @type ChatCommandTuple: {
@@ -16,21 +17,24 @@ local DQUOTE_ESCAPES = {
   r = "\r",
 }
 
-local function parse_dquote(i, len, codepoints)
+local TK_DQUOTE = "\""
+local TK_BSLASH = "\\"
+
+function foundation.com.parse_chat_dquote(i, len, codepoints)
   local s = i
   local e
   local c
   local r = {}
   local ri = 0
 
-  assert(codepoints[i] == "\"")
+  assert(codepoints[i] == TK_DQUOTE)
   while i <= len do
     i = i + 1
     c = codepoints[i]
-    if c == "\"" then
+    if c == TK_DQUOTE then
       i = i + 1
-      return table.concat(r), i
-    elseif "\\" then
+      return table_concat(r), i
+    elseif c == TK_BSLASH then
       i = i + 1
       c = codepoints[i]
       e = DQUOTE_ESCAPES[c]
@@ -48,7 +52,7 @@ local function parse_dquote(i, len, codepoints)
   return nil, s
 end
 
-local function parse_squote(i, len, codepoints)
+function foundation.com.parse_chat_squote(i, len, codepoints)
   local s = i
   local e
   local c
@@ -61,7 +65,7 @@ local function parse_squote(i, len, codepoints)
     c = codepoints[i]
     if c == "'" then
       i = i + 1
-      return table.concat(r), i
+      return table_concat(r), i
     else
       ri = ri + 1
       r[ri] = c
@@ -71,7 +75,7 @@ local function parse_squote(i, len, codepoints)
   return nil, s
 end
 
-local function parse_atom(i, len, codepoints)
+function foundation.com.parse_chat_atom(i, len, codepoints)
   local s = i
   local c
 
@@ -85,11 +89,25 @@ local function parse_atom(i, len, codepoints)
   end
 
   if i > s then
-    return table.concat(codepoints, "", s, i - 1), i
+    return table_concat(codepoints, "", s, i - 1), i
   end
 
   return nil, i
 end
+
+if UTF8 then
+  foundation.com.split_chat_codepoints = UTF8.codepoints
+else
+  -- try your damn hardest not to rely on utf8 at this point
+  function foundation.com.split_chat_codepoints(params)
+    return string_split(params, "")
+  end
+end
+
+local parse_dquote = foundation.com.parse_chat_dquote
+local parse_squote = foundation.com.parse_chat_squote
+local parse_atom = foundation.com.parse_chat_atom
+local split_chat_codepoints = assert(foundation.com.split_chat_codepoints)
 
 --- Foundation's helper function for general chat command parsing.
 --- Note that is does not automatically handle numeric items, you will need to cast them yourself.
@@ -97,16 +115,10 @@ end
 --- @since "3.1.0"
 --- @spec parse_chat_command_params(params: String): ChatCommandTuple[]
 function foundation.com.parse_chat_command_params(params)
-  local codepoints
-  if UTF8 then
-    codepoints = UTF8.codepoints(params)
-  else
-    -- try your damn hardest not to rely on utf8 at this point
-    codepoints = string_split(params, "")
-  end
+  local codepoints = split_chat_codepoints(params)
 
   -- now just a disclaimer, if for some reason you did not have UTF8, you're getting
-  -- quite the mess of characters, but well assume we're dealing with ascii, otherwise
+  -- quite the mess of characters, but we'll assume we're dealing with ascii, otherwise
   -- this is completely botched.
 
   -- So, what are our rules of chat parameters?
@@ -122,6 +134,10 @@ function foundation.com.parse_chat_command_params(params)
   local v
   local tuple = {}
   local tuple_i = 0
+  -- 0 = open
+  -- 1 = saw a value
+  -- 2 = saw only a comma
+  local st = 0
 
   while i <= len do
     c = codepoints[i]
@@ -132,17 +148,25 @@ function foundation.com.parse_chat_command_params(params)
         result[result_i] = { size = tuple_i, data = tuple }
         tuple = {}
         tuple_i = 0
+        st = 0
       end
       i = i + 1
     elseif c == "," then
       -- keep going
-      if tuple_i < 1 then
-        tuple = { nil }
-        tuple_i = 1
+      if st == 0 then
+        if tuple_i < 1 then
+          tuple = { nil }
+          tuple_i = 1
+          st = 2
+        end
+      elseif st == 1 then
+        st = 2
+      elseif st == 2 then
+        tuple_i = tuple_i + 1
       end
       i = i + 1
     else
-      if c == "\"" then
+      if c == TK_DQUOTE then
         v, e = parse_dquote(i, len, codepoints)
         if not v then
           break
@@ -158,7 +182,12 @@ function foundation.com.parse_chat_command_params(params)
       tuple_i = tuple_i + 1
       tuple[tuple_i] = v
       i = e
+      st = 1
     end
+  end
+
+  if st == 2 then
+    tuple_i = tuple_i + 1
   end
 
   if tuple_i > 0 then
@@ -171,7 +200,7 @@ function foundation.com.parse_chat_command_params(params)
   local rest
 
   if i > 0 then
-    rest = table.concat(codepoints, "", i)
+    rest = table_concat(codepoints, "", i)
   else
     rest = ""
   end

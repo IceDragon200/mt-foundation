@@ -1,5 +1,5 @@
-local Object = require("balm/object")
-local table_copy = require("balm/m/table").copy
+local Class = foundation.com.Class
+local table_copy = assert(foundation.com.table_copy)
 local floor = assert(math.floor)
 local min = assert(math.min)
 local random = assert(math.random)
@@ -7,8 +7,8 @@ local table_insert = assert(table.insert)
 local table_remove = assert(table.remove)
 
 --- @since "1.12.0"
---- @class OrderedSet<T> extends Object
-local OrderedSet = Object:extends("foundation.com.OrderedSet")
+--- @class OrderedSet<T> extends Class
+local OrderedSet = Class:extends("foundation.com.OrderedSet")
 do
   local ic = OrderedSet.instance_class
 
@@ -18,7 +18,7 @@ do
 
     if data then
       if type(data) == "table" then
-        if Object.is_object(data) then
+        if Class.is_object(data) then
           if data:is_instance_of(OrderedSet) then
             self:initialize_copy(data)
           elseif data.to_ordered_set then
@@ -57,7 +57,7 @@ do
   ---
   --- @spec #equals(other: OrderedSet<T>): Boolean
   function ic:equals(other)
-    if Object.is_object(other, OrderedSet) then
+    if Class.is_object(other, OrderedSet) then
       -- check if the lengths match, avoids the deeper check if they have
       -- mismatch lengths
       if other.m_cursor == self.m_cursor then
@@ -109,7 +109,7 @@ do
 
   --- @spec #concat(other: OrderedSet<T>): self
   function ic:concat(other)
-    if Object.is_object(other) then
+    if Class.is_object(other) then
       if other:is_instance_of(OrderedSet) then
         return self:_concat_ordered_set(other)
       else
@@ -433,4 +433,4 @@ do
   end
 end
 
-return OrderedSet
+foundation.com.OrderedSet = OrderedSet

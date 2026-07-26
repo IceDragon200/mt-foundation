@@ -287,7 +287,7 @@ do
 
   --- @spec #initialize(name: String, config?: Table): void
   function ic:initialize(name, config)
-    self.name = name
+    self.name = assert(name, "expected a name")
     self.config = table_merge(Luna.default_config, config or {})
     self.reporter = self.config.reporter
     self.stats = {

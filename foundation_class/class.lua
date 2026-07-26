@@ -1,4 +1,6 @@
 --- @namespace foundation.com
+local string_format = assert(string.format)
+local table_concat = assert(table.concat)
 local setmetatable = setmetatable
 
 local inherited_metamethods = {
@@ -35,6 +37,8 @@ local Object = {
     _is_instance_class = true,
   }
 }
+
+setmetatable(Object, Object.__mt)
 
 Object.instance_class._class = Object
 Object.__imt.__index = Object.instance_class
@@ -109,7 +113,7 @@ local function inspect(root, ctx, is_raw)
     return string_format("%s", root)
   elseif ty == "number" then
     local is_int = (root - math.floor(root)) == 0
-    if is_int and root >= Limits.IMIN[52] and root <= Limits.IMAX[52] then
+    if is_int and root >= -4503599627370496 and root <= 4503599627370495 then
       return string_format("%d", root)
     else
       return string_format("%f", root)
@@ -127,45 +131,40 @@ local default_inspect
 local default_class_to_string
 local default_instance_to_string
 
-if string.format then
-  local string_format = assert(string.format)
+local has_string_format_p = pcall(function ()
+  string.format("%p", {})
+  return true
+end)
 
-  local has_string_format_p = pcall(function ()
-    string.format("%p", {})
-    return true
-  end)
+if has_string_format_p then
+  --- @since "2026.5.9"
+  function default_inspect(self, ctx)
+    return string_format("#<%s:%p %s>", self._class._name, self, inspect(self, ctx, true))
+  end
 
+  --- @since "2026.5.9"
+  function default_class_to_string(self)
+    return string_format("Class<%s:%p>", self._name, self)
+  end
 
-  if has_string_format_p then
-    --- @since "2026.5.9"
-    function default_inspect(self, ctx)
-      return string_format("#<%s:%p %s>", self._class._name, self, inspect(self, ctx, true))
-    end
+  --- @since "2026.5.9"
+  function default_instance_to_string(self)
+    return string_format("#<%s:%p>", self._class._name, self)
+  end
+else
+  --- @since "2026.5.9"
+  function default_inspect(self, ctx)
+    return string_format("#<%s:X %s>", self._class._name, inspect(self, ctx, true))
+  end
 
-    --- @since "2026.5.9"
-    function default_class_to_string(self)
-      return string_format("Class<%s:%p>", self._name, self)
-    end
+  --- @since "2026.5.9"
+  function default_class_to_string(self)
+    return string_format("Class<%s:X>", self._name)
+  end
 
-    --- @since "2026.5.9"
-    function default_instance_to_string(self)
-      return string_format("#<%s:%p>", self._class._name, self)
-    end
-  else
-    --- @since "2026.5.9"
-    function default_inspect(self, ctx)
-      return string_format("#<%s:X %s>", self._class._name, inspect(self, ctx, true))
-    end
-
-    --- @since "2026.5.9"
-    function default_class_to_string(self)
-      return string_format("Class<%s:X>", self._name)
-    end
-
-    --- @since "2026.5.9"
-    function default_instance_to_string(self)
-      return string_format("#<%s:X>", self._class._name)
-    end
+  --- @since "2026.5.9"
+  function default_instance_to_string(self)
+    return string_format("#<%s:X>", self._class._name)
   end
 end
 
@@ -195,7 +194,7 @@ end
 local function rawmatches(lhv, pattern)
   if type(pattern) == "table" then
     for key, rhp in pairs(pattern) do
-      if not m.matches(lhv[key], rhp) then
+      if not matches(lhv[key], rhp) then
         return false
       end
     end
@@ -359,10 +358,10 @@ end
 --- @spec &extends(String): Object
 function Object.extends(super_class, name)
   local klass = {
+    _name = name,
     _super = super_class,
     __mt = {},
     __imt = {},
-    name = name,
     instance_class = {},
   }
 

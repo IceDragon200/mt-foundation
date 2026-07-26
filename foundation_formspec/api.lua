@@ -547,7 +547,7 @@ function api.label(...)
     local label = select(3, ...)
     local args = x..","..y..";"..to_text(label)
     return "label["..args.."]"
-  else n == 5 then
+  elseif n == 5 then
     local x = select(1, ...)
     local y = select(2, ...)
     local w = select(3, ...)
