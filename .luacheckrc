@@ -238,6 +238,9 @@ globals = {
               new = {},
             },
           },
+          XML = {
+            fields = {},
+          },
           -- Functions
           --- ascii_pack
           ascii_pack = {},
@@ -564,3 +567,4 @@ files["foundation_native/**/*.lua"] = {
 files["foundation_stdlib/**/*.lua"] = { globals = {"foundation_stdlib"} }
 files["foundation_struct/**/*.lua"] = { globals = {"foundation_struct"} }
 files["foundation_random/**/*.lua"] = { globals = {"foundation_random"} }
+files["foundation_xml/**/*.lua"] = { globals = {"foundation_xml"} }
