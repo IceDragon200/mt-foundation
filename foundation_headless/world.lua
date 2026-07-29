@@ -255,6 +255,11 @@ do
     return 0
   end
 
+  --- Determines the natural light at the given position `pos`, the specific `timeofday` may be
+  --- optionally provided, if not, then the current time is used instead.
+  --- This can return nil, if the mapblock is currently unloaded, or in the case of this
+  --- implementation, if the entry does not exist.
+  --- @spec #get_natural_light(pos: Vector3, timeofday?: Number): Number | nil
   function ic:get_natural_light(pos, timeofday)
     local entry = self.data[core.hash_node_position(pos)]
 
@@ -279,7 +284,7 @@ do
       end
     end
 
-    return 0
+    return nil
   end
 
   function ic:raycast(pos1, pos2, objects, liquids, pointabilities)
