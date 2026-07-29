@@ -1,23 +1,25 @@
 --
 -- Base module for foundation
 --
--- Provides mod registration, taken from the nokore base
--- @namespace foundation
+local string_sub = assert(string.sub)
+
+--- Provides mod registration, taken from the nokore base
+--- @namespace foundation
 foundation = rawget(_G, "foundation") or {}
 
 local FoundationModule = {}
 
 local function string_trim_leading(str, expected)
-  if string.sub(str, 1, #expected) == expected then
-    return string.sub(str, 1 + #expected, -1)
+  if string_sub(str, 1, #expected) == expected then
+    return string_sub(str, 1 + #expected, -1)
   else
     return str
   end
 end
 
 local function string_trim_trailing(str, expected)
-  if string.sub(str, -#expected) == expected then
-    return string.sub(str, 1, -(1 + #expected) )
+  if string_sub(str, -#expected) == expected then
+    return string_sub(str, 1, -(1 + #expected) )
   else
     return str
   end
@@ -30,38 +32,38 @@ local function path_join(a, b)
   return a .. "/" .. b
 end
 
--- Helper function for quickly creating a full mod name for items or other
--- registrations.
---
--- @spec #make_name(local_name: String): String
+--- Helper function for quickly creating a full mod name for items or other
+--- registrations.
+---
+--- @spec #make_name(local_name: String): String
 function FoundationModule:make_name(local_name)
   return self._name .. ":" .. local_name
 end
 
--- Helper function for registering a node under the parent mod
---
--- @spec #register_node(name: String, entry: Table): Table
+--- Helper function for registering a node under the parent mod
+---
+--- @spec #register_node(name: String, entry: Table): Table
 function FoundationModule:register_node(name, entry)
   return core.register_node(self:make_name(name), entry)
 end
 
--- Helper function for registering a craftitem under the parent mod
---
--- @spec #register_craftitem(name: String, entry: Table): Table
+--- Helper function for registering a craftitem under the parent mod
+---
+--- @spec #register_craftitem(name: String, entry: Table): Table
 function FoundationModule:register_craftitem(name, entry)
   return core.register_craftitem(self:make_name(name), entry)
 end
 
--- Helper function for registering a tool under the parent mod
---
--- @spec #register_tool(name: String, entry: Table): Table
+--- Helper function for registering a tool under the parent mod
+---
+--- @spec #register_tool(name: String, entry: Table): Table
 function FoundationModule:register_tool(name, entry)
   return core.register_tool(self:make_name(name), entry)
 end
 
--- Helper function for performing a dofile with the mod's path
---
--- @spec #require(Path): Any
+--- Helper function for performing a dofile with the mod's path
+---
+--- @spec #require(Path): Any
 function FoundationModule:require(basename)
   local filename = path_join(self.modpath, basename)
   if not self.loaded_files[filename] then
@@ -71,11 +73,11 @@ function FoundationModule:require(basename)
   return self.loaded_files[filename]
 end
 
---
--- Creates a new module without setting it globally
---
--- @since 0.3.0
--- @spec new_private_module(name: String, version: String, default: Table)
+---
+--- Creates a new module without setting it globally
+---
+--- @since 0.3.0
+--- @spec new_private_module(name: String, version: String, default: Table)
 function foundation.new_private_module(name, version, default)
   assert(name, "expected a name")
   assert(version, "expected a version")
@@ -93,11 +95,11 @@ function foundation.new_private_module(name, version, default)
   return mod
 end
 
---
--- Creates or retrieves an existing mod's module
--- The modpath is automatically set on call
---
--- @spec new_module(name: String, default: Table): FoundationModule
+---
+--- Creates or retrieves an existing mod's module
+--- The modpath is automatically set on call
+---
+--- @spec new_module(name: String, default: Table): FoundationModule
 function foundation.new_module(name, version, default)
   local mod = foundation.new_private_module(
     name,
@@ -110,10 +112,10 @@ function foundation.new_module(name, version, default)
   return mod
 end
 
---
--- Determines if specified module exists (public-only)
---
--- @spec is_module_present(name: String, optional_version: String): Boolean
+---
+--- Determines if specified module exists (public-only)
+---
+--- @spec is_module_present(name: String, optional_version: String): Boolean
 function foundation.is_module_present(name, optional_version)
   local value = rawget(_G, name)
 

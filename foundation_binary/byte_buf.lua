@@ -12,7 +12,7 @@ do
   --
   -- Writer functions
   --
-  -- @spec write(Stream, data: Any): (Integer, error: String | nil)
+  --- @spec write(Stream, data: Any): (Integer, error: String | nil)
   function ic:write(stream, data)
     local t = type(data)
     local num_bytes = 0
@@ -57,9 +57,10 @@ do
     return num_bytes, nil
   end
 
+  --
   -- Signed Integers
-
-  -- @spec #w_i64(Stream, int: Integer): (Integer, error: String | nil)
+  --
+  --- @spec #w_i64(Stream, int: Integer): (Integer, error: String | nil)
   function ic:w_i64(stream, int)
     local type = type(int)
     if type ~= "number" then
@@ -68,7 +69,8 @@ do
     return self:w_iv(stream, 8, int)
   end
 
-  -- @spec #w_i32(Stream, int: Integer): (Integer, error: String | nil)
+  ---
+  --- @spec #w_i32(Stream, int: Integer): (Integer, error: String | nil)
   function ic:w_i32(stream, int)
     local type = type(int)
     if type ~= "number" then
@@ -77,7 +79,8 @@ do
     return self:w_iv(stream, 4, int)
   end
 
-  -- @spec #w_i24(Stream, int: Integer): (Integer, error: String | nil)
+  ---
+  --- @spec #w_i24(Stream, int: Integer): (Integer, error: String | nil)
   function ic:w_i24(stream, int)
     local type = type(int)
     if type ~= "number" then
@@ -86,7 +89,8 @@ do
     return self:w_iv(stream, 3, int)
   end
 
-  -- @spec #w_i16(Stream, int: Integer): (Integer, error: String | nil)
+  ---
+  --- @spec #w_i16(Stream, int: Integer): (Integer, error: String | nil)
   function ic:w_i16(stream, int)
     local type = type(int)
     if type ~= "number" then
@@ -95,7 +99,8 @@ do
     return self:w_iv(stream, 2, int)
   end
 
-  -- @spec #w_i8(Stream, int: Integer): (Integer, error: String | nil)
+  ---
+  --- @spec #w_i8(Stream, int: Integer): (Integer, error: String | nil)
   function ic:w_i8(stream, int)
     local type = type(int)
     if type ~= "number" then
@@ -104,10 +109,12 @@ do
     return self:w_iv(stream, 1, int)
   end
 
+  --
   -- Unsigned Integers
   --
 
-  -- @spec #w_u64(Stream, int: Integer): (Integer, error: String | nil)
+  ---
+  --- @spec #w_u64(Stream, int: Integer): (Integer, error: String | nil)
   function ic:w_u64(stream, int)
     local type = type(int)
     if type ~= "number" then
@@ -116,7 +123,7 @@ do
     return self:w_uv(stream, 8, int)
   end
 
-  -- @spec #w_u32(Stream, int: Integer): (Integer, error: String | nil)
+  --- @spec #w_u32(Stream, int: Integer): (Integer, error: String | nil)
   function ic:w_u32(stream, int)
     local type = type(int)
     if type ~= "number" then
@@ -125,7 +132,7 @@ do
     return self:w_uv(stream, 4, int)
   end
 
-  -- @spec #w_u24(Stream, int: Integer): (Integer, error: String | nil)
+  --- @spec #w_u24(Stream, int: Integer): (Integer, error: String | nil)
   function ic:w_u24(stream, int)
     local type = type(int)
     if type ~= "number" then
@@ -134,7 +141,7 @@ do
     return self:w_uv(stream, 3, int)
   end
 
-  -- @spec #w_u16(Stream, int: Integer): (Integer, error: String | nil)
+  --- @spec #w_u16(Stream, int: Integer): (Integer, error: String | nil)
   function ic:w_u16(stream, int)
     local type = type(int)
     if type ~= "number" then
@@ -143,7 +150,7 @@ do
     return self:w_uv(stream, 2, int)
   end
 
-  -- @spec #w_u8(Stream, int: Integer): (Integer, error: String | nil)
+  --- @spec #w_u8(Stream, int: Integer): (Integer, error: String | nil)
   function ic:w_u8(stream, int)
     local type = type(int)
     if type ~= "number" then
@@ -152,22 +159,22 @@ do
     return self:w_uv(stream, 1, int)
   end
 
-  -- @spec #w_f16(Stream, flt: Float): (bytes_written: Integer, err: Error)
+  --- @spec #w_f16(Stream, flt: Float): (bytes_written: Integer, err: Error)
   function ic:w_f16(stream, flt)
     return self:w_fv(stream, 5, 10, flt)
   end
 
-  -- @spec #w_f24(Stream, flt: Float): (bytes_written: Integer, err: Error)
+  --- @spec #w_f24(Stream, flt: Float): (bytes_written: Integer, err: Error)
   function ic:w_f24(stream, flt)
     return self:w_fv(stream, 5, 10, flt)
   end
 
-  -- @spec #w_f32(Stream, flt: Float): (bytes_written: Integer, err: Error)
+  --- @spec #w_f32(Stream, flt: Float): (bytes_written: Integer, err: Error)
   function ic:w_f32(stream, flt)
     return self:w_fv(stream, 8, 23, flt)
   end
 
-  -- @spec #w_f64(Stream, flt: Float): (bytes_written: Integer, err: Error)
+  --- @spec #w_f64(Stream, flt: Float): (bytes_written: Integer, err: Error)
   function ic:w_f64(stream, flt)
     return self:w_fv(stream, 11, 52, flt)
   end
@@ -181,7 +188,7 @@ do
   --end
 
   -- Helpers
-  -- @spec w_u8bool(Stream, Boolean): (Integer, error: String | nil)
+  --- @spec w_u8bool(Stream, Boolean): (Integer, error: String | nil)
   function ic:w_u8bool(stream, bool)
     if bool then
       return self:w_u8(stream, 1)
@@ -190,9 +197,9 @@ do
     end
   end
 
-  -- Null-Terminated string
-  --
-  -- @spec w_cstring(Stream, String): (Integer, error: String | nil)
+  --- Null-Terminated string
+  ---
+  --- @spec w_cstring(Stream, String): (Integer, error: String | nil)
   function ic:w_cstring(stream, str)
     local num_bytes
     local err
@@ -206,7 +213,7 @@ do
     return num_bytes + nbytes, err
   end
 
-  -- @spec #w_u8string(Stream, String): (Integer, error: String | nil)
+  --- @spec #w_u8string(Stream, String): (Integer, error: String | nil)
   function ic:w_u8string(stream, data)
     assert(data, "expected a string of some kind")
     -- length
@@ -227,7 +234,7 @@ do
     return num_bytes + written, err
   end
 
-  -- @spec #w_u16string(Stream, String): (Integer, error: String | nil)
+  --- @spec #w_u16string(Stream, String): (Integer, error: String | nil)
   function ic:w_u16string(stream, data)
     -- length
     local len = #data
@@ -247,7 +254,7 @@ do
     return num_bytes + written, err
   end
 
-  -- @spec #w_u32string(Stream, String): (Integer, error: String | nil)
+  --- @spec #w_u32string(Stream, String): (Integer, error: String | nil)
   function ic:w_u32string(stream, data)
     -- length
     local len = #data
@@ -267,7 +274,7 @@ do
     return num_bytes + written, err
   end
 
-  -- @spec #w_u64string(Stream, String): (Integer, error: String | nil)
+  --- @spec #w_u64string(Stream, String): (Integer, error: String | nil)
   function ic:w_u64string(stream, data)
     -- length
     local len = #data
@@ -287,12 +294,12 @@ do
     return num_bytes + written, err
   end
 
-  -- @spec #w_map(
-  --   Stream,
-  --   key_type: String,
-  --   value_type: String,
-  --   Table
-  -- ): (Integer, error: String | nil)
+  --- @spec #w_map(
+  ---   Stream,
+  ---   key_type: String,
+  ---   value_type: String,
+  ---   Table
+  --- ): (Integer, error: String | nil)
   function ic:w_map(stream, key_type, value_type, data)
     -- length
     local len = foundation.com.table_length(data)
@@ -320,12 +327,12 @@ do
     return num_bytes, nil
   end
 
-  -- @spec #w_varray(
-  --   Stream,
-  --   type: String,
-  --   data: Any[],
-  --   len: Integer
-  -- ): (Integer, error: String | nil)
+  --- @spec #w_varray(
+  ---   Stream,
+  ---   type: String,
+  ---   data: Any[],
+  ---   len: Integer
+  --- ): (Integer, error: String | nil)
   function ic:w_varray(stream, type, data, len)
     local writer_name = "w_" .. type
     local all_bytes_written = 0
@@ -345,7 +352,7 @@ do
     return all_bytes_written, nil
   end
 
-  -- @spec #w_array(Stream, type: String, data: Any[]): (Integer, error: String | nil)
+  --- @spec #w_array(Stream, type: String, data: Any[]): (Integer, error: String | nil)
   function ic:w_array(stream, type, data)
     -- length
     local len = #data
@@ -360,7 +367,7 @@ do
   -- Reader
   --
 
-  -- @spec #read(Stream, len: Integer): (String, bytes_read: Integer)
+  --- @spec #read(Stream, len: Integer): (String, bytes_read: Integer)
   function ic:read(stream, len)
     local blob = stream:read(len)
     local bytes_read = 0
@@ -378,57 +385,57 @@ do
   --   [8] = math.floor(math.pow(2, 64)),
   -- }
 
-  -- @spec #r_i64(Stream): (result: Integer, bytes_read: Integer)
+  --- @spec #r_i64(Stream): (result: Integer, bytes_read: Integer)
   function ic:r_i64(stream)
     return self:r_iv(stream, 8)
   end
 
-  -- @spec #r_i32(Stream): (result: Integer, bytes_read: Integer)
+  --- @spec #r_i32(Stream): (result: Integer, bytes_read: Integer)
   function ic:r_i32(stream)
     return self:r_iv(stream, 4)
   end
 
-  -- @spec #r_i24(Stream): (result: Integer, bytes_read: Integer)
+  --- @spec #r_i24(Stream): (result: Integer, bytes_read: Integer)
   function ic:r_i24(stream)
     return self:r_iv(stream, 3)
   end
 
-  -- @spec #r_i16(Stream): (result: Integer, bytes_read: Integer)
+  --- @spec #r_i16(Stream): (result: Integer, bytes_read: Integer)
   function ic:r_i16(stream)
     return self:r_iv(stream, 2)
   end
 
-  -- @spec #r_i8(Stream): (result: Integer, bytes_read: Integer)
+  --- @spec #r_i8(Stream): (result: Integer, bytes_read: Integer)
   function ic:r_i8(stream)
     return self:r_iv(stream, 1)
   end
 
-  -- @spec #r_u64(Stream): (result: Integer, bytes_read: Integer)
+  --- @spec #r_u64(Stream): (result: Integer, bytes_read: Integer)
   function ic:r_u64(stream)
     return self:r_uv(stream, 8)
   end
 
-  -- @spec #r_u32(Stream): (result: Integer, bytes_read: Integer)
+  --- @spec #r_u32(Stream): (result: Integer, bytes_read: Integer)
   function ic:r_u32(stream)
     return self:r_uv(stream, 4)
   end
 
-  -- @spec #r_u24(Stream): (result: Integer, bytes_read: Integer)
+  --- @spec #r_u24(Stream): (result: Integer, bytes_read: Integer)
   function ic:r_u24(stream)
     return self:r_uv(stream, 3)
   end
 
-  -- @spec #r_u16(Stream): (result: Integer, bytes_read: Integer)
+  --- @spec #r_u16(Stream): (result: Integer, bytes_read: Integer)
   function ic:r_u16(stream)
     return self:r_uv(stream, 2)
   end
 
-  -- @spec #r_u8(Stream): (result: Integer, bytes_read: Integer)
+  --- @spec #r_u8(Stream): (result: Integer, bytes_read: Integer)
   function ic:r_u8(stream)
     return self:r_uv(stream, 1)
   end
 
-  -- @spec #r_u8bool(Stream): (result: Boolean, bytes_read: Integer)
+  --- @spec #r_u8bool(Stream): (result: Boolean, bytes_read: Integer)
   function ic:r_u8bool(stream, bool)
     local result, bytes_read = self:r_u8(stream)
     if bytes_read > 0 then
@@ -438,7 +445,7 @@ do
     end
   end
 
-  -- @spec #r_cstring(Stream): (result: String, bytes_read: Integer)
+  --- @spec #r_cstring(Stream): (result: String, bytes_read: Integer)
   function ic:r_cstring(stream)
     local bytes_read = 0
     local result = ''
@@ -460,7 +467,7 @@ do
     return result, bytes_read
   end
 
-  -- @spec #r_u8string(Stream): (result: String | nil, bytes_read: Integer)
+  --- @spec #r_u8string(Stream): (result: String | nil, bytes_read: Integer)
   function ic:r_u8string(stream)
     local len, all_bytes_read = self:r_u8(stream)
     if all_bytes_read > 0 then
@@ -471,7 +478,7 @@ do
     end
   end
 
-  -- @spec #r_u16string(Stream): (result: String | nil, bytes_read: Integer)
+  --- @spec #r_u16string(Stream): (result: String | nil, bytes_read: Integer)
   function ic:r_u16string(stream)
     local len, all_bytes_read = self:r_u16(stream)
     if all_bytes_read > 0 then
@@ -482,7 +489,7 @@ do
     end
   end
 
-  -- @spec #r_u24string(Stream): (result: String | nil, bytes_read: Integer)
+  --- @spec #r_u24string(Stream): (result: String | nil, bytes_read: Integer)
   function ic:r_u24string(stream)
     local len, all_bytes_read = self:r_u24(stream)
     if all_bytes_read > 0 then
@@ -493,7 +500,7 @@ do
     end
   end
 
-  -- @spec #r_u32string(Stream): (result: String | nil, bytes_read: Integer)
+  --- @spec #r_u32string(Stream): (result: String | nil, bytes_read: Integer)
   function ic:r_u32string(stream)
     local len, all_bytes_read = self:r_u32(stream)
     if all_bytes_read > 0 then
@@ -504,8 +511,8 @@ do
     end
   end
 
-  -- @spec #r_map(Stream, key_type: String, value_type: String):
-  --   (result: Table<Any, Any> | nil, bytes_read: Integer)
+  --- @spec #r_map(Stream, key_type: String, value_type: String):
+  ---   (result: Table<Any, Any> | nil, bytes_read: Integer)
   function ic:r_map(stream, key_type, value_type)
     local reader_key = "r_" .. key_type
     local reader_value_key = "r_" .. value_type
@@ -531,7 +538,7 @@ do
     end
   end
 
-  -- @spec #r_varray(Stream, value_type: String, len: Integer): (result: Any[], bytes_read: Integer)
+  --- @spec #r_varray(Stream, value_type: String, len: Integer): (result: Any[], bytes_read: Integer)
   function ic:r_varray(stream, value_type, len)
     local result = {}
     local reader_key = "r_" .. value_type
@@ -548,7 +555,7 @@ do
     return result, all_bytes_read
   end
 
-  -- @spec #r_array(Stream, value_type: String): (result: Any[], bytes_read: Integer)
+  --- @spec #r_array(Stream, value_type: String): (result: Any[], bytes_read: Integer)
   function ic:r_array(stream, value_type)
     local len, all_bytes_read = self:r_u32(stream)
     if len then
