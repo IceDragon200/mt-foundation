@@ -1,7 +1,55 @@
+local table_freeze = assert(foundation.com.table_freeze)
+local string_char = assert(string.char)
+
 --- @namespace foundation.com
 
+local IMIN = {}
+local IMAX = {}
+local UMIN = {}
+local UMAX = {}
+local FMIN = {}
+local FMAX = {}
+
+for i = 1,54 do
+  if i > 1 then
+    IMIN[i] = -(2 ^ (i - 1))
+    IMAX[i] = (2 ^ (i - 1)) - 1
+  end
+  UMIN[i] = 0
+  UMAX[i] = (2 ^ i) - 1
+end
+
+FMAX[32] = (2 - (2 ^ -23)) * (2 ^ 127)
+FMAX[64] = (2 - (2 ^ -52)) * (2 ^ 1023)
+FMIN[32] = -FMAX[32]
+FMIN[64] = -FMAX[64]
+
+--- @const foundation.com.LIMITS: {
+---   IMIN = { [bits: Number]: Number },
+---   IMAX = { [bits: Number]: Number },
+---   UMIN = { [bits: Number]: Number },
+---   UMAX = { [bits: Number]: Number },
+---   FMIN = { [bits: Number]: Number },
+---   FMAX = { [bits: Number]: Number },
+--- }
+foundation.com.LIMITS = table_freeze({
+  IMIN = table_freeze(IMIN),
+  IMAX = table_freeze(IMAX),
+  UMIN = table_freeze(UMIN),
+  UMAX = table_freeze(UMAX),
+  FMIN = table_freeze(FMIN),
+  FMAX = table_freeze(FMAX),
+})
+
+--- @const BYTE2CHAR: { [byte: Number]: String }
+foundation.com.BYTE2CHAR = {}
+for i = 0,255 do
+  foundation.com.BYTE2CHAR[i] = string_char(i)
+end
+table_freeze(foundation.com.BYTE2CHAR)
+
 --- @const HEX_UPPERCASE_ENCODE_TABLE: { [Integer]: String }
-foundation.com.HEX_UPPERCASE_ENCODE_TABLE = {
+foundation.com.HEX_UPPERCASE_ENCODE_TABLE = table_freeze({
   [0] = "0",
   [1] = "1",
   [2] = "2",
@@ -18,7 +66,7 @@ foundation.com.HEX_UPPERCASE_ENCODE_TABLE = {
   [13] = "D",
   [14] = "E",
   [15] = "F",
-}
+})
 
 --- @alias HEX_TABLE = HEX_UPPERCASE_ENCODE_TABLE
 foundation.com.HEX_TABLE = foundation.com.HEX_UPPERCASE_ENCODE_TABLE
@@ -34,15 +82,17 @@ foundation.com.HEX_TO_DEC["c"] = 12
 foundation.com.HEX_TO_DEC["d"] = 13
 foundation.com.HEX_TO_DEC["e"] = 14
 foundation.com.HEX_TO_DEC["f"] = 15
+table_freeze(foundation.com.HEX_TO_DEC)
 
 --- @const HEX_BYTE_TO_DEC: { [Integer]: Integer }
 foundation.com.HEX_BYTE_TO_DEC = {}
 for hex_char, dec in pairs(foundation.com.HEX_TO_DEC) do
   foundation.com.HEX_BYTE_TO_DEC[string.byte(hex_char, 1, 1)] = dec
 end
+table_freeze(foundation.com.HEX_BYTE_TO_DEC)
 
 --- @const CROCKFORD_BASE32_ENCODE_TABLE: { [Integer]: String }
-foundation.com.CROCKFORD_BASE32_ENCODE_TABLE = {
+foundation.com.CROCKFORD_BASE32_ENCODE_TABLE = table_freeze({
   [0] = "0",
   [1] = "1",
   [2] = "2",
@@ -75,10 +125,10 @@ foundation.com.CROCKFORD_BASE32_ENCODE_TABLE = {
   [29] = "X",
   [30] = "Y",
   [31] = "Z",
-}
+})
 
 --- @const CROCKFORD_BASE32_DECODE_TABLE: { [String]: Integer }
-foundation.com.CROCKFORD_BASE32_DECODE_TABLE = {
+foundation.com.CROCKFORD_BASE32_DECODE_TABLE = table_freeze({
   ["0"] = 0,
   ["O"] = 0,
   ["o"] = 0,
@@ -139,4 +189,4 @@ foundation.com.CROCKFORD_BASE32_DECODE_TABLE = {
   ["y"] = 30,
   ["Z"] = 31,
   ["z"] = 31,
-}
+})

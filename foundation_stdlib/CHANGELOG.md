@@ -1,3 +1,9 @@
+# 1.48.0
+
+* Added `foundation.com.BYTE2CHAR` which is just a glorified char-table, give a byte, get the `string.char/1` back, it was made to skip the `string.char/1` calls in the first place.
+* Added `foundation.com.LIMITS` which contains precalculated sizes for various integers and floating point numbers.
+* Encoding tables are now frozen using `table_freeze/1`
+
 # 1.47.1
 
 * Remove usage of `DIR_DELIM` in path module, windows environments would create paths which are different from the hard-coded `/` throughout foundation.
