@@ -1,12 +1,15 @@
--- @namespace foundation.com.binary_types
+local assertions = assert(foundation.com.assertions)
 local bit = assert(foundation.com.bit)
 local ByteBuf = assert(foundation.com.ByteBuf.little)
 
--- @class BitFlags
+--- @namespace foundation.com.binary_types
+
+--- @class BitFlags
 local BitFlags = foundation.com.Class:extends("foundation.com.binary_types.BitFlags")
 local ic = BitFlags.instance_class
 
 function ic:initialize(size, mapping)
+  ic._super.initialize(self)
   self.m_size = size
   self.m_mapping = mapping
 end

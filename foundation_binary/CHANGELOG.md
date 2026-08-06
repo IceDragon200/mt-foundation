@@ -1,3 +1,7 @@
+# 3.0.0
+
+* Refactored most modules using balm's versions instead, this does introduce breaking changes in the BinSchema family of modules.
+
 # 2.1.0
 
 * Added `BinaryBuffer#reopen/1`

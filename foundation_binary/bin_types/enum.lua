@@ -1,37 +1,42 @@
 local Scalars = assert(foundation.com.binary_types.Scalars)
+
 local Enum = foundation.com.Class:extends("Enum")
-local ic = Enum.instance_class
+do
+  local ic = Enum.instance_class
 
-function ic:initialize(data_type, mapping)
-  self.m_name = "ENUM"
-  self.m_data_type = data_type
-  self.m_mapping = mapping
-  self.m_inverse_mapping = {}
-  for k,v in pairs(self.m_mapping) do
-    self.m_inverse_mapping[v] = k
+  --- @spec #initialize(data_type: String, mapping: Table): void
+  function ic:initialize(data_type, mapping)
+    ic._super.initialize(self)
+    self.m_name = "ENUM"
+    self.m_data_type = data_type
+    self.m_mapping = mapping
+    self.m_inverse_mapping = {}
+    for k,v in pairs(self.m_mapping) do
+      self.m_inverse_mapping[v] = k
+    end
   end
-end
 
-function ic:size()
-  return Scalars[self.m_data_type]:size()
-end
-
-function ic:write(stream, value)
-  local data = self.m_mapping[value]
-  if data then
-    return Scalars[self.m_data_type]:write(stream, data)
-  else
-    error(self.m_name .. " unmapped value " .. value)
+  function ic:size()
+    return Scalars[self.m_data_type]:size()
   end
-end
 
-function ic:read(stream)
-  local v, bytes_read = Scalars[self.m_data_type]:read(stream)
-  local result = self.m_inverse_mapping[v]
-  if result then
-    return result, bytes_read
-  else
-    error(self.m_name .. " unmapped inverse value " .. v)
+  function ic:write(byte_buf, stream, value)
+    local data = self.m_mapping[value]
+    if data then
+      return Scalars[self.m_data_type]:write(byte_buf, stream, data)
+    else
+      error(self.m_name .. " unmapped value " .. value)
+    end
+  end
+
+  function ic:read(byte_buf, stream)
+    local v, bytes_read = Scalars[self.m_data_type]:read(byte_buf, stream)
+    local result = self.m_inverse_mapping[v]
+    if result then
+      return result, bytes_read
+    else
+      error(self.m_name .. " unmapped inverse value " .. v)
+    end
   end
 end
 

@@ -1,10 +1,13 @@
--- @namespace foundation.com.bit
---
--- Foundation bit module
---
--- In case the ffi bit is available, then this module acts as a wrapper around it
--- Otherwise it will try it's best to implement the module in plain lua.
---
+local table_freeze = assert(foundation.com.table_freeze)
+local math_floor = assert(math.floor)
+
+---
+--- Foundation bit module
+---
+--- In case the ffi bit is available, then this module acts as a wrapper around it
+--- Otherwise it will try it's best to implement the module in plain lua.
+---
+--- @namespace foundation.com.bit
 foundation.com.bit = {}
 
 local BITS = 32
@@ -56,28 +59,22 @@ local UHEX_TABLE = {
 -- Maps the bit position to the power of 2
 local BIT_TABLE = {}
 
-for i = 0,BITS do
-  BIT_TABLE[i] = math.floor(math.pow(2, i))
+for i = 0,64 do
+  BIT_TABLE[i] = math_floor(2 ^ i)
 end
 
-local function to_unsigned32(result)
-  if result < 0 then
-    return UINT32_MAX + result + 1
+-- Only 32 bit operations to mirror the luajit one
+table_freeze(BIT_TABLE)
+
+local function to_u32(value)
+  if value < 0 then
+    return UINT32_MAX + value + 1
   else
-    return result
+    return value
   end
 end
 
-do
-  local res
-  res = to_unsigned32(-1)
-  assert(res == 0xFFFFFFFF, "expected " .. res .. " to be equal to 0xFFFFFFFF")
-
-  res = to_unsigned32(-2)
-  assert(res == 0xFFFFFFFE, "expected " .. res .. " to be equal to 0xFFFFFFFE")
-end
-
-local function to_signed32(value)
+local function to_i32(value)
   if value > INT32_MAX then
     return value - UINT32_MAX - 1
   else
@@ -85,20 +82,26 @@ local function to_signed32(value)
   end
 end
 
-do
-  local res
-  res = to_signed32(0xFFFFFFFF)
-  assert(res == -1, "expected " .. res .. " to be equal to -1")
-  res = to_signed32(0xFFFFFFFE)
-  assert(res == -2, "expected " .. res .. " to be equal to -2")
-end
-
-local function to_unsigned32_list(list)
+local function to_u32_list(list)
   local result = {}
   for i, v in ipairs(list) do
-    result[i] = to_unsigned32(v)
+    result[i] = to_u32(v)
   end
   return result
+end
+
+do
+  local res
+  res = to_u32(-1)
+  assert(res == 0xFFFFFFFF, "expected " .. res .. " to be equal to 0xFFFFFFFF")
+
+  res = to_u32(-2)
+  assert(res == 0xFFFFFFFE, "expected " .. res .. " to be equal to 0xFFFFFFFE")
+
+  res = to_i32(0xFFFFFFFF)
+  assert(res == -1, "expected " .. res .. " to be equal to -1")
+  res = to_i32(0xFFFFFFFE)
+  assert(res == -2, "expected " .. res .. " to be equal to -2")
 end
 
 -- so you've chosen the hard way, good luck.
@@ -109,13 +112,13 @@ local function tohex(x, b)
     b = -b
     ht = UHEX_TABLE
   end
-  local y = to_unsigned32(x)
+  local y = to_u32(x)
   local result = {}
-  for i = 1,math.floor(b/2) do
+  for i = 1,math_floor(b/2) do
     local byte = y % 256
     local lo = byte % 16
-    local hi = math.floor(byte / 16)
-    y = math.floor(y / 256)
+    local hi = math_floor(byte / 16)
+    y = math_floor(y / 256)
 
     result[b - i * 2 + 1] = ht[hi]
     result[b - i * 2 + 2] = ht[lo]
@@ -129,20 +132,22 @@ end
 
 local function uband(...)
   local result = 0
-  local v = to_unsigned32_list({...})
+  local v = to_u32_list({...})
   local j = #v
+  local base
+  local b
 
   for bit_index = 0,(BITS-1) do
-    local base = v[1] % 2
-    v[1] = math.floor(v[1] / 2)
+    base = v[1] % 2
+    v[1] = math_floor(v[1] / 2)
     for i = 2,j do
       if base > 0 then
-        local b = v[i] % 2
+        b = v[i] % 2
         if b == 0 then
           base = 0
         end
       end
-      v[i] = math.floor(v[i] / 2)
+      v[i] = math_floor(v[i] / 2)
     end
     if base > 0 then
       result = result + BIT_TABLE[bit_index]
@@ -153,10 +158,11 @@ end
 
 local function ubnot(x)
   local result = 0
-  local y = to_unsigned32(x)
+  local y = to_u32(x)
+  local base
   for bit_index = 0,(BITS-1) do
-    local base = y % 2
-    y = math.floor(y / 2)
+    base = y % 2
+    y = math_floor(y / 2)
     if base == 0 then
       result = result + BIT_TABLE[bit_index]
     end
@@ -166,20 +172,22 @@ end
 
 local function ubor(...)
   local result = 0
-  local v = to_unsigned32_list({...})
+  local v = to_u32_list({...})
   local j = #v
+  local base
+  local b
 
   for bit_index = 0,(BITS-1) do
-    local base = v[1] % 2
-    v[1] = math.floor(v[1] / 2)
+    base = v[1] % 2
+    v[1] = math_floor(v[1] / 2)
     for i = 2,j do
       if base == 0 then
-        local b = v[i] % 2
+        b = v[i] % 2
         if b > 0 then
           base = 1
         end
       end
-      v[i] = math.floor(v[i] / 2)
+      v[i] = math_floor(v[i] / 2)
     end
     if base > 0 then
       result = result + BIT_TABLE[bit_index]
@@ -191,20 +199,22 @@ end
 
 local function ubxor(...)
   local result = 0
-  local v = to_unsigned32_list({...})
+  local v = to_u32_list({...})
   local j = #v
+  local base
+  local b
 
   for bit_index = 0,(BITS-1) do
-    local base = v[1] % 2
-    v[1] = math.floor(v[1] / 2)
+    base = v[1] % 2
+    v[1] = math_floor(v[1] / 2)
     for i = 2,j do
-      local b = v[i] % 2
+      b = v[i] % 2
       if base ~= b then
         base = 1
       else
         base = 0
       end
-      v[i] = math.floor(v[i] / 2)
+      v[i] = math_floor(v[i] / 2)
     end
     if base > 0 then
       result = result + BIT_TABLE[bit_index]
@@ -216,107 +226,126 @@ end
 
 local function ulshift(x, n)
   assert(n >= 0)
-  local result = to_unsigned32(x)
-  for _ = 1,n do
-    result = math.floor(result * 2)
+  if n >= 32 then
+    return 0
   end
-  return uband(result, 0xFFFFFFFF)
+  local result = to_u32(x) * BIT_TABLE[n]
+  return result % 0x100000000
 end
 
 local function urshift(x, n)
   assert(n >= 0)
-  local result = to_unsigned32(x)
-  for _ = 1,n do
-    result = math.floor(result / 2)
+  if n >= 32 then
+    return 0
   end
-  return uband(result, 0xFFFFFFFF)
+  return math.floor(to_u32(x) / BIT_TABLE[n])
 end
 
 local function urol(x, n)
   assert(n >= 0)
-  local y = to_unsigned32(x)
+  local y = to_u32(x)
   local result = 0
+  local b
   for bit_index = 0,(BITS-1) do
-    local b = y % 2
+    b = y % 2
     if b > 0 then
       result = result + BIT_TABLE[(bit_index + n) % BITS]
     end
-    y = math.floor(y / 2)
+    y = math_floor(y / 2)
   end
   return result
 end
 
 local function uror(x, n)
   assert(n >= 0)
-  local y = to_unsigned32(x)
+  local y = to_u32(x)
   local result = 0
+  local b
   for bit_index = 0,(BITS-1) do
-    local b = y % 2
+    b = y % 2
     if b > 0 then
       result = result + BIT_TABLE[(bit_index - n) % BITS]
     end
-    y = math.floor(y / 2)
+    y = math_floor(y / 2)
   end
   return result
 end
 
 local function ubswap(x)
   local a, b, c, d
-  local y = to_unsigned32(x)
+  local y = to_u32(x)
   a = y % 256
-  y = math.floor(y / 256)
+  y = math_floor(y / 256)
   b = y % 256
-  y = math.floor(y / 256)
+  y = math_floor(y / 256)
   c = y % 256
-  y = math.floor(y / 256)
+  y = math_floor(y / 256)
   d = y % 256
 
   return ulshift(a, 24) + ulshift(b, 16) + ulshift(c, 8) + d
 end
 
 local function arshift(x, n)
-  return to_signed32(uarshift(x, n))
+  assert(n >= 0)
+  if n == 0 then
+    return to_signed(x)
+  end
+  if n >= 32 then
+    n = 31
+  end
+
+  local y = to_u32(x)
+
+  local result = math.floor(y / BIT_TABLE[n])
+
+  if y >= 0x80000000 then
+    local padding = 0xFFFFFFFF - (BIT_TABLE[32 - n] - 1)
+    result = result + padding
+  end
+
+  return to_signed(result)
 end
 
 local function band(...)
-  return to_signed32(uband(...))
+  return to_i32(uband(...))
 end
 
 local function bnot(x)
-  return to_signed32(ubnot(x))
+  return to_i32(ubnot(x))
 end
 
 local function bor(...)
-  return to_signed32(ubor(...))
+  return to_i32(ubor(...))
 end
 
 local function bxor(...)
-  return to_signed32(ubxor(...))
+  return to_i32(ubxor(...))
 end
 
 local function lshift(x, n)
-  return to_signed32(ulshift(x, n))
+  return to_i32(ulshift(x, n))
 end
 
 local function rshift(x, n)
-  return to_signed32(urshift(x, n))
+  return to_i32(urshift(x, n))
 end
 
 local function rol(x, n)
-  return to_signed32(urol(x, n))
+  return to_i32(urol(x, n))
 end
 
 local function ror(x, n)
-  return to_signed32(uror(x, n))
+  return to_i32(uror(x, n))
 end
 
 local function bswap(x)
-  return to_signed32(ubswap(x))
+  return to_i32(ubswap(x))
 end
 
 foundation.com.local_bit = {}
 
 -- Store the local implementation in case we need it
+foundation.com.local_bit.BIT_TABLE = BIT_TABLE
 foundation.com.local_bit.tohex = tohex
 foundation.com.local_bit.arshift = arshift
 foundation.com.local_bit.band = band
@@ -328,6 +357,8 @@ foundation.com.local_bit.lshift = lshift
 foundation.com.local_bit.rol = rol
 foundation.com.local_bit.ror = ror
 foundation.com.local_bit.rshift = rshift
+
+foundation.com.bit.BIT_TABLE = BIT_TABLE
 
 if foundation_binary.native_bit then
   core.log("info", "using native bit module")

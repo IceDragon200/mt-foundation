@@ -1,6 +1,7 @@
--- @namespace foundation.com.binary_types
 local ByteBuf = assert(foundation.com.ByteBuf.little)
 local BinSchema = assert(foundation.com.BinSchema)
+
+--- @namespace foundation.com.binary_types
 
 local NaiveDateTimeSchema0 = BinSchema:new("NaiveDateTimeSchema", {
   {"year", "u16"},
@@ -11,32 +12,33 @@ local NaiveDateTimeSchema0 = BinSchema:new("NaiveDateTimeSchema", {
   {"second", "u8"},
 })
 
--- @class NaiveDateTime
+--- @class NaiveDateTime
 local NaiveDateTime = foundation.com.Class:extends("NaiveDateTime")
-local ic = NaiveDateTime.instance_class
+do
+  local ic = NaiveDateTime.instance_class
 
-function ic:write(file, datetime)
-  local all_bytes_written = 0
-  local bytes_written
-  local err
-  -- Datetime Version, in case the format needs to change
-  bytes_written, err = ByteBuf:w_u32(file, 0)
-  all_bytes_written = all_bytes_written + bytes_written
-  if err then
-    return all_bytes_written, err
+  function ic:write(byte_buf, file, datetime)
+    local abw = 0
+    local bw
+    local err
+    -- Datetime Version, in case the format needs to change
+    bw, err = byte_buf:w_u32(file, 0)
+    abw = abw + bw
+    if err then
+      return abw, err
+    end
+    bw, err = NaiveDateTimeSchema0:write(file, datetime)
+    abw = abw + bw
+    return abw, err
   end
-  bytes_written, err = NaiveDateTimeSchema0:write(file, datetime)
-  all_bytes_written = all_bytes_written + bytes_written
-  return all_bytes_written, err
-end
 
-function ic:read(file)
-  -- local value, read_bytes = ByteBuf:r_u32(file)
-  local value = ByteBuf:r_u32(file)
-  if value == 0 then
-    return NaiveDateTimeSchema0:read(file)
-  else
-    error("invalid naive_datetimme version")
+  function ic:read(byte_buf, file)
+    local value, br = byte_buf:r_u32(file)
+    if value == 0 then
+      return NaiveDateTimeSchema0:read(file), br
+    else
+      error("invalid naive_datetimme version")
+    end
   end
 end
 

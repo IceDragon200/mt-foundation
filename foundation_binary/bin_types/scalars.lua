@@ -1,232 +1,198 @@
--- @namespace foundation.com.binary_types
+--- @namespace foundation.com.binary_types
 local ByteBuf = assert(foundation.com.ByteBuf.little)
 
-local Scalars = {
-  i8 = {},
-  i16 = {},
-  i24 = {},
-  i32 = {},
-  i64 = {},
-  u8 = {},
-  u16 = {},
-  u24 = {},
-  u32 = {},
-  u64 = {},
-  f16 = {},
-  f24 = {},
-  f32 = {},
-  f64 = {},
-  u8bool = {},
-  u8string = {},
-  u16string = {},
-  u24string = {},
-  u32string = {},
+local function mksize(len)
+  return function ()
+    return len
+  end
+end
+
+local ScalarTypes = {
+  -- Signed Integers
+  i8 = {size=mksize(1)},
+  i16 = {size=mksize(2)},
+  i24 = {size=mksize(3)},
+  i32 = {size=mksize(4)},
+  i40 = {size=mksize(5)},
+  i48 = {size=mksize(6)},
+  i64 = {size=mksize(8)},
+  -- Unsigned Integers
+  u8 = {size=mksize(1)},
+  u16 = {size=mksize(2)},
+  u24 = {size=mksize(3)},
+  u32 = {size=mksize(4)},
+  u40 = {size=mksize(5)},
+  u48 = {size=mksize(6)},
+  u64 = {size=mksize(8)},
+  -- Floating-Point Numbers
+  f16 = {size=mksize(2)},
+  f24 = {size=mksize(3)},
+  f32 = {size=mksize(4)},
+  f40 = {size=mksize(5)},
+  f48 = {size=mksize(6)},
+  f64 = {size=mksize(8)},
+  -- Special types
+  u8bool = {size=mksize(1)},
+  -- Strings, size is based on the minimum size
+  u8string = {size=mksize(1)},
+  u16string = {size=mksize(2)},
+  u24string = {size=mksize(3)},
+  u32string = {size=mksize(4)},
 }
 
-function Scalars.i8:size()
-  return 1
+function ScalarTypes.i8:write(byte_buf, file, data)
+  return byte_buf:w_i8(file, data)
+end
+function ScalarTypes.i16:write(byte_buf, file, data)
+  return byte_buf:w_i16(file, data)
+end
+function ScalarTypes.i24:write(byte_buf, file, data)
+  return byte_buf:w_i24(file, data)
+end
+function ScalarTypes.i32:write(byte_buf, file, data)
+  return byte_buf:w_i32(file, data)
+end
+function ScalarTypes.i40:write(byte_buf, file, data)
+  return byte_buf:w_i40(file, data)
+end
+function ScalarTypes.i48:write(byte_buf, file, data)
+  return byte_buf:w_i48(file, data)
+end
+function ScalarTypes.i64:write(byte_buf, file, data)
+  return byte_buf:w_i64(file, data)
 end
 
-function Scalars.i16:size()
-  return 2
+function ScalarTypes.u8:write(byte_buf, file, data)
+  return byte_buf:w_u8(file, data)
+end
+function ScalarTypes.u16:write(byte_buf, file, data)
+  return byte_buf:w_u16(file, data)
+end
+function ScalarTypes.u24:write(byte_buf, file, data)
+  return byte_buf:w_u24(file, data)
+end
+function ScalarTypes.u32:write(byte_buf, file, data)
+  return byte_buf:w_u32(file, data)
+end
+function ScalarTypes.u40:write(byte_buf, file, data)
+  return byte_buf:w_u40(file, data)
+end
+function ScalarTypes.u48:write(byte_buf, file, data)
+  return byte_buf:w_u48(file, data)
+end
+function ScalarTypes.u64:write(byte_buf, file, data)
+  return byte_buf:w_u64(file, data)
 end
 
-function Scalars.i24:size()
-  return 3
+function ScalarTypes.f16:write(byte_buf, file, data)
+  return byte_buf:w_f16(file, data)
+end
+function ScalarTypes.f24:write(byte_buf, file, data)
+  return byte_buf:w_f24(file, data)
+end
+function ScalarTypes.f32:write(byte_buf, file, data)
+  return byte_buf:w_f32(file, data)
+end
+function ScalarTypes.f64:write(byte_buf, file, data)
+  return byte_buf:w_f64(file, data)
 end
 
-function Scalars.i32:size()
-  return 4
+function ScalarTypes.u8bool:write(byte_buf, file, data)
+  return byte_buf:w_u8bool(file, data)
 end
 
-function Scalars.i64:size()
-  return 8
+function ScalarTypes.u8string:write(byte_buf, file, data)
+  return byte_buf:w_u8string(file, data)
+end
+function ScalarTypes.u16string:write(byte_buf, file, data)
+  return byte_buf:w_u16string(file, data)
+end
+function ScalarTypes.u24string:write(byte_buf, file, data)
+  return byte_buf:w_u24string(file, data)
+end
+function ScalarTypes.u32string:write(byte_buf, file, data)
+  return byte_buf:w_u32string(file, data)
 end
 
-function Scalars.u8:size()
-  return 1
+function ScalarTypes.i8:read(byte_buf, file)
+  return byte_buf:r_i8(file)
+end
+function ScalarTypes.i16:read(byte_buf, file)
+  return byte_buf:r_i16(file)
+end
+function ScalarTypes.i24:read(byte_buf, file)
+  return byte_buf:r_i24(file)
+end
+function ScalarTypes.i32:read(byte_buf, file)
+  return byte_buf:r_i32(file)
+end
+function ScalarTypes.i40:read(byte_buf, file)
+  return byte_buf:r_i40(file)
+end
+function ScalarTypes.i48:read(byte_buf, file)
+  return byte_buf:r_i48(file)
+end
+function ScalarTypes.i64:read(byte_buf, file)
+  return byte_buf:r_i64(file)
 end
 
-function Scalars.u16:size()
-  return 2
+function ScalarTypes.u8:read(byte_buf, file)
+  return byte_buf:r_u8(file)
+end
+function ScalarTypes.u16:read(byte_buf, file)
+  return byte_buf:r_u16(file)
+end
+function ScalarTypes.u24:read(byte_buf, file)
+  return byte_buf:r_u24(file)
+end
+function ScalarTypes.u32:read(byte_buf, file)
+  return byte_buf:r_u32(file)
+end
+function ScalarTypes.u40:read(byte_buf, file)
+  return byte_buf:r_u40(file)
+end
+function ScalarTypes.u48:read(byte_buf, file)
+  return byte_buf:r_u48(file)
+end
+function ScalarTypes.u64:read(byte_buf, file)
+  return byte_buf:r_u64(file)
 end
 
-function Scalars.u24:size()
-  return 3
+function ScalarTypes.f16:read(byte_buf, file)
+  return byte_buf:r_f16(file)
+end
+function ScalarTypes.f24:read(byte_buf, file)
+  return byte_buf:r_f24(file)
+end
+function ScalarTypes.f32:read(byte_buf, file)
+  return byte_buf:r_f32(file)
+end
+function ScalarTypes.f64:read(byte_buf, file)
+  return byte_buf:r_f64(file)
 end
 
-function Scalars.u32:size()
-  return 4
+function ScalarTypes.u8bool:read(byte_buf, file)
+  return byte_buf:r_u8bool(file)
 end
 
-function Scalars.u64:size()
-  return 8
+function ScalarTypes.u8string:read(byte_buf, file)
+  return byte_buf:r_u8string(file)
+end
+function ScalarTypes.u16string:read(byte_buf, file)
+  return byte_buf:r_u16string(file)
+end
+function ScalarTypes.u24string:read(byte_buf, file)
+  return byte_buf:r_u24string(file)
+end
+function ScalarTypes.u32string:read(byte_buf, file)
+  return byte_buf:r_u32string(file)
 end
 
-function Scalars.f16:size()
-  return 2
-end
-
-function Scalars.f24:size()
-  return 3
-end
-
-function Scalars.f32:size()
-  return 4
-end
-
-function Scalars.f64:size()
-  return 8
-end
-
-function Scalars.u8bool:size()
-  return 1
-end
-
-function Scalars.u8string:size()
-  error("cannot determine size of u8string")
-end
-
-function Scalars.u16string:size()
-  error("cannot determine size of u16string")
-end
-
-function Scalars.u24string:size()
-  error("cannot determine size of u24string")
-end
-
-function Scalars.u32string:size()
-  error("cannot determine size of u32string")
-end
-
-
-function Scalars.i8:write(file, data)
-  return ByteBuf:w_i8(file, data)
-end
-function Scalars.i16:write(file, data)
-  return ByteBuf:w_i16(file, data)
-end
-function Scalars.i24:write(file, data)
-  return ByteBuf:w_i24(file, data)
-end
-function Scalars.i32:write(file, data)
-  return ByteBuf:w_i32(file, data)
-end
-function Scalars.i64:write(file, data)
-  return ByteBuf:w_i64(file, data)
-end
-
-function Scalars.u8:write(file, data)
-  return ByteBuf:w_u8(file, data)
-end
-function Scalars.u16:write(file, data)
-  return ByteBuf:w_u16(file, data)
-end
-function Scalars.u24:write(file, data)
-  return ByteBuf:w_u24(file, data)
-end
-function Scalars.u32:write(file, data)
-  return ByteBuf:w_u32(file, data)
-end
-function Scalars.u64:write(file, data)
-  return ByteBuf:w_u64(file, data)
-end
-
-function Scalars.f16:write(file, data)
-  return ByteBuf:w_f16(file, data)
-end
-function Scalars.f24:write(file, data)
-  return ByteBuf:w_f24(file, data)
-end
-function Scalars.f32:write(file, data)
-  return ByteBuf:w_f32(file, data)
-end
-function Scalars.f64:write(file, data)
-  return ByteBuf:w_f64(file, data)
-end
-
-function Scalars.u8bool:write(file, data)
-  return ByteBuf:w_u8bool(file, data)
-end
-
-function Scalars.u8string:write(file, data)
-  return ByteBuf:w_u8string(file, data)
-end
-function Scalars.u16string:write(file, data)
-  return ByteBuf:w_u16string(file, data)
-end
-function Scalars.u24string:write(file, data)
-  return ByteBuf:w_u24string(file, data)
-end
-function Scalars.u32string:write(file, data)
-  return ByteBuf:w_u32string(file, data)
-end
-
-function Scalars.i8:read(file)
-  return ByteBuf:r_i8(file)
-end
-function Scalars.i16:read(file)
-  return ByteBuf:r_i16(file)
-end
-function Scalars.i24:read(file)
-  return ByteBuf:r_i24(file)
-end
-function Scalars.i32:read(file)
-  return ByteBuf:r_i32(file)
-end
-function Scalars.i64:read(file)
-  return ByteBuf:r_i64(file)
-end
-
-function Scalars.u8:read(file)
-  return ByteBuf:r_u8(file)
-end
-function Scalars.u16:read(file)
-  return ByteBuf:r_u16(file)
-end
-function Scalars.u24:read(file)
-  return ByteBuf:r_u24(file)
-end
-function Scalars.u32:read(file)
-  return ByteBuf:r_u32(file)
-end
-function Scalars.u64:read(file)
-  return ByteBuf:r_u64(file)
-end
-
-function Scalars.f16:read(file)
-  return ByteBuf:r_f16(file)
-end
-function Scalars.f24:read(file)
-  return ByteBuf:r_f24(file)
-end
-function Scalars.f32:read(file)
-  return ByteBuf:r_f32(file)
-end
-function Scalars.f64:read(file)
-  return ByteBuf:r_f64(file)
-end
-
-function Scalars.u8bool:read(file)
-  return ByteBuf:r_u8bool(file)
-end
-
-function Scalars.u8string:read(file)
-  return ByteBuf:r_u8string(file)
-end
-function Scalars.u16string:read(file)
-  return ByteBuf:r_u16string(file)
-end
-function Scalars.u24string:read(file)
-  return ByteBuf:r_u24string(file)
-end
-function Scalars.u32string:read(file)
-  return ByteBuf:r_u32string(file)
-end
-
-function Scalars.normalize_type(t)
+function ScalarTypes.normalize_type(t)
   if type(t) == "string" then
-    return assert(Scalars[t], "expected a scalar type")
+    local scalar_type = ScalarTypes[t]
+    assert(scalar_type, "expected a scalar type")
+    return scalar_type
   elseif type(t) == "table" then
     assert(t.write, "expected write/3")
     assert(t.read, "expected read/2")
@@ -236,4 +202,4 @@ function Scalars.normalize_type(t)
   end
 end
 
-foundation.com.binary_types.Scalars = Scalars
+foundation.com.binary_types.Scalars = ScalarTypes

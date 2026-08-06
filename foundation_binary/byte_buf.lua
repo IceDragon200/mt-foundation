@@ -1,7 +1,12 @@
---- @namespace foundation.com.ByteBuf
+local assertions = assert(foundation.com.assertions)
 local ByteDecoder = assert(foundation.com.ByteDecoder)
-local bit = assert(foundation.com.bit, "expected bit module")
+local ByteEncoder = assert(foundation.com.ByteEncoder)
+local table_length = assert(foundation.com.table_length)
+local SC = assert(foundation.com.BYTE2CHAR)
+local LIMITS = assert(foundation.com.LIMITS)
+local ceil = assert(math.ceil)
 
+--- @namespace foundation.com.ByteBuf
 local ByteBuf = {}
 local ic
 
@@ -41,11 +46,11 @@ do
     elseif t == "number" then
       if data > 255 then
         return num_bytes, "byte overflow"
-      elseif data < -128 then
-        return num_bytes, "byte overflow"
+      elseif data < 0 then
+        return num_bytes, "byte underflow"
       end
       local success
-      success, err = stream:write(string.char(data))
+      success, err = stream:write(SC[data])
       if success then
         num_bytes = num_bytes + 1
       else
@@ -67,6 +72,24 @@ do
       error("expected an integer (got "..type..")")
     end
     return self:w_iv(stream, 8, int)
+  end
+
+  --- @spec #w_i48(Stream, int: Integer): (Integer, error: String | nil)
+  function ic:w_i48(stream, int)
+    local type = type(int)
+    if type ~= "number" then
+      error("expected an integer (got "..type..")")
+    end
+    return self:w_iv(stream, 6, int)
+  end
+
+  --- @spec #w_i40(Stream, int: Integer): (Integer, error: String | nil)
+  function ic:w_i40(stream, int)
+    local type = type(int)
+    if type ~= "number" then
+      error("expected an integer (got "..type..")")
+    end
+    return self:w_iv(stream, 5, int)
   end
 
   ---
@@ -121,6 +144,24 @@ do
       error("expected an integer (got "..type..")")
     end
     return self:w_uv(stream, 8, int)
+  end
+
+  --- @spec #w_u48(Stream, int: Integer): (Integer, error: String | nil)
+  function ic:w_u48(stream, int)
+    local type = type(int)
+    if type ~= "number" then
+      error("expected an integer (got "..type..")")
+    end
+    return self:w_uv(stream, 6, int)
+  end
+
+  --- @spec #w_u40(Stream, int: Integer): (Integer, error: String | nil)
+  function ic:w_u40(stream, int)
+    local type = type(int)
+    if type ~= "number" then
+      error("expected an integer (got "..type..")")
+    end
+    return self:w_uv(stream, 5, int)
   end
 
   --- @spec #w_u32(Stream, int: Integer): (Integer, error: String | nil)
@@ -218,7 +259,7 @@ do
     assert(data, "expected a string of some kind")
     -- length
     local len = #data
-    if len > 255 then
+    if len >= LIMITS.UMAX[8] then
       error("string is too long")
     end
     local num_bytes
@@ -238,7 +279,7 @@ do
   function ic:w_u16string(stream, data)
     -- length
     local len = #data
-    if len > 65535 then
+    if len >= LIMITS.UMAX[16] then
       error("string is too long")
     end
     local num_bytes
@@ -254,11 +295,31 @@ do
     return num_bytes + written, err
   end
 
+  --- @spec #w_u24string(Stream, String): (Integer, error: String | nil)
+  function ic:w_u24string(stream, data)
+    -- length
+    local len = #data
+    if len >= LIMITS.UMAX[24] then
+      error("string is too long")
+    end
+    local num_bytes
+    local written
+    local err
+
+    num_bytes, err = self:w_u24(stream, len)
+    if err then
+      return num_bytes, err
+    end
+    written, err = self:write(stream, data)
+
+    return num_bytes + written, err
+  end
+
   --- @spec #w_u32string(Stream, String): (Integer, error: String | nil)
   function ic:w_u32string(stream, data)
     -- length
     local len = #data
-    if len > 4294967295 then
+    if len >= LIMITS.UMAX[32] then
       error("string is too long")
     end
     local num_bytes
@@ -278,14 +339,11 @@ do
   function ic:w_u64string(stream, data)
     -- length
     local len = #data
-    if len > 4294967295 then
-      error("string is too long")
-    end
     local num_bytes
     local written
     local err
 
-    num_bytes, err = self:w_u32(stream, len)
+    num_bytes, err = self:w_u64(stream, len)
     if err then
       return num_bytes, err
     end
@@ -302,7 +360,7 @@ do
   --- ): (Integer, error: String | nil)
   function ic:w_map(stream, key_type, value_type, data)
     -- length
-    local len = foundation.com.table_length(data)
+    local len = table_length(data)
     -- number of items in the map
     local num_bytes = self:w_u32(stream, len)
     local writer_name = "w_" .. value_type
@@ -335,25 +393,25 @@ do
   --- ): (Integer, error: String | nil)
   function ic:w_varray(stream, type, data, len)
     local writer_name = "w_" .. type
-    local all_bytes_written = 0
+    local abw = 0
     local item
-    local bytes_written
+    local bw
     local err
 
     for i = 1,len do
       item = data[i]
-      bytes_written, err = self[writer_name](self, stream, item)
-      all_bytes_written = all_bytes_written + bytes_written
+      bw, err = self[writer_name](self, stream, item)
+      abw = abw + bw
       if err then
-        return all_bytes_written, err
+        return abw, err
       end
     end
 
-    return all_bytes_written, nil
+    return abw, nil
   end
 
-  --- @spec #w_array(Stream, type: String, data: Any[]): (Integer, error: String | nil)
-  function ic:w_array(stream, type, data)
+  --- @spec #w_u32array(Stream, type: String, data: Any[]): (Integer, error: String | nil)
+  function ic:w_u32array(stream, type, data)
     -- length
     local len = #data
     -- number of items in the array
@@ -377,17 +435,19 @@ do
     return blob, bytes_read
   end
 
-  -- local INT_MAX = {
-  --   [1] = math.floor(math.pow(2, 8)),
-  --   [2] = math.floor(math.pow(2, 16)),
-  --   [3] = math.floor(math.pow(2, 24)),
-  --   [4] = math.floor(math.pow(2, 32)),
-  --   [8] = math.floor(math.pow(2, 64)),
-  -- }
-
   --- @spec #r_i64(Stream): (result: Integer, bytes_read: Integer)
   function ic:r_i64(stream)
     return self:r_iv(stream, 8)
+  end
+
+  --- @spec #r_i48(Stream): (result: Integer, bytes_read: Integer)
+  function ic:r_i48(stream)
+    return self:r_iv(stream, 6)
+  end
+
+  --- @spec #r_i40(Stream): (result: Integer, bytes_read: Integer)
+  function ic:r_i40(stream)
+    return self:r_iv(stream, 5)
   end
 
   --- @spec #r_i32(Stream): (result: Integer, bytes_read: Integer)
@@ -415,6 +475,16 @@ do
     return self:r_uv(stream, 8)
   end
 
+  --- @spec #r_u48(Stream): (result: Integer, bytes_read: Integer)
+  function ic:r_u48(stream)
+    return self:r_uv(stream, 6)
+  end
+
+  --- @spec #r_u40(Stream): (result: Integer, bytes_read: Integer)
+  function ic:r_u40(stream)
+    return self:r_uv(stream, 5)
+  end
+
   --- @spec #r_u32(Stream): (result: Integer, bytes_read: Integer)
   function ic:r_u32(stream)
     return self:r_uv(stream, 4)
@@ -433,6 +503,26 @@ do
   --- @spec #r_u8(Stream): (result: Integer, bytes_read: Integer)
   function ic:r_u8(stream)
     return self:r_uv(stream, 1)
+  end
+
+  --- @spec #r_f16(stream: Stream): (result: Number, bytes_read: Integer)
+  function ic:r_f16(stream)
+    return self:r_fv(stream, 5, 10)
+  end
+
+  --- @spec #r_f24(stream: Stream): (result: Number, bytes_read: Integer)
+  function ic:r_f24(stream)
+    return self:r_fv(stream, 7, 15)
+  end
+
+  --- @spec #r_f32(stream: Stream): (result: Number, bytes_read: Integer)
+  function ic:r_f32(stream)
+    return self:r_fv(stream, 8, 23)
+  end
+
+  --- @spec #r_f64(stream: Stream): (result: Number, bytes_read: Integer)
+  function ic:r_f64(stream)
+    return self:r_fv(stream, 11, 52)
   end
 
   --- @spec #r_u8bool(Stream): (result: Boolean, bytes_read: Integer)
@@ -567,6 +657,65 @@ do
   end
 end
 
+--- @class Big extends ByteBuf.Base
+ByteBuf.Big = ByteBuf.Base:extends("ByteBuf.Big")
+do
+  ic = ByteBuf.Big.instance_class
+
+  --- @spec #w_iv(Stream, len: Integer, int: Integer): (bytes_written: Integer, error?: Error)
+  function ic:w_iv(stream, len, int)
+    assertions.is_number(len)
+    assertions.is_number(int)
+    return self:write(stream, ByteEncoder.BE:e_iv(len, int))
+  end
+
+  --- @spec #w_uv(Stream, len: Integer, int: Integer): (Integer, error: String | nil)
+  function ic:w_uv(stream, len, int)
+    assertions.is_number(len)
+    assertions.is_number(int)
+    return self:write(stream, ByteEncoder.BE:e_uv(len, int))
+  end
+
+  --- @spec #w_fv(Stream, exponent_bits: Integer, mantissa_bits: Integer, flt: Float):
+  ---   (Integer, error: String | nil)
+  function ic:w_fv(stream, exponent_bits, mantissa_bits, flt)
+    return self:write(stream, ByteEncoder.BE:e_fv(exponent_bits, mantissa_bits, flt))
+  end
+
+  --- @spec #r_iv(Stream, len: Integer): (result: Integer, bytes_read: Integer)
+  function ic:r_iv(stream, len)
+    local bytes, br = self:read(stream, len)
+    if br < len then
+      return nil, br, "read underflow"
+    end
+
+    return ByteDecoder.BE:d_iv(bytes, len)
+  end
+
+  --- @spec #r_uv(Stream, len: Integer): (result: Integer, bytes_read: Integer)
+  function ic:r_uv(stream, len)
+    local bytes, br = self:read(stream, len)
+    if br < len then
+      return nil, br, "read underflow"
+    end
+    return ByteDecoder.BE:d_uv(bytes, len)
+  end
+
+  --- @spec #r_fv(Stream, exponent_bits: Integer, mantissa_bits: Integer, flt: Float):
+  ---   (result: Number, bytes_read: Integer)
+  function ic:r_fv(stream, exponent_bits, mantissa_bits)
+    local total_bits = 1 + exponent_bits + mantissa_bits
+    local len = ceil(total_bits / 8)
+    local bytes, br = self:read(stream, len)
+    if br < len then
+      return nil, br, "read underflow"
+    end
+    return ByteDecoder.BE:d_fv(bytes, exponent_bits, mantissa_bits)
+  end
+end
+
+ByteBuf.BE = ByteBuf.Big:new()
+
 --- @class Little extends ByteBuf.Base
 ByteBuf.Little = ByteBuf.Base:extends("ByteBuf.Little")
 do
@@ -574,63 +723,22 @@ do
 
   --- @spec #w_iv(Stream, len: Integer, int: Integer): (bytes_written: Integer, error?: Error)
   function ic:w_iv(stream, len, int)
-    local r = int
-    local num_bytes = 0
-    local byte
-    local bytes_written
-    local err
-
-    for _ = 1,(len - 1) do
-      byte = bit.band(r, 255)
-      bytes_written, err = self:write(stream, byte)
-      if err then
-        return num_bytes, err
-      end
-      r = bit.rshift(r, 8)
-      num_bytes = num_bytes + bytes_written
-    end
-
-    if int < 0 then
-      -- set last bit to 1, meaning it's negative
-      bytes_written, err = self:write(stream, bit.bor(bit.band(r, 127), 128))
-      if err then
-        return num_bytes, err
-      end
-      num_bytes = num_bytes + bytes_written
-    else
-      bytes_written, err = self:write(stream, bit.band(r, 127))
-      if err then
-        return num_bytes, err
-      end
-      num_bytes = num_bytes + bytes_written
-    end
-
-    return num_bytes
+    assertions.is_number(len)
+    assertions.is_number(int)
+    return self:write(stream, ByteEncoder.LE:e_iv(len, int))
   end
 
   --- @spec #w_uv(Stream, len: Integer, int: Integer): (Integer, error: String | nil)
   function ic:w_uv(stream, len, int)
-    local type = type(int)
-    if type ~= "number" then
-      error("expected value to be an integer (got "..type..")")
-    end
-    assert(int >= 0, "expected integer to be greater than or equal to 0")
-    local r = int
-    local num_bytes = 0
-    local byte
-    local bytes_written
-    local err
+    assertions.is_number(len)
+    assertions.is_number(int)
+    return self:write(stream, ByteEncoder.LE:e_uv(len, int))
+  end
 
-    for _ = 1,len do
-      byte = bit.band(r, 255)
-      bytes_written, err = self:write(stream, byte)
-      if err then
-        return num_bytes, err
-      end
-      r = bit.rshift(r, 8)
-      num_bytes = num_bytes + bytes_written
-    end
-    return num_bytes
+  --- @spec #w_fv(Stream, exponent_bits: Integer, mantissa_bits: Integer, flt: Float):
+  ---   (Integer, error: String | nil)
+  function ic:w_fv(stream, exponent_bits, mantissa_bits, flt)
+    return self:write(stream, ByteEncoder.LE:e_fv(exponent_bits, mantissa_bits, flt))
   end
 
   --- @spec #r_iv(Stream, len: Integer): (result: Integer, bytes_read: Integer)
@@ -640,7 +748,7 @@ do
       return nil, read_len, "read underflow"
     end
 
-    return ByteDecoder:d_iv(bytes, len)
+    return ByteDecoder.LE:d_iv(bytes, len)
   end
 
   --- @spec #r_uv(Stream, len: Integer): (result: Integer, bytes_read: Integer)
@@ -649,48 +757,27 @@ do
     if read_len < len then
       return nil, read_len, "read underflow"
     end
-    return ByteDecoder:d_uv(bytes, len)
+    return ByteDecoder.LE:d_uv(bytes, len)
   end
 
-  --- Floating Point Values - IEEE754
-  --- http://eng.umb.edu/~cuckov/classes/engin341/Reference/IEEE754.pdf
-  --- http://sandbox.mc.edu/~bennet/cs110/flt/ftod.html
-  --- http://sandbox.mc.edu/~bennet/cs110/flt/dtof.html
-  --- TODO: still a work in progress
-  ---
-  --- @spec #w_fv(Stream, exponent_bits: Integer, mantissa_bits: Integer, flt: Float):
-  ---   (Integer, error: String | nil)
-  function ic:w_fv(stream, exponent_bits, mantissa_bits, flt)
-    local sign = 0
-    if flt < 0 then
-      sign = 1
-      --- absolute
-      flt = -flt
+  --- @spec #r_fv(Stream, exponent_bits: Integer, mantissa_bits: Integer, flt: Float):
+  ---   (result: Number, bytes_read: Integer)
+  function ic:r_fv(stream, exponent_bits, mantissa_bits)
+    local total_bits = 1 + exponent_bits + mantissa_bits
+    local len = ceil(total_bits / 8)
+    local bytes, br = self:read(stream, len)
+    if br < len then
+      return nil, br, "read underflow"
     end
-
-    local int = math.floor(flt)
-    flt = flt - int
-
-    local mantissa_fract = 0
-
-    local m = flt
-    for i = 0,mantissa_bits do
-      m = m * 2
-      if m >= 1 then
-        m = m - 1
-        mantissa_fract = bit.bor(mantissa_fract, bit.lshift(1, i))
-      end
-    end
-
-    local e = int
-    local exponent = 1
-    while e > 1 do
-      e = bit.rshift(e, 1)
-      exponent = exponent + 1
-    end
+    return ByteDecoder.LE:d_fv(bytes, exponent_bits, mantissa_bits)
   end
 end
 
+ByteBuf.LE = ByteBuf.Little:new()
+
 foundation.com.ByteBuf = ByteBuf
+
+--- @const big: Big
+foundation.com.ByteBuf.big = ByteBuf.BE
 --- @const little: Little
-foundation.com.ByteBuf.little = ByteBuf.Little:new()
+foundation.com.ByteBuf.little = ByteBuf.LE
