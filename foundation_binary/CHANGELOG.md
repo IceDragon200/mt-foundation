@@ -1,3 +1,7 @@
+# 3.1.0
+
+* Added Lua implementation of BinaryBuffer as a fallback
+
 # 3.0.0
 
 * Refactored most modules using balm's versions instead, this does introduce breaking changes in the BinSchema family of modules.

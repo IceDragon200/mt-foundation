@@ -1,90 +1,76 @@
+local min = assert(math.min)
+local ceil = assert(math.ceil)
+local floor = assert(math.floor)
+
+local mod = foundation_binary
+
 --- @namespace foundation.com
 
-if not foundation_binary.ffi then
-  core.log(
-    "error",
-    "foundation.com.BinaryBuffer is unavailable as it requires LuaJIT's FFI module"
-  )
-  return
-end
-
-local ffi = assert(foundation_binary.ffi)
-
----
---- Binary Buffer - similar interface as StringBuf but using an FFI allocated uchar array
----
---- @class BinaryBuffer
-local BinaryBuffer = foundation.com.Class:extends('BinaryBuffer')
+--- @class BaseBinaryBuffer
+local BaseBinaryBuffer = foundation.com.Class:extends("foundation.com.BaseBinaryBuffer")
 do
-  local ic = BinaryBuffer.instance_class
+  local ic = BaseBinaryBuffer.instance_class
 
-  local BLOCK_SIZE = 4096
+  ic.BLOCK_SIZE = 4096
 
-  local function next_block_size(size)
-    local blocks = math.floor(size / BLOCK_SIZE)
-    return (blocks + 1) * BLOCK_SIZE
+  function ic:align_block_size(size)
+    local blocks = ceil(size / self.BLOCK_SIZE)
+    return blocks * self.BLOCK_SIZE
   end
 
-  --- @spec #initialize(size_or_data: Integer | String, mode: String): void
+  --- @spec #initialize(initial_size_or_data: Integer | String, mode: String): void
   function ic:initialize(initial_size_or_data, mode)
     local size, allocated_size, data
     if type(initial_size_or_data) == 'number' then
       allocated_size = initial_size_or_data
-      data = ''
+      data = ""
     else
-      data = initial_size_or_data or ''
+      data = initial_size_or_data or ""
     end
     size = #data
-    allocated_size = allocated_size or next_block_size(size)
+
+    ic._super.initialize(self)
+    allocated_size = allocated_size or self:align_block_size(size)
     assert(allocated_size >= size)
     self.m_size = size
     self.m_allocated_size = allocated_size
-    self.m_data = ffi.new('unsigned char[?]', self.m_allocated_size)
-    ffi.fill(self.m_data, self.m_allocated_size)
-    ffi.copy(self.m_data, data, self.m_size)
+    self:prepare_data(data)
     self:open(mode)
   end
 
-  --- @spec #blob(len: Integer): String
-  function ic:blob(len)
-    len = len or self.m_size
-    return ffi.string(self.m_data, len)
+  --- @overridable
+  --- @spec #prepare_data(data: String): void
+  function ic.prepare_data(data)
+    error("unimplemented")
   end
 
-  --- @spec #resize(Integer): self
-  function ic:resize(new_size)
-    local old_allocated_size = self.m_allocated_size
-    local old_data = self.m_data
-
-    self.m_allocated_size = new_size
-    self.m_data = ffi.new('unsigned char[?]', self.m_allocated_size)
-    ffi.fill(self.m_data, self.m_allocated_size)
-
-    ffi.copy(self.m_data, old_data, math.min(old_allocated_size, self.m_allocated_size))
-
-    return self
+  --- @spec #allocated_size(): Integer
+  function ic:allocated_size()
+    return self.m_allocated_size
   end
 
-  function ic:resize_to_next_block()
-    return self:resize(next_block_size(self.m_allocated_size))
+  --- @spec #size(): Integer
+  function ic:size()
+    return self.m_size
   end
 
   --- @spec #close(): void
   function ic:close()
-    self.m_mode = nil
+    self.m_mode = false
   end
 
   --- @spec #open(mode: String): void
   function ic:open(mode)
+    assert(mode == "r" or mode == "w" or mode == "rw", "expected mode to be r, w or rw")
     self.m_cursor = 1
     self.m_mode = mode
     -- append
-    if self.m_mode == 'a' then
+    if self.m_mode == "a" then
       self.m_cursor = 1 + self.m_size
     end
   end
 
-  --- @spec #reopen(mode)
+  --- @spec #reopen(mode: String): void
   function ic:reopen(mode)
     self:close()
     self:open(mode)
@@ -101,60 +87,43 @@ do
     return self
   end
 
+  --- @spec #calc_read_length(len: Integer): (len: Integer, remaining_len: Integer)
   function ic:calc_read_length(len)
     assert(self.m_mode == "r" or self.m_mode == "rw", "expected read mode")
     local remaining_len = self.m_size - self.m_cursor + 1
-    len = math.min(len or remaining_len, remaining_len)
+    len = min(len or remaining_len, remaining_len)
     return len, remaining_len
   end
 
-  --- @spec #read(len?: Integer): (blob: String, bytes_read: Integer)
-  function ic:read(len)
-    local remlen
-    len, remlen = self:calc_read_length(len)
-    local pos = self.m_cursor - 1
-
-    self.m_cursor = self.m_cursor + len
-
-    if (pos + len) > self.m_size then
-      error("read exceeds length remaining=" .. remlen .. " len=" .. len)
-    end
-
-    if len > 0 then
-      return ffi.string(self.m_data + pos, len), len
-    else
-      return nil, len
-    end
+  --- @overridable
+  --- @spec #blob(len?: Integer): String
+  function ic.blob(_len)
+    error("unimplemented")
   end
 
+  --- @overridable
+  --- @spec #resize(new_size: Integer): String
+  function ic.resize(_new_size)
+    error("unimplemented")
+  end
+
+  --- @overridable
+  --- @spec #read(len: Integer): (String, len: Integer)
+  function ic.read(_len)
+    error("unimplemented")
+  end
+
+  --- @overridable
   --- @spec #write(blob: String): (was_written: Boolean, err: Error)
-  function ic:write(blob)
-    assert(self.m_mode == 'w' or self.m_mode == 'rw', 'must be opened for writing')
-    blob = tostring(blob)
-    local blob_size = #blob
-    local next_cursor = self.m_cursor + blob_size
-
-    while next_cursor > self.m_allocated_size do
-      self:resize_to_next_block()
-    end
-
-    ffi.copy(self.m_data + (self.m_cursor - 1), blob, blob_size)
-    self.m_cursor = self.m_cursor + blob_size
-
-    --[[local i = 1
-    while self.m_cursor < next_cursor do
-      self.m_data[self.m_cursor - 1] = string.byte(blob, i)
-      i = i + 1
-      self.m_cursor = self.m_cursor + 1
-    end]]
-
-    local new_size = self.m_cursor - 1
-    if self.m_size < new_size then
-      self.m_size = new_size
-    end
-
-    return true, nil
+  function ic.write(_blob)
+    error("unimplemented")
   end
 end
 
-foundation.com.BinaryBuffer = BinaryBuffer
+foundation.com.BaseBinaryBuffer = BaseBinaryBuffer
+
+mod:require("binary_buffer/ffi.lua")
+mod:require("binary_buffer/lua.lua")
+
+--- @const BinaryBuffer: FFIBinaryBuffer | LuaBinaryBuffer
+foundation.com.BinaryBuffer = foundation.com.FFIBinaryBuffer or foundation.com.LuaBinaryBuffer

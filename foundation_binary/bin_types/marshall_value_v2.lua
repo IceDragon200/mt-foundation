@@ -258,7 +258,7 @@ do
     end
 
     -- Write its length
-    bw, err = byte_buf:w_i32(stream, len)
+    bw, err = byte_buf:w_u32(stream, len)
     abw = abw + bw
 
     if err then

@@ -1,6 +1,4 @@
 --- @namespace foundation.com.binary_types
-local ByteBuf = assert(foundation.com.ByteBuf.little)
-
 local function mksize(len)
   return function ()
     return len

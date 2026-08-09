@@ -1,7 +1,7 @@
 --
 -- Foundation - Binary
 --
-local mod = foundation.new_module("foundation_binary", "3.0.0")
+local mod = foundation.new_module("foundation_binary", "3.1.0")
 
 local insec = core.request_insecure_environment()
 if insec then
