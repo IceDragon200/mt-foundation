@@ -57,6 +57,18 @@ do
     return self
   end
 
+  --- Allocates a new block.
+  --- @spec allocate_next_block(): self
+  function ic:allocate_next_block()
+    local old_allocated_size = self.m_allocated_size
+    self.m_allocated_size = self.m_allocated_size + self.BLOCK_SIZE
+    local old_data = self.m_data
+    self.m_data = ffi.new('unsigned char[?]', self.m_allocated_size)
+    ffi.fill(self.m_data, self.m_allocated_size)
+    ffi.copy(self.m_data, old_data, old_allocated_size)
+    return self
+  end
+
   --- @override
   --- @spec #read(len?: Integer): (blob: String, bytes_read: Integer)
   function ic:read(len)
@@ -86,7 +98,7 @@ do
     local next_cursor = self.m_cursor + blob_size
 
     while next_cursor > self.m_allocated_size do
-      self:resize(next_cursor)
+      self:allocate_next_block()
     end
 
     ffi.copy(self.m_data + (self.m_cursor - 1), blob, blob_size)
