@@ -6,6 +6,8 @@
   You are free to copy and use this module/class
 
 ]]
+local string_byte = assert(string.byte)
+
 --- @namespace foundation.com
 local HEX_TABLE = {
   [0] = "0",
@@ -36,20 +38,24 @@ local function string_hex_escape(str, mode)
   mode = mode or "non-ascii"
 
   local result = {}
-  local bytes = {string.byte(str, 1, -1)}
+  local len = #str
 
-  for i, byte in ipairs(bytes) do
-    if mode == "non-ascii" then
-      -- 92 \
-      if byte == 92 then
-        result[i] = "\\\\"
-      elseif byte >= 32 and byte < 127  then
-        result[i] = string.char(byte)
+  if len > 0 then
+    local byte
+    for i = 1,len do
+      byte = string_byte(str, i)
+      if mode == "non-ascii" then
+        -- 92 \
+        if byte == 92 then
+          result[i] = "\\\\"
+        elseif byte >= 32 and byte < 127  then
+          result[i] = string.char(byte)
+        else
+          result[i] = byte_to_escaped_hex(byte)
+        end
       else
         result[i] = byte_to_escaped_hex(byte)
       end
-    else
-      result[i] = byte_to_escaped_hex(byte)
     end
   end
 
