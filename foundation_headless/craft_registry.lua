@@ -7,7 +7,7 @@ local function matches_pattern(base, pattern)
 
   local a
   local b
-  local s = {oa, ob}
+  local s = {base, pattern}
   local i = 2
   while i > 0 do
     b = s[i]
