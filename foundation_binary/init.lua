@@ -1,7 +1,7 @@
 --
 -- Foundation - Binary
 --
-local mod = foundation.new_module("foundation_binary", "3.1.0")
+local mod = foundation.new_module("foundation_binary", "3.2.0")
 
 local insec = core.request_insecure_environment()
 if insec then
@@ -22,6 +22,7 @@ mod:require("byte_buf.lua")
 mod:require("bin_schema.lua")
 mod:require("bin_types.lua")
 mod:require("binary_buffer.lua")
+mod:require("string_buffer_ext.lua")
 
 if foundation.com.Luna then
   mod:require("tests.lua")

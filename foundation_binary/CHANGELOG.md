@@ -1,3 +1,8 @@
+# 3.2.0
+
+* Added reader functions to `foundation.com.StringBuffer` which use ByteBuf, they are just glorified helper functions.
+  * `read_{be,le}_{{u,i}{8,16,24,32,40,48,64},f{16,24,32,64}}`
+
 # 3.1.0
 
 * Added Lua implementation of BinaryBuffer as a fallback

@@ -1,10 +1,11 @@
---- @namespace foundation.com
----
---- StringBuffer is an in-memory equivalent of love's File interface
----
 local string_each_char = assert(foundation.com.string_each_char)
 local utf8 = foundation.com.utf8
 
+--- @namespace foundation.com
+
+---
+--- StringBuffer is an in-memory equivalent of love's File interface
+---
 --- @class StringBuffer
 local StringBuffer = foundation.com.Class:extends("foundation.com.StringBuffer")
 do
@@ -18,6 +19,7 @@ do
   ---   * `rw` - open the buffer in read-write mode
   ---   * `a` - open the buffer in append mode, similar to write, but starts from end of data
   ---
+  --- @override
   --- @spec #initialize(data: String, mode?: String): void
   function ic:initialize(data, mode)
     if type(data) ~= "string" then
