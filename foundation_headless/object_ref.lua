@@ -1,3 +1,6 @@
+local max = assert(math.max)
+local min = assert(math.min)
+
 --- @namespace foundation.com.headless
 
 --- @class ObjectRef
@@ -25,6 +28,11 @@ do
     }
     self._properties = {}
     self._nametag_attributes = {}
+  end
+
+  --- @spec #get_guid(): String
+  function ic:get_guid()
+    error("not implemented")
   end
 
   function ic:update_physics(dtime)
@@ -74,8 +82,8 @@ do
     return self._hp
   end
 
-  function ic:set_hp(hp)
-    self._hp = assert(hp)
+  function ic:set_hp(hp, reason)
+    self._hp = max(0, min(65535, assert(hp)))
   end
 
   function ic:get_inventory()

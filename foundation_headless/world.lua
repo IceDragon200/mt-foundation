@@ -1,4 +1,44 @@
+local concat = assert(table.concat)
+local floor = assert(math.floor)
+local random = assert(math.random)
+
 --- @namespace foundation.com.headless
+
+local HEX = {
+  "0",
+  "1",
+  "2",
+  "3",
+  "4",
+  "5",
+  "6",
+  "7",
+  "8",
+  "9",
+  "A",
+  "B",
+  "C",
+  "D",
+  "E",
+  "F",
+}
+
+--- A genuine GUID generator, no, it's not secure, don't even ask.
+--- @spec #generate_guid(): String
+local function generate_guid()
+  local bytes = {"@"}
+  local byte
+  local lo
+  local hi
+  for i = 1,16 do
+    byte = random(256) - 1
+    lo = byte % 16
+    hi = floor(byte / 16)
+    bytes[i * 2] = HEX[lo + 1]
+    bytes[i * 2 + 1] = HEX[hi + 1]
+  end
+  return concat(bytes)
+end
 
 local DNR_VALUES = {
   {4250.0 + 125.0, 175.0},
@@ -74,11 +114,22 @@ local World = foundation.com.Class:extends("foundation.com.headless.World")
 do
   local ic = World.instance_class
 
-  function ic:initialize()
+  --- @spec #initialize(options: Table): void
+  function ic:initialize(options)
+    ic._super.initialize(self)
+
+    options = options or {}
+
+    self.seed = options.seed
+    self.mapgen = options.mapgen
+
     self.g_object_id = 0
 
     self._removed_saos = {}
     self.saos = {}
+    self.object_refs = options.object_refs or {}
+    self.objects_by_guid = options.objects_by_guid or {}
+    self.luaentities = options.luaentities or {}
     self.data = {}
   end
 
@@ -296,6 +347,7 @@ do
     end
   end
 
+  --- @spec #update(dtime: Number): void
   function ic:update(dtime)
     local pos
     local pos2
@@ -304,7 +356,7 @@ do
     local node
     local nodedef
     for id, sao in pairs(self.saos) do
-      if sao.removed then
+      if sao._removed then
         self._removed_saos[id] = true
       else
         pos = sao:get_pos()
@@ -328,14 +380,21 @@ do
         sao:update(dtime)
       end
 
-      if sao.removed then
+      if sao._removed then
         self._removed_saos[id] = true
       end
     end
 
     if next(self._removed_saos) then
+      local sao
       for id, _ in pairs(self._removed_saos) do
+        sao = self.saos[id]
         self.saos[id] = nil
+        self.object_refs[id] = nil
+        if sao._guid then
+          self.objects_by_guid[sao._guid] = nil
+        end
+        self.luaentities[id] = nil
       end
       self._removed_saos = {}
     end
@@ -377,19 +436,24 @@ do
     "show_on_minimap",
   }
 
+  --- @spec #add_entity(pos: Vector3, name: String, staticdata: String): nil | ObjectRef
   function ic:add_entity(pos, name, staticdata)
     staticdata = staticdata or ""
     assert(type(name) == "string", "expected a name")
     self.g_object_id = self.g_object_id + 1
     local id = self.g_object_id
+    local guid = generate_guid()
     local lua_entity_def = core.registered_entities[name]
     local entity = setmetatable({}, { __index = lua_entity_def })
-    local sao = foundation.com.headless.LuaEntity:new(entity, pos)
+    local sao = foundation.com.headless.LuaEntity:new(entity, guid, pos)
     entity.object = sao
     self.saos[id] = sao
+    self.luaentities[id] = entity
+    self.object_refs[id] = sao
+    self.objects_by_guid[guid] = sao
 
     for _, key in ipairs(INITIAL_PROPERTY_KEY) do
-      if lua_entity_def[key] then
+      if lua_entity_def[key] ~= nil then
         print("WARN: lua entity name=" .. name .. " contains key=" .. key .. " which is an initial property")
         sao._properties[key] = lua_entity_def[key]
       end
@@ -402,19 +466,30 @@ do
       )
     end
 
-    if lua_entity_def.on_activate then
+    sao._hp = sao._properties.hp_max or sao._hp
+
+    if type(lua_entity_def.on_activate) == "function" then
       lua_entity_def.on_activate(entity, staticdata, 0)
     end
-    return sao
+
+    if sao._removed then
+      return nil
+    else
+      return sao
+    end
   end
 
+  --- @spec #get_objects_inside_radius(center: Vector3, radius: Number)
   function ic:get_objects_inside_radius(center, radius)
     local result = {}
     local i = 0
+    local vd = vector.distance
     for _id, sao in pairs(self.saos) do
-      if vector.distance(center, sao._pos) <= radius then
-        i = i + 1
-        result[i] = sao
+      if sao:is_valid() then
+        if vd(center, sao._pos) <= radius then
+          i = i + 1
+          result[i] = sao
+        end
       end
     end
     return result

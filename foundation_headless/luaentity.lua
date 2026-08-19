@@ -5,8 +5,11 @@ local LuaEntity = foundation.com.headless.ObjectRef:extends("foundation.com.head
 do
   local ic = LuaEntity.instance_class
 
-  function ic:initialize(luaentity, pos)
+  --- @spec #initialize(luaentity: Table, guid: String, pos: Vector3): void
+  function ic:initialize(luaentity, guid, pos)
     ic._super.initialize(self)
+
+    self._guid = guid
 
     if pos then
       self._pos = vector.copy(pos)
@@ -23,6 +26,15 @@ do
     self._rotation = vector.new(0, 0, 0)
   end
 
+  --- @override
+  --- @spec #get_guid(): String
+  function ic:get_guid()
+    if self._removed then
+      return nil
+    end
+    return self._guid
+  end
+
   function ic:update_physics(dtime)
     self._velocity.x = self._velocity.x + self._acceleration.x * dtime
     self._velocity.y = self._velocity.y + self._acceleration.y * dtime
@@ -30,19 +42,42 @@ do
     ic._super.update_physics(self, dtime)
   end
 
+  --- @spec #update(dtime: Number): void
   function ic:update(dtime)
     ic._super.update(self, dtime)
     if self._luaentity.on_step then
-      self._luaentity:on_step(dtime, {})
+      self._luaentity:on_step(dtime, nil)
     end
   end
 
+  --- @override
+  --- @spec #is_valid(): Boolean
   function ic:is_valid()
     return not self._removed
   end
 
+  --- @spec #remove(): void
   function ic:remove()
+    if self._removed then
+      return
+    end
+    -- ensure the lua entity can't remove itself again, while it's already being removed
     self._removed = true
+    if type(self._luaentity.on_deactivate) == "function" then
+      self._luaentity:on_deactivate(true)
+    end
+    ic._super.remove(self)
+  end
+
+  function ic:set_hp(hp, reason)
+    ic._super.set_hp(self, hp, reason)
+    if self:is_valid() and self._hp <= 0 then
+      local killer = reason and reason.object or nil
+      if type(self._luaentity.on_death) == "function" then
+        self._luaentity:on_death(killer)
+      end
+      self:remove()
+    end
   end
 
   function ic:set_velocity(vec)
@@ -91,6 +126,17 @@ do
 
   function ic:get_entity_name()
     return self._luaentity.name
+  end
+
+  function ic:_get_staticdata()
+    local callback = self._luaentity.get_staticdata
+    if type(callback) == "function" then
+      local result = callback(self._luaentity)
+      assert(type(result) == "string", "get_staticdata must return a string")
+      return result
+    end
+
+    return ""
   end
 end
 

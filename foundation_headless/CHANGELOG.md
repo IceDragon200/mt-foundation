@@ -1,3 +1,13 @@
+# 3.4.0
+
+* LuaEntities now have guid
+  * Added `#get_guid/0`
+  * `#on_step/2` now receives proper nil for move result
+  * `#remove/0` now calls the lua entity's `#on_deactivate/1` if available
+  * `#set_hp/1` now accounts for entity's that are killed
+* Added ValueNoise fallback implementation
+  * Do not use this if you care about performance, it is provided as-is as a pure lua backfill
+
 # 3.3.0
 
 * Added `foundation.com.headless.CraftRegistry` which re-implements the crafts system.

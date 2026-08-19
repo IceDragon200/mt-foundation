@@ -28,6 +28,12 @@ do
     self._inventory:set_size("main", 8)
   end
 
+  --- @override
+  --- @spec #get_guid(): String
+  function ic:get_guid()
+    return self._name
+  end
+
   -- Callbacks, only used for the mock
   function ic:_on(name, callback)
     if not self._listeners[name] then
