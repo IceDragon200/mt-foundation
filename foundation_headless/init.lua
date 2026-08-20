@@ -1,13 +1,14 @@
 --
 -- Foundation Headless
 --
-local mod = foundation.new_module("foundation_headless", "3.4.0")
+local mod = foundation.new_module("foundation_headless", "3.5.0")
 
 --- @namespace foundation.com.headless
 foundation.com.headless = foundation.com.headless or {}
 
 mod:require("noise.lua")
 mod:require("value_noise.lua")
+mod:require("value_noise_map.lua")
 mod:require("voxel_line_iterator.lua")
 mod:require("meta_data_ref.lua")
 mod:require("item_stack.lua")

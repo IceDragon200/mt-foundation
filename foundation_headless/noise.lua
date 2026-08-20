@@ -12,6 +12,23 @@ local NOISE_MAGIC_Z = 52591
 -- Unsigned magic seed prevents undefined behavior.
 local NOISE_MAGIC_SEED = 1013
 
+--- @mutative options
+--- @spec prepare_noise_params(options: Table): Table
+function foundation.com.prepare_noise_params(options)
+  options.offset = options.offset or 0.0
+  options.scale = options.scale or 1.0
+  options.spread = options.spread or vector.new(250, 250, 250)
+  options.seed = options.seed or 12345
+  options.octaves = options.octaves or 3
+  options.persist = options.persist or 0.6
+  options.lacunarity = options.lacunarity or 2.0
+
+  if not options.eased and not options.absvalue then
+    options.defaults = true
+  end
+  return options
+end
+
 --- Ported from Luanti's noise.cpp
 --- @spec noise2d(x: Integer, y: Integer, seed: Number): Number
 function foundation.com.noise2d(x, y, seed)

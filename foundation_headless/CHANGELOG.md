@@ -1,3 +1,7 @@
+# 3.5.0
+
+* Stub `ValueNoiseMap`
+
 # 3.4.0
 
 * LuaEntities now have guid
