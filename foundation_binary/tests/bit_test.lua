@@ -108,3 +108,47 @@ for bit_module_name, m in pairs(bit_modules) do
   case:display_stats()
   case:maybe_error()
 end
+
+if bit_modules.native_bit and bit_modules.local_bit then
+  local case = Luna:new("foundation.com.local_bit parity")
+  local native = bit_modules.native_bit
+  local fallback = bit_modules.local_bit
+  local values = {
+    0, 1, 2, 0x7F, 0x80, 0xFF, 0x12345678,
+    0x7FFFFFFF, -0x80000000, -2, -1,
+  }
+
+  case:describe("plain Lua implementation", function (t2)
+    t2:test("matches native operations over representative signed values", function (t3)
+      for _, a in ipairs(values) do
+        t3:assert_eq(native.bnot(a), fallback.bnot(a))
+        t3:assert_eq(native.bswap(a), fallback.bswap(a))
+        for _, b in ipairs(values) do
+          t3:assert_eq(native.band(a, b), fallback.band(a, b))
+          t3:assert_eq(native.bor(a, b), fallback.bor(a, b))
+          t3:assert_eq(native.bxor(a, b), fallback.bxor(a, b))
+        end
+        for n = 0,31 do
+          t3:assert_eq(native.lshift(a, n), fallback.lshift(a, n))
+          t3:assert_eq(native.rshift(a, n), fallback.rshift(a, n))
+          t3:assert_eq(native.arshift(a, n), fallback.arshift(a, n))
+          t3:assert_eq(native.rol(a, n), fallback.rol(a, n))
+          t3:assert_eq(native.ror(a, n), fallback.ror(a, n))
+        end
+      end
+    end)
+
+    t2:test("matches native variadic operations", function (t3)
+      t3:assert_eq(native.band(-1, 0x12345678, 0x00FFFF00),
+                   fallback.band(-1, 0x12345678, 0x00FFFF00))
+      t3:assert_eq(native.bor(0x12000000, 0x00340000, 0x00005678),
+                   fallback.bor(0x12000000, 0x00340000, 0x00005678))
+      t3:assert_eq(native.bxor(-1, 0xAAAAAAAA, 0x55555555),
+                   fallback.bxor(-1, 0xAAAAAAAA, 0x55555555))
+    end)
+  end)
+
+  case:execute()
+  case:display_stats()
+  case:maybe_error()
+end

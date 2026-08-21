@@ -82,14 +82,6 @@ local function to_i32(value)
   end
 end
 
-local function to_u32_list(list)
-  local result = {}
-  for i, v in ipairs(list) do
-    result[i] = to_u32(v)
-  end
-  return result
-end
-
 do
   local res
   res = to_u32(-1)
@@ -130,98 +122,102 @@ local function uarshift(x, n)
   error("I have no idea how to do this, sorry")
 end
 
-local function uband(...)
-  local result = 0
-  local v = to_u32_list({...})
-  local j = #v
-  local base
-  local b
+-- Plain Lua has no bitwise operators before 5.3.  Work a nibble at a time
+-- instead of expanding every operand into a table of 32 individual bits.
+-- The tables are deliberately tiny (3 * 256 entries) and are built only once.
+local NIBBLE_AND = {}
+local NIBBLE_OR = {}
+local NIBBLE_XOR = {}
 
-  for bit_index = 0,(BITS-1) do
-    base = v[1] % 2
-    v[1] = math_floor(v[1] / 2)
-    for i = 2,j do
-      if base > 0 then
-        b = v[i] % 2
-        if b == 0 then
-          base = 0
-        end
+for a = 0,15 do
+  for b = 0,15 do
+    local av = a
+    local bv = b
+    local aand = 0
+    local aor = 0
+    local axor = 0
+    local place = 1
+
+    for _ = 1,4 do
+      local abit = av % 2
+      local bbit = bv % 2
+      if abit == 1 and bbit == 1 then
+        aand = aand + place
       end
-      v[i] = math_floor(v[i] / 2)
+      if abit == 1 or bbit == 1 then
+        aor = aor + place
+      end
+      if abit ~= bbit then
+        axor = axor + place
+      end
+      av = math_floor(av / 2)
+      bv = math_floor(bv / 2)
+      place = place * 2
     end
-    if base > 0 then
-      result = result + BIT_TABLE[bit_index]
-    end
+
+    local index = a * 16 + b
+    NIBBLE_AND[index] = aand
+    NIBBLE_OR[index] = aor
+    NIBBLE_XOR[index] = axor
+  end
+end
+
+table_freeze(NIBBLE_AND)
+table_freeze(NIBBLE_OR)
+table_freeze(NIBBLE_XOR)
+
+local function nibble_op(a, b, lookup)
+  a = to_u32(a)
+  b = to_u32(b)
+
+  local result = lookup[(a % 16) * 16 + (b % 16)]
+  a = math_floor(a / 16)
+  b = math_floor(b / 16)
+  result = result + lookup[(a % 16) * 16 + (b % 16)] * 0x10
+  a = math_floor(a / 16)
+  b = math_floor(b / 16)
+  result = result + lookup[(a % 16) * 16 + (b % 16)] * 0x100
+  a = math_floor(a / 16)
+  b = math_floor(b / 16)
+  result = result + lookup[(a % 16) * 16 + (b % 16)] * 0x1000
+  a = math_floor(a / 16)
+  b = math_floor(b / 16)
+  result = result + lookup[(a % 16) * 16 + (b % 16)] * 0x10000
+  a = math_floor(a / 16)
+  b = math_floor(b / 16)
+  result = result + lookup[(a % 16) * 16 + (b % 16)] * 0x100000
+  a = math_floor(a / 16)
+  b = math_floor(b / 16)
+  result = result + lookup[(a % 16) * 16 + (b % 16)] * 0x1000000
+  a = math_floor(a / 16)
+  b = math_floor(b / 16)
+  return result + lookup[(a % 16) * 16 + (b % 16)] * 0x10000000
+end
+
+local function fold_nibble_op(lookup, ...)
+  local count = select("#", ...)
+  assert(count > 0, "expected at least one operand")
+  local result = to_u32(select(1, ...))
+  for i = 2,count do
+    result = nibble_op(result, select(i, ...), lookup)
   end
   return result
+end
+
+local function uband(...)
+  return fold_nibble_op(NIBBLE_AND, ...)
 end
 
 local function ubnot(x)
-  local result = 0
-  local y = to_u32(x)
-  local base
-  for bit_index = 0,(BITS-1) do
-    base = y % 2
-    y = math_floor(y / 2)
-    if base == 0 then
-      result = result + BIT_TABLE[bit_index]
-    end
-  end
-  return result
+  return UINT32_MAX - to_u32(x)
 end
 
 local function ubor(...)
-  local result = 0
-  local v = to_u32_list({...})
-  local j = #v
-  local base
-  local b
-
-  for bit_index = 0,(BITS-1) do
-    base = v[1] % 2
-    v[1] = math_floor(v[1] / 2)
-    for i = 2,j do
-      if base == 0 then
-        b = v[i] % 2
-        if b > 0 then
-          base = 1
-        end
-      end
-      v[i] = math_floor(v[i] / 2)
-    end
-    if base > 0 then
-      result = result + BIT_TABLE[bit_index]
-    end
-  end
-
-  return result
+  return fold_nibble_op(NIBBLE_OR, ...)
 end
 
 local function ubxor(...)
-  local result = 0
-  local v = to_u32_list({...})
-  local j = #v
-  local base
-  local b
-
-  for bit_index = 0,(BITS-1) do
-    base = v[1] % 2
-    v[1] = math_floor(v[1] / 2)
-    for i = 2,j do
-      b = v[i] % 2
-      if base ~= b then
-        base = 1
-      else
-        base = 0
-      end
-      v[i] = math_floor(v[i] / 2)
-    end
-    if base > 0 then
-      result = result + BIT_TABLE[bit_index]
-    end
-  end
-
-  return result
+  return fold_nibble_op(NIBBLE_XOR, ...)
 end
 
 local function ulshift(x, n)
@@ -243,32 +239,22 @@ end
 
 local function urol(x, n)
   assert(n >= 0)
+  n = n % BITS
   local y = to_u32(x)
-  local result = 0
-  local b
-  for bit_index = 0,(BITS-1) do
-    b = y % 2
-    if b > 0 then
-      result = result + BIT_TABLE[(bit_index + n) % BITS]
-    end
-    y = math_floor(y / 2)
+  if n == 0 then
+    return y
   end
-  return result
+  return (y * BIT_TABLE[n]) % 0x100000000 + math_floor(y / BIT_TABLE[32 - n])
 end
 
 local function uror(x, n)
   assert(n >= 0)
+  n = n % BITS
   local y = to_u32(x)
-  local result = 0
-  local b
-  for bit_index = 0,(BITS-1) do
-    b = y % 2
-    if b > 0 then
-      result = result + BIT_TABLE[(bit_index - n) % BITS]
-    end
-    y = math_floor(y / 2)
+  if n == 0 then
+    return y
   end
-  return result
+  return math_floor(y / BIT_TABLE[n]) + (y % BIT_TABLE[n]) * BIT_TABLE[32 - n]
 end
 
 local function ubswap(x)
@@ -288,7 +274,7 @@ end
 local function arshift(x, n)
   assert(n >= 0)
   if n == 0 then
-    return to_signed(x)
+    return to_i32(to_u32(x))
   end
   if n >= 32 then
     n = 31
@@ -303,7 +289,7 @@ local function arshift(x, n)
     result = result + padding
   end
 
-  return to_signed(result)
+  return to_i32(result)
 end
 
 local function band(...)
