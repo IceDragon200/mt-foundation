@@ -22,7 +22,7 @@ end
 
 --- Formats the given integers as a ULID binary (big-endian)
 ---
---- @spec format_le_binary(time48: U48, random_a32: U32, random_b32: U32): String
+--- @spec format_be_binary(time48: U48, random_a32: U32, random_b32: U32): String
 local function format_be_binary(time48, random_a48, random_b32)
   return integer_be_encode(time48, 6) ..
          integer_be_encode(random_a48, 6) ..
