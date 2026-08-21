@@ -1,3 +1,7 @@
+# `1.5.0`
+
+* Luna now returns garbage collection before EVERY test to stabilize execution times, this has a nasty side effect of making the test runner overall slower, but times shouldn't be all over the place now.
+
 # `1.4.0`
 
 * Copied balm Luna's new assertion functions over

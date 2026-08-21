@@ -7,6 +7,7 @@
 
 ]]
 local string_byte = assert(string.byte)
+local get_us_time = assert(core.get_us_time)
 
 --- @namespace foundation.com
 local HEX_TABLE = {
@@ -641,9 +642,10 @@ do
       elseif test[1] == "test" then
         local test_func = test[3]
         --self.reporter:report("* " .. prefix, test[2])
-        local x_us = core.get_us_time()
+        collectgarbage("collect") --
+        local x_us = get_us_time()
         local success, err = xpcall(test_func, debug.traceback, self, test_tags)
-        local y_us = core.get_us_time()
+        local y_us = get_us_time()
         local diff_us = y_us - x_us
         local diff = diff_us / 1000000.0
         local elapsed = format_pretty_unit(diff, "s")
