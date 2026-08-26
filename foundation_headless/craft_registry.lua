@@ -317,7 +317,7 @@ do
           method = method,
           width = width,
           items = items,
-          output = output and output:to_string() or nil,
+          output = output and output:to_string() or "",
           time = recipe.burntime or recipe.cooktime,
         }
       end
