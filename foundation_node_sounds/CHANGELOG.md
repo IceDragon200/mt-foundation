@@ -1,3 +1,7 @@
+# 1.3.0
+
+* Added compat table `compat_node_sounds` which should work as a drop-in replacement for default's node sound functions.
+
 # 1.2.0
 
 * `NodeSoundsRegistry&new/1` now requires that registries are named

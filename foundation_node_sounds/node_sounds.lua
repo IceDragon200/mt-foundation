@@ -2,19 +2,29 @@
 -- The node sounds registry allows registering, well node sounds,
 -- these sounds are a table that can extend another node sound set.
 --
+local table_copy = assert(foundation.com.table_copy)
+local table_merge = assert(foundation.com.table_merge)
 
 --- @namespace foundation.com
-local table_merge = assert(foundation.com.table_merge)
 
 --- @class NodeSoundsRegistry
 local NodeSoundsRegistry = foundation.com.Class:extends("NodeSoundsRegistry")
 do
   local ic = NodeSoundsRegistry.instance_class
 
+  --- @override
   --- @spec #initialize(name: String): void
   function ic:initialize(name)
+    ic._super.initialize(self)
     self.name = assert(name, "a name is required for node sound registries")
     self.registered = {}
+  end
+
+  --- @override
+  --- @spec #initialize_copy(other: NodeSoundsRegistry)
+  function ic:initialize_copy(other)
+    ic._super.initialize_copy(self, other)
+    self.registered = table_copy(other.registered)
   end
 
   ---
@@ -28,11 +38,10 @@ do
 
   --- See luanti's node sounds for details on NodeSounds
   ---
+  --- A SoundSet contains 2 fields, extends, which is a list of names that the sound set should
+  --- extend from and then its sounds table which equivalent to what luanti will return.
   --- @type SoundSet: {
-  ---   extends: {
-  ---     name: String,
-  ---     ...
-  ---   },
+  ---   extends?: String[],
   ---   sounds: NodeSounds
   --- }
 
@@ -95,24 +104,32 @@ do
   ---
   --- Build a node sounds table by name and optionally a custom soundset over it.
   ---
-  --- @spec #build(name: String, sound_set: SoundSet | nil): NodeSounds
+  --- @spec #build(name: String, sound_set?: SoundSet): NodeSounds
   function ic:build(name, sound_set)
     sound_set = sound_set or {}
-    sound_set.extends = sound_set.extends or {}
-    sound_set.sounds = sound_set.sounds or {}
 
     local super_sound_set = self:fetch(name)
-    local base = self:_build_sound_set(super_sound_set)
-    local top = self:_build_sound_set(sound_set)
+    local base = self:_build_node_sounds_from_sound_set(super_sound_set)
+    local top = self:_build_node_sounds_from_sound_set(sound_set)
 
     return table_merge(base, top)
   end
 
-  function ic:_build_sound_set(sound_set)
+  --- @spec _build_node_sounds_from_sound_set(sound_set: SoundSet): NodeSounds
+  function ic:_build_node_sounds_from_sound_set(sound_set)
     local base = {}
+    if sound_set.extends then
+      for _, mixin_name in pairs(sound_set.extends) do
+        for key, value in pairs(self:build(mixin_name)) do
+          base[key] = value
+        end
+      end
+    end
 
-    for _, mixin_name in ipairs(sound_set.extends) do
-      base = table_merge(base, self:build(mixin_name))
+    if sound_set.sounds then
+      for key, value in pairs(sound_set.sounds) do
+        base[key] = value
+      end
     end
 
     return base
