@@ -1,5 +1,6 @@
 --- @namespace foundation.com.headless
 local assertions = assert(foundation.com.assertions)
+local max = assert(math.max)
 
 local function matches_pattern(base, pattern)
   local at
@@ -91,6 +92,7 @@ local CraftRegistry = foundation.com.Class:extends("foundation.com.headless.Craf
 do
   local ic = assert(CraftRegistry.instance_class)
 
+  --- @override
   --- @spec #initialize(): void
   function ic:initialize()
     ic._super.initialize(self)
@@ -110,6 +112,7 @@ do
     self.m_craft_recipe_index = {}
   end
 
+  --- @spec sort_items(ItemStack[]): ItemStack[]
   function ic:sort_items(items)
     local result = table_copy(items)
     table.sort(result, function (a, b)
@@ -164,10 +167,12 @@ do
     end
     local recipe = {}
 
+    local width = 1
+
     if def.type == "shaped" then
       local row_size
       for i,row in pairs(def.recipe) do
-        recipe[i] = {}
+        width = max(width, #row)
         if not row_size then
           row_size = #row
         end
@@ -180,7 +185,7 @@ do
           local item_stack = ItemStack(item_string)
           self.m_craft_ingredient_id = self.m_craft_ingredient_id + 1
           self.m_craft_ingredient_index[item_stack:get_name()] = self.m_craft_ingredient_id
-          recipe[i][j] = item_stack
+          recipe[1 + (i - 1) * row_size + (j - 1)] = item_stack
         end
       end
     else
@@ -200,7 +205,16 @@ do
     self.m_craft_recipe_id = self.m_craft_recipe_id + 1
     local recipe_id = self.m_craft_recipe_id
     def = table_copy(def)
-    if def.output then
+    def.width = 0
+    if def.type == "shaped" then
+      def.width = width
+    end
+    if def.type == "fuel" then
+      if not self.m_output_recipes[""] then
+        self.m_output_recipes[""] = {}
+      end
+      self.m_output_recipes[""][recipe_id] = def.type
+    elseif def.output then
       def.output = ItemStack(def.output)
       local name = def.output:get_name()
       if not self.m_output_recipes[name] then
@@ -221,7 +235,6 @@ do
     local root = self.m_craft_recipe_index[def.type]
 
     if def.type == "shaped" then
-      local width = #recipe[1]
       if not root.children[width] then
         root.children[width] = {
           children = {},
@@ -247,7 +260,6 @@ do
       recipe = self:sort_items(recipe)
 
       local name
-      local width = 1
       if not root.children[width] then
         root.children[width] = {
           children = {},
@@ -283,6 +295,7 @@ do
       local items
       local output
 
+      local str
       for recipe_id, craft_type in pairs(recipes) do
         i = i + 1
         recipe = self.m_registered_crafts[craft_type][recipe_id]
@@ -291,13 +304,21 @@ do
           method = "normal"
         end
         width = recipe.width
-        items = table_copy(recipe.recipe)
+        items = {}
+        for i, item_stack in pairs(recipe.recipe) do
+          str = item_stack:get_name()
+          if str ~= "" then
+            items[i] = str
+          end
+        end
         output = recipe.output
         result[i] = {
+          type = method,
           method = method,
           width = width,
           items = items,
-          output = output,
+          output = output and output:to_string() or nil,
+          time = recipe.burntime or recipe.cooktime,
         }
       end
       return result

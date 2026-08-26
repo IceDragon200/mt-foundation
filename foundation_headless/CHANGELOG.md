@@ -1,3 +1,9 @@
+# 3.5.1
+
+* Corrected CraftRegistry
+  * Craft results now appropriately return their item names instead of stacks
+  * Fuel recipes are indexed under the empty string index
+
 # 3.5.0
 
 * Stub `ValueNoiseMap`

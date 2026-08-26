@@ -5,8 +5,11 @@ local ItemStack = foundation.com.Class:extends("foundation.com.headless.ItemStac
 do
   local ic = assert(ItemStack.instance_class)
 
+  --- @override
   --- @spec #initialize(data?: Table | String): void
   function ic:initialize(data)
+    ic._super.initialize(self)
+
     self.wear = 0
     self.name = ""
     self.count = 0
@@ -116,6 +119,8 @@ do
     self.__meta = nil
   end
 
+  --- @override
+  --- @spec #to_string(): String
   function ic:to_string()
     local result = self.name
 
