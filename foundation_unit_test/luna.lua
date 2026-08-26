@@ -281,6 +281,11 @@ do
   Luna.NullReporter = NullReporter
   Luna.DefaultReporter = DefaultReporter
 
+  --- Before Luna runs a test, it can optionally perform garbage collection.
+  --- By default, this is disabled, but can be enabled for ALL tests by setting it on the class.
+  --- @variable garbage_collection_before_test_enabled: Boolean
+  Luna.garbage_collection_before_test_enabled = false
+
   local function format_message(message)
     if type(message) == "function" then
       return message()
@@ -294,9 +299,11 @@ do
 
   --- @spec #initialize(name: String, config?: Table): void
   function ic:initialize(name, config)
+    ic._super.initialize(self)
     self.name = assert(name, "expected a name")
     self.config = table_merge(Luna.default_config, config or {})
     self.reporter = self.config.reporter
+    self.garbage_collection_before_test_enabled = Luna.garbage_collection_before_test_enabled
     self.stats = {
       time_elapsed = 0.0,
       assertions_passed = 0,
@@ -337,6 +344,7 @@ do
     assert(type(name) == "string", "expected a context name")
     assert(type(func) == "function", "expected a context function")
     local luna = self._class:new(name)
+    luna.garbage_collection_before_test_enabled = self.garbage_collection_before_test_enabled
     luna.reporter = self.reporter
     table.insert(self.tests, {"describe", name, luna})
     table.insert(self.children, luna)
@@ -622,6 +630,7 @@ do
     self:refute(table_matches(value, pattern), message)
   end
 
+  --- @spec execute(depth: Integer, prefix: String, tags: Table): self
   function ic:execute(depth, prefix, tags)
     tags = table_copy(tags or {})
     depth = depth or 0
@@ -642,7 +651,9 @@ do
       elseif test[1] == "test" then
         local test_func = test[3]
         --self.reporter:report("* " .. prefix, test[2])
-        collectgarbage("collect") --
+        if self.garbage_collection_before_test_enabled then
+          collectgarbage("collect") --
+        end
         local x_us = get_us_time()
         local success, err = xpcall(test_func, debug.traceback, self, test_tags)
         local y_us = get_us_time()
